@@ -16,3 +16,9 @@
 defined ( 'ABSPATH' ) || exit;
 
 include_once __DIR__ . '/vendor/autoload.php';
+
+use NUCSSACore\Accounts\UserDirectory;
+
+$directory = UserDirectory::instance();
+$directory->getUserGroups('jilu');
+$directory->getGroupMembers('IT部门');
