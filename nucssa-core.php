@@ -1,4 +1,6 @@
 <?php
+use NUCSSACore\Accounts\Accounts;
+
 /**
  * Plugin Name:     NUCSSA Core Plugin
  * Plugin URI:      https://www.nucssa.org
@@ -17,8 +19,11 @@ defined ( 'ABSPATH' ) || exit;
 
 include_once __DIR__ . '/vendor/autoload.php';
 
-use NUCSSACore\Accounts\UserDirectory;
+// use NUCSSACore\Accounts\UserDirectory;
 
-$directory = UserDirectory::instance();
-$directory->getUserGroups('jilu');
-$directory->getGroupMembers('IT部门');
+// $directory = UserDirectory::instance();
+// $directory->getUserGroups('jilu');
+// $directory->getGroupMembers('IT部门');
+NUCSSACore\Hooks\Install::init();
+(new Accounts())->syncFromDirectory();
+register_activation_hook(__FILE__, 'NUCSSACore\Hooks\Install::init');

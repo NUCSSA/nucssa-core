@@ -81,7 +81,7 @@ class UserDirectory {
   public function getGroupMembers(string $groupname) {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
-    $name_attrib = LDAP_Config:: $GROUP_SCHEMA[ 'NAME_ATTRIBUTE'];
+    $name_attrib = LDAP_Config::$GROUP_SCHEMA[ 'NAME_ATTRIBUTE'];
     $group_members_attrib = LDAP_Config::$MEMBERSHIP_SCHEMA[ "GROUP_MEMBERS_ATTRIBUTE"];
     $additional_group_dn = LDAP_Config::$LDAP_SCHEMA[ "ADDITIONAL_GROUP_DN"];
 
@@ -99,28 +99,101 @@ class UserDirectory {
   }
 
   /**
-   * Sync all users and groups
+   * Fetch all users and groups
    *
-   * @return void bulk upsert directory entries to database
+   * @return array("users" => [], "groups" => [])
    */
-  public function sync($delegate){
+  public function fetchAll(){
+    $this->bindWPUser() or die("Could not bind to LDAP");
+
+     return array(
+       "users" => $this->fetchAllUsers(),
+       "groups" => $this->fetchAllGroups()
+     );
+  }
+
+  private function fetchAllUsers() {
+    $this->bindWPUser() or die("Could not bind to LDAP");
+
     /**
      * Users
-     * columns: uid, cn, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
+     * columns: uid, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
      */
+    $users = [];
+    $base_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_USER_DN"] . "," . $this->base_dn;
+    $filter = LDAP_Config::$USER_SCHEMA["OBJ_FILTER"];
+    $atts = array(
+      LDAP_Config::$USER_SCHEMA["USERNAME_ATTRIBUTE"],
+      LDAP_Config::$USER_SCHEMA["FIRST_NAME_ATTRIBUTE"],
+      LDAP_Config::$USER_SCHEMA["LAST_NAME_ATTRIBUTE"],
+      LDAP_Config::$USER_SCHEMA["DISPLAY_NAME_ATTRIBUTE"],
+      LDAP_Config::$USER_SCHEMA["EMAIL_ATTRIBUTE"],
+      LDAP_Config::$USER_SCHEMA["USER_ID_ATTRIBUTE"],
+    );
+    $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
+    $entries = ldap_get_entries($this->conn, $res);
+
+    if ($entries["count"] != 0) {
+      array_shift($entries);
+      foreach ($entries as $entry) {
+        foreach ($atts as $att) {
+          if ($vals = @$entry[strtolower($att)]) {
+            if ($vals["count"] == 1) {
+              $val = $vals[0];
+            } else {
+              array_shift($vals);
+              $val = $vals;
+            }
+          } else {
+            $val = NULL;
+          }
+          $user[$att] = $val;
+        }
+        $users[] = $user;
+      }
+    }
+    return $users;
+  }
+
+  private function fetchAllGroups() {
+    $this->bindWPUser() or die("Could not bind to LDAP");
+
     /**
      * Groups
      * columns: cn, description, gidNumber, uniqueMember (used for identifying group across name changes)
      */
-    /**
-     * Membership
-     * columns: parent_id, child_group_id, child_user_id
-     *
-     * How to find group members?
-     * group->gidNumber: found group record in our db
-     * group->uniqueMember->extract uid tag: found user record in our db
-     * upsert the two records in the membership table
-     */
+    $groups = [];
+    $base_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_GROUP_DN"] . "," . $this->base_dn;
+    $filter = LDAP_Config::$GROUP_SCHEMA["OBJ_FILTER"];
+    $atts = array(
+      LDAP_Config::$GROUP_SCHEMA["NAME_ATTRIBUTE"],
+      LDAP_Config::$GROUP_SCHEMA["DESCRIPTION_ATTRIBUTE"],
+      LDAP_Config::$GROUP_SCHEMA["GROUP_ID_ATTRIBUTE"],
+      LDAP_Config::$MEMBERSHIP_SCHEMA["GROUP_MEMBERS_ATTRIBUTE"],
+    );
+    $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
+    $entries = ldap_get_entries($this->conn, $res);
+
+    if ($entries["count"] != 0) {
+      array_shift($entries);
+      foreach ($entries as $entry) {
+        foreach ($atts as $att) {
+          if ($vals = @$entry[strtolower($att)]) {
+            if ($vals["count"] == 1) {
+              $val = $vals[0];
+            } else {
+              array_shift($vals);
+              $val = $vals;
+            }
+          } else {
+            $val = NULL;
+          }
+          $group[$att] = $val;
+        }
+        $groups[] = $group;
+      }
+    }
+    return $groups;
   }
 
   /**

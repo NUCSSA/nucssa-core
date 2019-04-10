@@ -1,6 +1,5 @@
 {
     "require": {
-        "adldap2/adldap2": "^10.0"
     },
     "autoload": {
         "files": ["config/config.php", "config/ldap.php"],
