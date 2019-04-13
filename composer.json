@@ -1,0 +1,10 @@
+{
+    "require": {
+    },
+    "autoload": {
+        "files": ["config/config.php", "config/ldap.php"],
+        "psr-4": {
+            "":["lib/"]
+        }
+    }
+}
