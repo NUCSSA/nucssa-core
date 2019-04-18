@@ -16,7 +16,7 @@ class Accounts {
    * sync users and groups from LDAP server to wordpress database
    */
   public function syncFromDirectory() {
-    $allRecords = UserDirectory::instance() -> fetchAll();
+    $allRecords = UserDirectory::singleton() -> fetchAll();
     $this->syncUsers($allRecords["users"]);
     $this->syncGroups($allRecords["groups"]);
     $this->syncMembership($allRecords["groups"]);

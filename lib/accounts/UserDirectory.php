@@ -22,7 +22,7 @@ class UserDirectory {
    *
    * @return UserDirectory
    */
-  public static function instance(){
+  public static function singleton(){
     if (! self::$_instance)
       self::$_instance = new self();
     return self::$_instance;

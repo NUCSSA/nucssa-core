@@ -1,0 +1,12 @@
+
+#adminmenu{
+  .toplevel_page_admin-menu-nucssa-core {
+    div.wp-menu-image::before {
+      font-family: 'icomoon';
+      font-size: 0.9rem;
+      content: "\e900";
+      vertical-align: middle;
+      line-height: 1.1rem;
+    }
+  }
+}
