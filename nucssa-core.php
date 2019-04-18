@@ -1,5 +1,6 @@
 <?php
 use NUCSSACore\Accounts\Accounts;
+use NUCSSACore\Hooks\AdminScripts;
 
 /**
  * Plugin Name:     NUCSSA Core Plugin
@@ -27,3 +28,6 @@ include_once __DIR__ . '/vendor/autoload.php';
 NUCSSACore\Hooks\Install::init();
 (new Accounts())->syncFromDirectory();
 register_activation_hook(__FILE__, 'NUCSSACore\Hooks\Install::init');
+
+new NUCSSACore\Admin\Menu\TopLevelMenu();
+new AdminScripts();
