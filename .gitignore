@@ -5,3 +5,4 @@ node_modules
 .vscode
 .gitsecret/keys/random_seed
 config/ldap.php
+public
