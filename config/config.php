@@ -1,4 +1,6 @@
 <?php
+
 defined( 'ABSPATH' ) || exit;
 
-// echo "haha";
+/* enable browserSync if in DEV mode */
+\NUCSSACore\Utils\Utils::enableBrowserSyncOnDebugMode();
