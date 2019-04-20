@@ -1,6 +1,8 @@
 <?php
 use NUCSSACore\Accounts\Accounts;
 use NUCSSACore\Hooks\AdminScripts;
+use NUCSSACore\Utils\Logger;
+use NUCSSACore\REST\AdminRESTAPI;
 
 /**
  * Plugin Name:     NUCSSA Core Plugin
@@ -29,5 +31,9 @@ NUCSSACore\Hooks\Install::init();
 (new Accounts())->syncFromDirectory();
 register_activation_hook(__FILE__, 'NUCSSACore\Hooks\Install::init');
 
-new NUCSSACore\Admin\Menu\TopLevelMenu();
+/**
+ * Required
+ */
+new NUCSSACore\Admin\MenuPage\TopLevelMenuPage();
 new AdminScripts();
+new AdminRESTAPI();

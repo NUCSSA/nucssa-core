@@ -25,13 +25,26 @@ class AdminScripts
 
   private function loadAdminScripts()
   {
+    $handle = 'nucssa_core_amdin_script';
     // load core script
     wp_enqueue_script(
-      'nucssa_core_amdin_script',
+      $handle,
       Constants::singleton()->plugin_dir_url . 'public/js/admin.js',
       array(), // deps
       false, // version
       true // in_footer?
+    );
+
+    // localize core script with some vars
+    wp_localize_script(
+      $handle,
+      'core_admin_data',
+      array(
+        'root_url' => get_site_url(),
+        'rest_url' => esc_url_raw( rest_url() ),
+        'ldap_config_rest_url' => esc_url_raw(rest_url()) . 'nucssa-core/v1/ldap-config',
+        'nonce' => wp_create_nonce('wp_rest')
+      )
     );
 
 

@@ -1,0 +1,308 @@
+2019-04-20 03:14:56 | hi: 
+2019-04-20 03:15:02 | hi: 
+2019-04-20 03:15:03 | hi: 
+2019-04-20 03:16:04 | hi: 
+2019-04-20 03:18:45 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:20:37 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:20:37 | HEAD: 
+2019-04-20 03:20:56 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:20:56 | HEAD: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:21:30 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:21:30 | HEAD: Array
+(
+    [SERVER_SOFTWARE] => nginx/1.15.9
+    [REQUEST_URI] => /wp-json/nucssa-core/v1/ldap-config
+    [USER] => jasonj
+    [HOME] => /Users/jasonj
+    [HTTP_COOKIE] => wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_b6da51745830b24f1314a3dd3a316cfd=jasonj7C15566884747CCF1i2NxpppWtuDU5JppnzfTJpbP4geJnF8d034pJ43F7C486348a7f3b7eb981460fe9d453060b81bbc23291e37a1786a7cd52f9154578f; wp-settings-time-1=1555579290; wp-settings-1=mfold3Do26libraryContent3Dbrowse26unfold3D1; io=DtTDPPFhuvnO3FSrAADR
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br
+    [HTTP_ACCEPT] => */*
+    [HTTP_CONTENT_TYPE] => application/json
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+    [HTTP_ORIGIN] => chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_CONTENT_LENGTH] => 3
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_HOST] => wp.localhost
+    [REDIRECT_STATUS] => 200
+    [SERVER_NAME] => _
+    [SERVER_PORT] => 80
+    [SERVER_ADDR] => 127.0.0.1
+    [REMOTE_PORT] => 51799
+    [REMOTE_ADDR] => 127.0.0.1
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [REQUEST_SCHEME] => http
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [DOCUMENT_ROOT] => /Users/jasonj/Sites/wp
+    [DOCUMENT_URI] => /index.php
+    [SCRIPT_NAME] => /index.php
+    [CONTENT_LENGTH] => 3
+    [CONTENT_TYPE] => application/json
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => rest_route=/nucssa-core/v1/ldap-config
+    [SCRIPT_FILENAME] => /Users/jasonj/Sites/wp/index.php
+    [FCGI_ROLE] => RESPONDER
+    [PHP_SELF] => /index.php
+    [REQUEST_TIME_FLOAT] => 1555730489.9454
+    [REQUEST_TIME] => 1555730489
+)
+
+2019-04-20 03:24:47 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:24:47 | HEAD: Array
+(
+    [Cookie] => wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_b6da51745830b24f1314a3dd3a316cfd=jasonj7C15566884747CCF1i2NxpppWtuDU5JppnzfTJpbP4geJnF8d034pJ43F7C486348a7f3b7eb981460fe9d453060b81bbc23291e37a1786a7cd52f9154578f; wp-settings-time-1=1555579290; wp-settings-1=mfold3Do26libraryContent3Dbrowse26unfold3D1; io=DtTDPPFhuvnO3FSrAADR
+    [Accept-Language] => en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6
+    [Accept-Encoding] => gzip, deflate, br
+    [Accept] => */*
+    [Content-Type] => application/json
+    [User-Agent] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+    [Origin] => chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff
+    [Cache-Control] => no-cache
+    [Content-Length] => 3
+    [Connection] => keep-alive
+    [Host] => wp.localhost
+)
+
+2019-04-20 03:25:20 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:25:20 | HEAD: Array
+(
+    [Cookie] => wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_b6da51745830b24f1314a3dd3a316cfd=jasonj7C15566884747CCF1i2NxpppWtuDU5JppnzfTJpbP4geJnF8d034pJ43F7C486348a7f3b7eb981460fe9d453060b81bbc23291e37a1786a7cd52f9154578f; wp-settings-time-1=1555579290; wp-settings-1=mfold3Do26libraryContent3Dbrowse26unfold3D1; io=DtTDPPFhuvnO3FSrAADR
+    [Accept-Language] => en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6
+    [Accept-Encoding] => gzip, deflate, br
+    [Accept] => */*
+    [Content-Type] => application/json
+    [User-Agent] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+    [Test] => test
+    [Origin] => chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff
+    [Cache-Control] => no-cache
+    [Content-Length] => 3
+    [Connection] => keep-alive
+    [Host] => wp.localhost
+)
+
+2019-04-20 03:25:45 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+)
+
+2019-04-20 03:25:45 | HEAD: Array
+(
+    [SERVER_SOFTWARE] => nginx/1.15.9
+    [REQUEST_URI] => /wp-json/nucssa-core/v1/ldap-config
+    [USER] => jasonj
+    [HOME] => /Users/jasonj
+    [HTTP_COOKIE] => wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_b6da51745830b24f1314a3dd3a316cfd=jasonj7C15566884747CCF1i2NxpppWtuDU5JppnzfTJpbP4geJnF8d034pJ43F7C486348a7f3b7eb981460fe9d453060b81bbc23291e37a1786a7cd52f9154578f; wp-settings-time-1=1555579290; wp-settings-1=mfold3Do26libraryContent3Dbrowse26unfold3D1; io=DtTDPPFhuvnO3FSrAADR
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br
+    [HTTP_ACCEPT] => */*
+    [HTTP_CONTENT_TYPE] => application/json
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+    [HTTP_TEST] => test
+    [HTTP_ORIGIN] => chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_CONTENT_LENGTH] => 3
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_HOST] => wp.localhost
+    [REDIRECT_STATUS] => 200
+    [SERVER_NAME] => _
+    [SERVER_PORT] => 80
+    [SERVER_ADDR] => 127.0.0.1
+    [REMOTE_PORT] => 51849
+    [REMOTE_ADDR] => 127.0.0.1
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [REQUEST_SCHEME] => http
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [DOCUMENT_ROOT] => /Users/jasonj/Sites/wp
+    [DOCUMENT_URI] => /index.php
+    [SCRIPT_NAME] => /index.php
+    [CONTENT_LENGTH] => 3
+    [CONTENT_TYPE] => application/json
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => rest_route=/nucssa-core/v1/ldap-config
+    [SCRIPT_FILENAME] => /Users/jasonj/Sites/wp/index.php
+    [FCGI_ROLE] => RESPONDER
+    [PHP_SELF] => /index.php
+    [REQUEST_TIME_FLOAT] => 1555730745.0261
+    [REQUEST_TIME] => 1555730745
+)
+
+2019-04-20 03:30:59 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+    [data] => Array
+        (
+            [0] => Array
+                (
+                    [ldap_server] => Array
+                        (
+                            [host] => wiki.nucssa.org
+                            [port] => 123
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [ldap_schema] => Array
+                        (
+                            [basedn] => cn=users
+                        )
+
+                )
+
+        )
+
+)
+
+2019-04-20 03:30:59 | HEAD: Array
+(
+    [SERVER_SOFTWARE] => nginx/1.15.9
+    [REQUEST_URI] => /wp-json/nucssa-core/v1/ldap-config
+    [USER] => jasonj
+    [HOME] => /Users/jasonj
+    [HTTP_COOKIE] => wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_b6da51745830b24f1314a3dd3a316cfd=jasonj7C15566884747CCF1i2NxpppWtuDU5JppnzfTJpbP4geJnF8d034pJ43F7C486348a7f3b7eb981460fe9d453060b81bbc23291e37a1786a7cd52f9154578f; wp-settings-time-1=1555579290; wp-settings-1=mfold3Do26libraryContent3Dbrowse26unfold3D1; io=DtTDPPFhuvnO3FSrAADR
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br
+    [HTTP_ACCEPT] => */*
+    [HTTP_CONTENT_TYPE] => application/json
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36
+    [HTTP_TEST] => test
+    [HTTP_ORIGIN] => chrome-extension://coohjcphdfgbiolnekdpbcijmhambjff
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_CONTENT_LENGTH] => 156
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_HOST] => wp.localhost
+    [REDIRECT_STATUS] => 200
+    [SERVER_NAME] => _
+    [SERVER_PORT] => 80
+    [SERVER_ADDR] => 127.0.0.1
+    [REMOTE_PORT] => 51916
+    [REMOTE_ADDR] => 127.0.0.1
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [REQUEST_SCHEME] => http
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [DOCUMENT_ROOT] => /Users/jasonj/Sites/wp
+    [DOCUMENT_URI] => /index.php
+    [SCRIPT_NAME] => /index.php
+    [CONTENT_LENGTH] => 156
+    [CONTENT_TYPE] => application/json
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => rest_route=/nucssa-core/v1/ldap-config
+    [SCRIPT_FILENAME] => /Users/jasonj/Sites/wp/index.php
+    [FCGI_ROLE] => RESPONDER
+    [PHP_SELF] => /index.php
+    [REQUEST_TIME_FLOAT] => 1555731058.7696
+    [REQUEST_TIME] => 1555731058
+)
+
+2019-04-20 03:31:10 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+    [data] => Array
+        (
+            [0] => Array
+                (
+                    [ldap_server] => Array
+                        (
+                            [host] => wiki.nucssa.org
+                            [port] => 123
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [ldap_schema] => Array
+                        (
+                            [basedn] => cn=users
+                        )
+
+                )
+
+        )
+
+)
+
+2019-04-20 03:33:14 | post params: Array
+(
+    [rest_route] => /nucssa-core/v1/ldap-config
+    [data] => Array
+        (
+            [ldap_server] => Array
+                (
+                    [host] => wiki.nucssa.org
+                    [port] => 123
+                )
+
+            [ldap_schema] => Array
+                (
+                    [basedn] => cn=users
+                )
+
+        )
+
+)
+
+2019-04-20 03:36:15 | server: Array
+(
+    [host] => wiki.nucssa.org
+    [port] => 123
+)
+
+2019-04-20 03:37:03 | server: Array
+(
+    [host] => wiki.nucssa.org
+    [port] => 123
+)
+
+2019-04-20 03:38:01 | server: 
+2019-04-20 03:38:17 | server: Array
+(
+    [host] => wiki.nucssa.org
+    [port] => 123
+)
+
+2019-04-20 03:52:48 | success : 
+2019-04-20 03:53:12 | success : 1
+2019-04-20 03:53:22 | success : 
+2019-04-20 03:56:17 | success : 1
+2019-04-20 03:56:35 | success : 1
+2019-04-20 03:56:47 | success : 
+2019-04-20 03:57:10 | server: 
+2019-04-20 03:57:10 | success : 
+2019-04-20 03:58:03 | server: Array
+(
+    [host] => wiki.nucssa.org
+    [port] => 123
+)
+
+2019-04-20 03:58:03 | success : 1
