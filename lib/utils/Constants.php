@@ -9,6 +9,7 @@ class Constants
    * List of all constants
    */
   public $plugin_dir_url;
+  public $plugin_dir_path;
 
 
   public static function singleton()
@@ -21,5 +22,6 @@ class Constants
   private function __construct()
   {
     $this->plugin_dir_url = \plugin_dir_url(dirname(dirname(__FILE__)));
+    $this->plugin_dir_path = \plugin_dir_path(dirname(dirname(__FILE__)));
   }
 }

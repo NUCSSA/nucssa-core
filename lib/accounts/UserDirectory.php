@@ -6,6 +6,7 @@
 namespace NUCSSACore\Accounts;
 
 use NUCSSACore\config\LDAP_Config;
+use NUCSSACore\Utils\Logger;
 
 class UserDirectory {
   private static $_instance = null;
@@ -36,6 +37,14 @@ class UserDirectory {
     $port   = LDAP_Config::$SERVER["PORT"];
     $this->base_dn = LDAP_Config::$LDAP_SCHEMA["BASE_DN"];
     $this->conn = ldap_connect($host, $port);
+  }
+
+  /**
+   * @return bool
+   */
+  public function testConnection()
+  {
+    return $this->bindWPUser();
   }
 
   /**
@@ -207,8 +216,9 @@ class UserDirectory {
       $wp_dn  = LDAP_Config::$SERVER["USERNAME"];
       $wp_pw  = LDAP_Config::$SERVER["PASSWORD"];
 
-      $success = ldap_bind($this->conn, $wp_dn, $wp_pw);
+      $success = @ldap_bind($this->conn, $wp_dn, $wp_pw);
       $this->isBind = $success;
+      Logger::singleton()->log_action(">>> ldap error", \ldap_error($this->conn));
       return $success;
     }
     return true;
