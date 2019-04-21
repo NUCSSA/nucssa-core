@@ -3,6 +3,7 @@ use NUCSSACore\Accounts\Accounts;
 use NUCSSACore\Hooks\AdminScripts;
 use NUCSSACore\Utils\Logger;
 use NUCSSACore\REST\AdminRESTAPI;
+use NUCSSACore\Admin\CronSchedules;
 
 /**
  * Plugin Name:     NUCSSA Core Plugin
@@ -27,12 +28,14 @@ include_once __DIR__ . '/vendor/autoload.php';
 // $directory = UserDirectory::instance();
 // $directory->getUserGroups('jilu');
 // $directory->getGroupMembers('IT部门');
-NUCSSACore\Hooks\Install::init();
-register_activation_hook(__FILE__, 'NUCSSACore\Hooks\Install::init');
+// NUCSSACore\Hooks\Activation::init();
 
 /**
  * Required
  */
+register_activation_hook(__FILE__, ['NUCSSACore\Hooks\Activation', 'init']); // can only call static method this way
+register_deactivation_hook(__FILE__, ['NUCSSACore\Hooks\Deactivation', 'init']);
 new NUCSSACore\Admin\MenuPage\TopLevelMenuPage();
 new AdminScripts();
 new AdminRESTAPI();
+(new CronSchedules())->addCronInterval();
