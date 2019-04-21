@@ -12,10 +12,9 @@ class UserDirectory {
   private static $_instance = null;
 
   private $conn;
-  private $base_dn;
+  private $server, $schema, $user_schema, $group_schema, $membership_schema;
 
   private $isBind = false;  // cache for binding status
-  private $userInfo = null; // cache for user info
 
   /**
    * The designated initializer
@@ -33,10 +32,8 @@ class UserDirectory {
    * Initialize connection to LDAP server
    */
   private function __construct(){
-    $host   = LDAP_Config::$SERVER["HOST"];
-    $port   = LDAP_Config::$SERVER["PORT"];
-    $this->base_dn = LDAP_Config::$LDAP_SCHEMA["BASE_DN"];
-    $this->conn = ldap_connect($host, $port);
+    $this->loadConfig();
+    $this->conn = ldap_connect($this->server['host'], $this->server['port']);
   }
 
   /**
@@ -57,9 +54,9 @@ class UserDirectory {
     // report if connection is invalid
     $this->checkConn();
 
-    $user_attrib = LDAP_Config::$USER_SCHEMA['USERNAME_ATTRIBUTE'];
-    $additional_user_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_USER_DN"];
-    $user_dn = "{$user_attrib}=$username,$additional_user_dn,{$this->base_dn}";
+    $user_attrib = $this->user_schema['username_attribute'];
+    $additional_user_dn = $this->schema['additional_user_dn'];
+    $user_dn = "{$user_attrib}=$username,$additional_user_dn,{$this->schema['base_dn']}";
     return ldap_bind($this->conn, $user_dn, $password);
   }
 
@@ -71,10 +68,10 @@ class UserDirectory {
 
     $this->bindWPUser() or die("Could not bind to LDAP");
 
-    $user_attrib = LDAP_Config::$USER_SCHEMA['USERNAME_ATTRIBUTE'];
-    $additional_user_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_USER_DN"];
-    $user_membership_attrib = LDAP_Config:: $MEMBERSHIP_SCHEMA[ "USER_MEMBERSHIP_ATTRIBUTE"];
-    $res = ldap_search($this->conn, "{$additional_user_dn},{$this->base_dn}", "({$user_attrib}={$username})", [ $user_membership_attrib]);
+    $user_attrib = $this->user_schema['username_attribute'];
+    $additional_user_dn = $this->schema['additional_user_dn'];
+    $user_membership_attrib = $this->membership_schema['user_membership_attribute'];
+    $res = ldap_search($this->conn, "{$additional_user_dn},{$this->schema['base_dn']}", "({$user_attrib}={$username})", [$user_membership_attrib]);
     $entries = ldap_get_entries($this->conn, $res);
 
     // No information found, bad user
@@ -90,14 +87,14 @@ class UserDirectory {
   public function getGroupMembers(string $groupname) {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
-    $name_attrib = LDAP_Config::$GROUP_SCHEMA[ 'NAME_ATTRIBUTE'];
-    $group_members_attrib = LDAP_Config::$MEMBERSHIP_SCHEMA[ "GROUP_MEMBERS_ATTRIBUTE"];
-    $additional_group_dn = LDAP_Config::$LDAP_SCHEMA[ "ADDITIONAL_GROUP_DN"];
+    $name_attrib = $this->group_schema['name_attribute'];
+    $group_members_attrib = $this->membership_schema["group_membership_attribute"];
+    $additional_group_dn = $this->schema["additional_group_dn"];
 
-    $base_dn = "{$additional_group_dn},{$this->base_dn}";
+    $base_dn = "{$additional_group_dn},{$this->schema['base_dn']}";
     $filter = "({$name_attrib}={$groupname})";
 
-    $res = ldap_search($this->conn, $base_dn, $filter, [ $group_members_attrib]);
+    $res = ldap_search($this->conn, $base_dn, $filter, [$group_members_attrib]);
     $entries = ldap_get_entries($this->conn, $res);
 
     // No information found, bad user
@@ -129,15 +126,15 @@ class UserDirectory {
      * columns: uid, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
      */
     $users = [];
-    $base_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_USER_DN"] . "," . $this->base_dn;
-    $filter = LDAP_Config::$USER_SCHEMA["OBJ_FILTER"];
+    $base_dn = $this->schema['additional_user_dn'] . "," . $this->schema['base_dn'];
+    $filter = $this->user_schema['object_filter'];
     $atts = array(
-      LDAP_Config::$USER_SCHEMA["USERNAME_ATTRIBUTE"],
-      LDAP_Config::$USER_SCHEMA["FIRST_NAME_ATTRIBUTE"],
-      LDAP_Config::$USER_SCHEMA["LAST_NAME_ATTRIBUTE"],
-      LDAP_Config::$USER_SCHEMA["DISPLAY_NAME_ATTRIBUTE"],
-      LDAP_Config::$USER_SCHEMA["EMAIL_ATTRIBUTE"],
-      LDAP_Config::$USER_SCHEMA["USER_ID_ATTRIBUTE"],
+      $this->user_schema['username_attribute'],
+      $this->user_schema['firstname_attribute'],
+      $this->user_schema['lastname_attribute'],
+      $this->user_schema['display_name_attribute'],
+      $this->user_schema['email_attribute'],
+      $this->user_schema['user_id_attribute'],
     );
     $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
     $entries = ldap_get_entries($this->conn, $res);
@@ -172,13 +169,13 @@ class UserDirectory {
      * columns: cn, description, gidNumber, uniqueMember (used for identifying group across name changes)
      */
     $groups = [];
-    $base_dn = LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_GROUP_DN"] . "," . $this->base_dn;
-    $filter = LDAP_Config::$GROUP_SCHEMA["OBJ_FILTER"];
+    $base_dn = $this->schema["additional_group_dn"] . "," . $this->schema['base_dn'];
+    $filter = $this->group_schema['object_filter'];
     $atts = array(
-      LDAP_Config::$GROUP_SCHEMA["NAME_ATTRIBUTE"],
-      LDAP_Config::$GROUP_SCHEMA["DESCRIPTION_ATTRIBUTE"],
-      LDAP_Config::$GROUP_SCHEMA["GROUP_ID_ATTRIBUTE"],
-      LDAP_Config::$MEMBERSHIP_SCHEMA["GROUP_MEMBERS_ATTRIBUTE"],
+      $this->group_schema['name_attribute'],
+      $this->group_schema['description_attribute'],
+      $this->group_schema['group_id_attribute'],
+      $this->membership_schema['group_membership_attribute'],
     );
     $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
     $entries = ldap_get_entries($this->conn, $res);
@@ -213,12 +210,12 @@ class UserDirectory {
     $this->checkConn();
 
     if (!$this->isBind) {
-      $wp_dn  = LDAP_Config::$SERVER["USERNAME"];
-      $wp_pw  = LDAP_Config::$SERVER["PASSWORD"];
+      $wp_dn  = $this->server['username'];
+      $wp_pw  = $this->server['password'];
 
       $success = @ldap_bind($this->conn, $wp_dn, $wp_pw);
       $this->isBind = $success;
-      Logger::singleton()->log_action(">>> ldap error", \ldap_error($this->conn));
+      Logger::singleton()->log_action(">>> ldap status", \ldap_error($this->conn));
       return $success;
     }
     return true;
@@ -232,5 +229,24 @@ class UserDirectory {
     if (!$this->conn) {
       die("Error connecting to LDAP server.");
     }
+  }
+
+  /**
+   * Load configurations from DB
+   */
+  private function loadConfig(){
+    $option_keys = [
+      'server' => 'nucssa-core.ldap.server',
+      'schema' => 'nucssa-core.ldap.schema',
+      'user_schema' => 'nucssa-core.ldap.user_schema',
+      'group_schema' => 'nucssa-core.ldap.group_schema',
+      'membership_schema' => 'nucssa-core.ldap.membership_schema',
+    ];
+
+    $this->server             = get_option($option_keys['server'], []);
+    $this->schema             = get_option($option_keys['schema'], []);
+    $this->user_schema        = get_option($option_keys['user_schema'], []);
+    $this->group_schema       = get_option($option_keys['group_schema'], []);
+    $this->membership_schema  = get_option($option_keys['membership_schema'], []);
   }
 }
