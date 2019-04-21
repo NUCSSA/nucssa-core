@@ -1,0 +1,199 @@
+// User Directory Sub Page
+.server-table-container,
+.section-container:first-of-type {
+  margin-top: 20px;
+}
+.section-container {
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 4%) 0 2px 6px;
+  padding: 20px;
+  margin-bottom: 20px;
+  // margin-right: 20px;
+
+  .section-title {
+    color: #4D4F5C;
+    font-size: 18px;
+    margin-bottom: 25px;
+  }
+  .section-fields {
+    font-size: 15px;
+    label + label {
+      margin-top: 15px;
+    }
+    label {
+      display: block;
+      min-height: 2rem;
+      span.att-name {
+        display: inline-block;
+
+        @include md {
+          width: 30%;
+          min-width: 250px;
+          max-width: 400px;
+        }
+      }
+
+      input.att-value {
+        border: none;
+        border-bottom: 2px solid #e9e9f0;
+        box-shadow: none;
+
+        &:hover {
+          border-bottom: 3px solid #43425D;
+        }
+        &:focus {
+          border-bottom: 3px solid $highlight;
+          caret-color: $highlight;
+        }
+
+        width: 100%;
+
+        @include md {
+          width: 50%;
+          max-width: 500px;
+        }
+      }
+
+    }
+  }
+}
+
+.btns-container{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+
+  input[type="button"][value="Cancel"],
+  input[type="submit"] {
+    color: #fff;
+    border-radius: 6px;
+    padding: 10px 70px;
+    font-size: larger;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  input[type="submit"] {
+    background: $highlight;
+  }
+  input[type="button"][value="Cancel"] {
+    background: $nucssa-light-red;
+  }
+}
+
+.server-table-container {
+  text-align: center;
+  .instruction {
+    text-align: center;
+
+    &::before{
+      content: "^_^";
+      display: inline-block;
+      margin-right: 5px;
+      color: white;
+      background: $nucssa-light-red;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      line-height: 2rem;
+      font-size: small;
+      text-align: center;
+    }
+
+    &::after{
+      content: '';
+      display: block;
+      border: solid lightgray 1px;
+      height: 1px;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+  }
+  table{
+    display: inline-block;
+    text-align: center;
+
+    th:first-of-type {
+      min-width: 10rem;
+    }
+
+    td.actions{
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .btn-spinner-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .btn {
+        color: #fff;
+        border-radius: 6px;
+        padding: 5px 20px;
+        margin: 5px 5px;
+        height: 2rem;
+
+        &:hover {cursor: pointer;}
+        &:focus {box-shadow: none; outline: none;}
+      }
+      .btn.btn-edit {background: $nucssa-light-red;}
+      .btn.btn-test {background: $highlight; width: 9rem;}
+      .btn.btn-sync {background: #98C379; width: 7rem;}
+    }
+
+    .nucssa-spinner {
+      position: absolute;
+      display: none;
+      width: 45px;
+      justify-content: space-between;
+      align-items: center;
+
+      &.active {
+        display: flex;
+      }
+    }
+
+    // CSS loading spinner animation snippet from http://tobiasahlin.com/spinkit/.
+    .nucssa-spinner.active > div {
+      width: 10px;
+      height: 10px;
+      background-color:#fff; // #333;
+
+      border-radius: 50%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .nucssa-spinner.active .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .nucssa-spinner.active .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    @-webkit-keyframes sk-bouncedelay {
+      0%, 80%, 100% { -webkit-transform: scale(0) }
+      40% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      } 40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+      }
+    }
+
+  }
+}

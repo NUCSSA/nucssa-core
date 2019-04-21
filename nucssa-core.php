@@ -28,7 +28,6 @@ include_once __DIR__ . '/vendor/autoload.php';
 // $directory->getUserGroups('jilu');
 // $directory->getGroupMembers('IT部门');
 NUCSSACore\Hooks\Install::init();
-(new Accounts())->syncFromDirectory();
 register_activation_hook(__FILE__, 'NUCSSACore\Hooks\Install::init');
 
 /**

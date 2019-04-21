@@ -6,3 +6,4 @@ node_modules
 .gitsecret/keys/random_seed
 config/ldap.php
 public
+log.txt

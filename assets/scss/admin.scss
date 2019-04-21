@@ -1,5 +1,26 @@
-
+// Variables
+@import 'variables';
+// Mixin
+@import 'mixins';
 // Fonts
-@import 'fonts';
+@import 'icomoon-fonts';
+@import 'SourceSansPro-fonts';
+
+* {
+  box-sizing: border-box;
+}
+
 // Admin Memu
 @import 'admin-menu';
+// Bootstrap grid
+// @import '../../node_modules/bootstrap-4-grid/scss/grid.scss';
+
+@import './users-and-groups-page';
+
+@import './footer';
+
+/**
+ * Fixing default styling
+ */
+#wpcontent { padding-left: 0 !important; }
+#wpbody-content {padding-bottom: 0;}
