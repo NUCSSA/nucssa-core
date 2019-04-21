@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ldapConfigRestURL, nonce } from './constants';
+import { ldapConfigRestURL, permissionsRestURL, nonce } from "./constants";
 
 const config = { 'headers': { 'X-WP-Nonce': nonce } };
 
@@ -35,11 +35,27 @@ export async function syncLdap() {
 }
 
 export async function testLdapConnection() {
-  return await axios.post(ldapConfigRestURL, {command: 'test_connection'}, config)
-      .then( (resp) => {
-        return resp.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  return await axios
+    .post(ldapConfigRestURL, {command: 'test_connection'}, config)
+    .then( (resp) => {
+      return resp.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export async function searchUserGroups(keyword){
+  const payload = {
+    command: 'search',
+    data: keyword
+  };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }

@@ -5,14 +5,13 @@
  */
 namespace NUCSSACore\Accounts;
 
-use NUCSSACore\config\LDAP_Config;
 use NUCSSACore\Utils\Logger;
 
 class UserDirectory {
   private static $_instance = null;
 
   private $conn;
-  private $server, $schema, $user_schema, $group_schema, $membership_schema;
+  public $server, $schema, $user_schema, $group_schema, $membership_schema;
 
   private $isBind = false;  // cache for binding status
 
