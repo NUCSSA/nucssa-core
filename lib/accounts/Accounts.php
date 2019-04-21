@@ -5,7 +5,7 @@
  */
 namespace NUCSSACore\Accounts;
 use NUCSSACore\Accounts\UserDirectory;
-use NUCSSACore\config\LDAP_Config;
+use NUCSSACore\Utils\Logger;
 
 class Accounts {
   public function construct(){
@@ -23,19 +23,30 @@ class Accounts {
   }
 
   /**
+   * Search users and groups with given $keyword
+   *
+   * @param String $keyword
+   * @return Array array(users => [], groups => [])
+   */
+  public function findUserOrGroup($keyword){
+
+  }
+
+  /**
    * Users
    * columns: uid, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
    */
   private function syncUsers($usersFromDirectory){
     global $wpdb;
+    $directory = UserDirectory::singleton();
 
     $table_name = "nucssa_user";
 
     /***** First remove deleted users from db *****/
     $uidNumbers_in_db = $wpdb->get_col("SELECT external_id FROM $table_name");
     $uidNumbers_in_directory = array_map(
-      function ($user) {
-        return $user[LDAP_Config::$USER_SCHEMA["USER_ID_ATTRIBUTE"]];
+      function ($user) use ($directory) {
+        return $user[$directory->user_schema['user_id_attribute']];
       },
       $usersFromDirectory
     );
@@ -51,13 +62,13 @@ class Accounts {
     $values_string = implode(
       ",",
       array_map(
-        function ($user) {
-          return "(" . '"' . $user[LDAP_Config::$USER_SCHEMA["USERNAME_ATTRIBUTE"]] . '"' . ","
-            . '"' . $user[LDAP_Config::$USER_SCHEMA["FIRST_NAME_ATTRIBUTE"]] . '"' . ","
-            . '"' . $user[LDAP_Config::$USER_SCHEMA["LAST_NAME_ATTRIBUTE"]] . '"' . ","
-            . '"' . $user[LDAP_Config::$USER_SCHEMA["DISPLAY_NAME_ATTRIBUTE"]] . '"' . ","
-            . '"' . $user[LDAP_Config::$USER_SCHEMA["EMAIL_ATTRIBUTE"]] . '"' . ","
-            . '"' . $user[LDAP_Config::$USER_SCHEMA["USER_ID_ATTRIBUTE"]] . '"' .
+        function ($user) use ($directory) {
+          return "(" . '"' . $user[$directory->user_schema["username_attribute"]] . '"' . ","
+            . '"' . $user[$directory->user_schema["firstname_attribute"]] . '"' . ","
+            . '"' . $user[$directory->user_schema["lastname_attribute"]] . '"' . ","
+            . '"' . $user[$directory->user_schema["display_name_attribute"]] . '"' . ","
+            . '"' . $user[$directory->user_schema["email_attribute"]] . '"' . ","
+            . '"' . $user[$directory->user_schema["user_id_attribute"]] . '"' .
             ")";
         },
         $usersFromDirectory
@@ -84,12 +95,13 @@ class Accounts {
     global $wpdb;
 
     $table_name = "nucssa_group";
+    $directory = UserDirectory::singleton();
 
     /***** First remove deleted groups from db *****/
     $gidNumbers_in_db = $wpdb->get_col("SELECT external_id FROM $table_name");
     $gidNumbers_in_directory = array_map(
-      function ($group) {
-        return $group[LDAP_Config::$GROUP_SCHEMA["GROUP_ID_ATTRIBUTE"]];
+      function ($group) use ($directory) {
+        return $group[$directory->group_schema["group_id_attribute"]];
       },
       $groupsFromDirectory
     );
@@ -105,10 +117,10 @@ class Accounts {
     $values_string = implode(
       ",",
       array_map(
-        function ($group) {
-          return "(" . '"' . $group[LDAP_Config::$GROUP_SCHEMA["NAME_ATTRIBUTE"]] . '"' . ","
-            . '"' . $group[LDAP_Config::$GROUP_SCHEMA["DESCRIPTION_ATTRIBUTE"]] . '"' . ","
-            . '"' . $group[LDAP_Config::$GROUP_SCHEMA["GROUP_ID_ATTRIBUTE"]] . '"' .
+        function ($group) use ($directory) {
+          return "(" . '"' . $group[$directory->group_schema["name_attribute"]] . '"' . ","
+            . '"' . $group[$directory->group_schema["description_attribute"]] . '"' . ","
+            . '"' . $group[$directory->group_schema["group_id_attribute"]] . '"' .
             ")";
         },
         $groupsFromDirectory
@@ -136,6 +148,8 @@ class Accounts {
    */
   private function syncMembership($groups){
     global $wpdb;
+    $directory = UserDirectory::singleton();
+
     $user_table_name = "nucssa_user";
     $group_table_name = "nucssa_group";
     $group_table_name = "nucssa_group";
@@ -143,10 +157,10 @@ class Accounts {
     $touchedRecords = [];
     /***** First update memberships in db and track touched records by ID *****/
     foreach($groups as $group){
-      $memberDNs = $group[LDAP_Config::$MEMBERSHIP_SCHEMA["GROUP_MEMBERS_ATTRIBUTE"]];
+      $memberDNs = $group[$directory->membership_schema["group_membership_attribute"]];
       if ($memberDNs === NULL) continue; // skip if NULL
       $memberDNs = ("string" == gettype($memberDNs)) ? [$memberDNs] : $memberDNs;
-      $gidNumber = $group[LDAP_Config::$GROUP_SCHEMA["GROUP_ID_ATTRIBUTE"]];
+      $gidNumber = $group[$directory->group_schema["group_id_attribute"]];
       $parent_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE external_id = {$gidNumber}");
 
       foreach($memberDNs as $memberDN){
@@ -192,13 +206,15 @@ class Accounts {
    * @return array("type" => , "name" => )
    */
   private function getMemberTypeAndName(string $memberDN){
+    $directory = UserDirectory::singleton();
+
     $firstPart = explode(',', $memberDN)[0];
-    if (strpos($memberDN, LDAP_Config::$LDAP_SCHEMA["ADDITIONAL_USER_DN"]) !== false) {
+    if (strpos($memberDN, $directory->schema["additional_user_dn"]) !== false) {
       $type = "user";
-      $name = substr($firstPart, strlen(LDAP_Config::$USER_SCHEMA["USERNAME_ATTRIBUTE"] . "="));
+      $name = substr($firstPart, strlen($directory->user_schema["username_attribute"] . "="));
     } else {
       $type = "group";
-      $name = substr($firstPart, strlen(LDAP_Config::$GROUP_SCHEMA["NAME_ATTRIBUTE"] . "="));
+      $name = substr($firstPart, strlen($directory->group_schema["name_attribute"] . "="));
     }
 
     return array(

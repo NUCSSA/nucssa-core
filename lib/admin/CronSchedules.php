@@ -49,6 +49,7 @@ class CronSchedules {
   }
 
   private function tenMinuteCronTasks(){
+    Logger::singleton()->log_action('running Cron Task');
     (new Accounts())->syncFromDirectory();
   }
 }

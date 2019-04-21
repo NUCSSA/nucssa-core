@@ -14,13 +14,20 @@ class AdminRESTAPI
   public function __construct()
   {
     add_action('rest_api_init', function(){
-      // adding '/nucssa-core/v1/ldap-config' path
-      // GET & POST
-      $this->ldapConfig();
+      // GET & POST '/nucssa-core/v1/ldap-config'
+      $this->ldapConfigAPI();
+
+      // POST '/nucssa-core/v1/permissions'
+      $this->permissionsAPI();
     });
   }
 
-  private function ldapConfig()
+  public function permissionCheck($request)
+  {
+    return current_user_can('manage_options');
+  }
+
+  private function ldapConfigAPI()
   {
     $rest_namespace = 'nucssa-core/v1';
     $rest_route = 'ldap-config';
@@ -102,7 +109,7 @@ class AdminRESTAPI
 
   private function syncLdap()
   {
-    // Logger::singleton()->log_action('sync ldap ');
+    // Logger::singleton()->log_action('syncLdap called');
     (new Accounts)->syncFromDirectory();
     // process will die if LDAP failed
 
@@ -122,9 +129,57 @@ class AdminRESTAPI
     }
   }
 
-  public function permissionCheck($request)
-  {
-    return current_user_can('manage_options');
+  private function permissionsAPI(){
+    $namespace = 'nucssa-core/v1';
+    $route = 'permissions';
+
+    register_rest_route($namespace, $route, array(
+      [
+        'methods' => 'POST',
+        'callback' => function($request) {
+          $params = $request->get_params();
+          switch ($params['command']) {
+            case 'search':
+              $keyword = $params['data'];
+              // TODO search users and groups for matches
+              /**
+               * 1. log the keyword
+               * 2. search keyword from user table
+               * 3. search keyword from group table
+               * 4. encapsoluate them into an array and return it back
+               */
+              // Logger::singleton()->log_action('search keyword', $keyword);
+              global $wpdb;
+
+              $user_query =
+                "SELECT id, display_name
+                  FROM nucssa_user
+                  WHERE CONCAT_WS('', username, first_name, last_name, display_name) LIKE '%$keyword%';
+                ";
+              $group_query =
+                "SELECT id, group_name
+                  FROM nucssa_group
+                  WHERE CONCAT_WS('', group_name, description) LIKE '%$keyword%';
+                ";
+
+              $users = $wpdb->get_results($user_query);
+              $groups = $wpdb->get_results($group_query);
+
+              $resp = array(
+                'users' => $users,
+                'groups' => $groups
+              );
+              return rest_ensure_response($resp);
+              break;
+
+            default:
+              # code...
+              break;
+          }
+        },
+        'permission_callback' => array($this, 'permissionCheck')
+      ]
+    ));
   }
 
 }
