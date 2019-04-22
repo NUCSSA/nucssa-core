@@ -17,21 +17,11 @@ class TopLevelMenuPage
 
   public function __construct()
   {
-    $this->page = new \NUCSSACore\Admin\MenuPage\UsersAndGroups();
     // create the sidebar menu item
     add_action( 'admin_menu', function(){
       $this->addMenus();
       $this->removeWpFooter();
     } );
-
-    add_action( 'admin_init', function(){
-      // register settings options
-      $this->registerSettings();
-      // add settings
-      $this->addSettings();
-    } );
-
-
   }
 
   private function addMenus()
@@ -44,18 +34,6 @@ class TopLevelMenuPage
   {
     add_filter('update_footer', '__return_empty_string', 11);
     add_filter('admin_footer_text', '__return_empty_string', 11);
-  }
-
-  private function registerSettings()
-  {
-    // register settings for users and groups
-    $this->page->registerSettings();
-  }
-
-  private function addSettings()
-  {
-    // Add Settings and Section
-    $this->page->addSettings();
   }
 
   private function render()
