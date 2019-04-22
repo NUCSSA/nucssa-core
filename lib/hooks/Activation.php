@@ -5,10 +5,18 @@
  */
 namespace NUCSSACore\Hooks;
 
-class Install {
+use NUCSSACore\Admin\CronSchedules;
+use NUCSSACore\Utils\Logger;
+
+class Activation {
   public static function init(){
 
     self::createDBTables();
+    self::scheduleCronTasks();
+  }
+
+  private static function scheduleCronTasks(){
+    (new CronSchedules())->scheduleCron();
   }
 
   private static function createDBTables() {
