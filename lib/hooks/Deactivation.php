@@ -12,9 +12,22 @@ class Deactivation {
 
     // Remove Cron Tasks
     self::removeCronTasks();
+    self::dropDBTables();
   }
 
   private static function removeCronTasks(){
     (new CronSchedules())->unscheduleCron();
+  }
+
+  private static function dropDBTables(){
+    global $wpdb;
+
+    $tables = ['nucssa_user', 'nucssa_group', 'nucssa_membership'];
+
+    $wpdb->query('SET foreign_key_checks = 0;');
+    array_walk($tables, function($table) use ($wpdb){
+      $wpdb->query("DROP TABLE IF EXISTS $table;");
+    });
+    $wpdb->query('SET foreign_key_checks = 1;');
   }
 }
