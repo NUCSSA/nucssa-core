@@ -81,6 +81,7 @@ class SearchDropdown extends Component {
   }
 
   onSelection(match){
+    return;
     const value = this.props.searchFieldValueOnSelection(match);
     this.setState({selfDismissDropdown: true, value});
     this.inputNodeRef.current.blur();
