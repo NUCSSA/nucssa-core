@@ -61,6 +61,40 @@
   }
   .role-entries-subsection {
     border-bottom: 1px solid $divider-thick-light-gray;
+    ul {
+      li { display: flex; align-items: center;
+        .name{
+          min-width: 5rem;
+          width: 40%;
+          max-width: 10rem;
+          display: inline-block;
+        }
+        select{
+          width: 50%;
+          border-radius: 6px;
+          border: 2px solid #EBEDED;
+          height: 2.5rem;
+          color: #A6ADB4;
+          font-size: 13px;
+        }
+        .actions{ display: flex; width: 10%; height: 2.5rem; align-items: center; justify-content: center;
+          button { cursor: pointer;
+            color: white; background-color: $nucssa-light-red;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%; border: none; padding: 0;
+
+            .dashicons{
+              font-size: 0.8rem;
+              font-weight: bold;
+              width: 0.8rem;
+              height: 0.8rem;
+              transform: translateY(0.9px);
+            }
+          }
+        }
+      }
+    }
   }
   .grant-permission-subsection {
     display: flex;

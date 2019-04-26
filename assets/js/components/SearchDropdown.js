@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import './SearchDropdown.scss';
 
 class SearchDropdown extends Component {
   constructor(props) {
     super(props);
     this.state = {
       matches: [],
-      selfDismissDropdown: false
+      selfDismissDropdown: false,
+      value: ''
     };
 
     this.search = this.search.bind(this);
@@ -81,7 +83,6 @@ class SearchDropdown extends Component {
   }
 
   onSelection(match){
-    return;
     const value = this.props.searchFieldValueOnSelection(match);
     this.setState({selfDismissDropdown: true, value});
     this.inputNodeRef.current.blur();

@@ -59,3 +59,59 @@ export async function searchUserGroups(keyword){
       console.log(error);
     });
 }
+
+export async function fetchAvailableRoles(){
+  const payload = {
+    command: 'get_all_roles',
+  };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+/**
+ * @param {String} role role slug
+ * @param {String|Number} id id of the user or group
+ * @param {String} type 'user'|'group'
+ */
+export async function setRoleToUserGroup(role, id, type) {
+  console.log('setting role');
+
+  const payload = {
+    command: 'set_role',
+    data: {type, id, role}
+  };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+/**
+ * @param {String} role role slug
+ * @param {String|Number} id id of the user or group
+ * @param {String} type 'user'|'group'
+ */
+export async function removeRoleFromUserGroup(role, id, type) {
+  const payload = {
+    command: 'remove_role',
+    data: {type, id, role}
+  };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}

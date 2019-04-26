@@ -141,7 +141,6 @@ class AdminRESTAPI
           switch ($params['command']) {
             case 'search':
               $keyword = $params['data'];
-              // TODO search users and groups for matches
               /**
                * 1. log the keyword
                * 2. search keyword from user table
@@ -170,6 +169,29 @@ class AdminRESTAPI
                 'groups' => $groups
               );
               return rest_ensure_response($resp);
+              break;
+
+            case 'get_all_roles':
+              global $wp_roles;
+              $roles = $wp_roles->role_names;
+
+              return rest_ensure_response($roles);
+              break;
+
+            case 'set_role':
+              /**
+               * no need to return
+               */
+              ['type' => $type, 'id' => $id, 'role' => $role] = $params['data'];
+              Logger::singleton()->log_action('set role called', );
+              Logger::singleton()->log_action('type', $type);
+              // TODO: think about how to treat this with your own tables
+              break;
+
+            case 'remove_role':
+              /**
+               * return true on success
+               */
               break;
 
             default:
