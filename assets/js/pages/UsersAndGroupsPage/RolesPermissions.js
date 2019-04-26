@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {searchUserGroups} from '../../utils/api';
+import {
+  searchUserGroups,
+  fetchAvailableRoles,
+  setRoleToUserGroup,
+  removeRoleFromUserGroup
+} from '../../utils/api';
 import SearchDropdown from "../../components/SearchDropdown";
 import PropTypes from "prop-types";
 
@@ -9,15 +14,33 @@ export default class RolesPermissions extends Component {
 
     this.state = {
       roles: [],
-      groupRolePairs: [],
+      userGroupRolePairs: [],
       shouldDropdownShown: false,
     };
 
     this.findUserGroupMatch = this.findUserGroupMatch.bind(this);
     this.renderMatchItem    = this.renderMatchItem.bind(this);
     this.searchFieldValueOnSelection = this.searchFieldValueOnSelection.bind(this);
+    this.roleSelectHtml = this.roleSelectHtml.bind(this);
+    this.setRoleToUserGroup = this.setRoleToUserGroup.bind(this);
+    this.removeRole = this.removeRole.bind(this);
 
     this.searchSelection = null;
+  }
+
+  /**
+   * Fetch all available roles after mount
+   */
+  async componentDidMount(){
+    /**
+     * @var allAvailableRoles
+     * {editor: "Editor", author: "Author", ...}
+     */
+    const allAvailableRoles = await fetchAvailableRoles();
+    const role_slugs = Object.keys(allAvailableRoles);
+    let roles = role_slugs.map((slug) => ({slug, display: allAvailableRoles[slug]}));
+    // TODO: fetch existing userGroup roles pairs in the system
+    this.setState({roles});
   }
 
   /**
@@ -26,7 +49,6 @@ export default class RolesPermissions extends Component {
    * @return {Array} array of matched items
    */
   async findUserGroupMatch(keyword){
-    this.searchSelection = 'test';
     let matches = [];
     if (keyword.length >= 2){
       /**
@@ -48,8 +70,34 @@ export default class RolesPermissions extends Component {
    * Add a new entry for assigning role to given user or group
    * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
    */
-  willGrantPermissionTo(userGroup){
+  addRoleHTMLFor(userGroup){
     console.log(">>>> will grant permission to ", userGroup);
+    const userGroupRolePairs = [...this.state.userGroupRolePairs, {userGroup, role: null}];
+    this.setState({userGroupRolePairs});
+  }
+
+  /**
+   * send API request to add role to selected user or group
+   * @param {String} role_slug
+   * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
+   */
+  setRoleToUserGroup(role_slug, userGroup){
+    setRoleToUserGroup(role_slug, userGroup.id, userGroup.type);
+  }
+
+  /**
+   * send API request to remove role from selected user or group
+   * @param {String} role_slug
+   * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
+   */
+  async removeRole(role_slug, userGroup){
+    const success = await removeRoleFromUserGroup(role_slug, userGroup.id, userGroup.type);
+    if (success){
+      const userGroupRolePairs = this.state.userGroupRolePairs.filter(
+        ({type, id}) => type === userGroup.type && id === userGroup.id
+      );
+      this.setState({userGroupRolePairs})
+    }
   }
 
   /**
@@ -75,6 +123,19 @@ export default class RolesPermissions extends Component {
     } else {
       return selection.group_name;
     }
+  }
+
+  roleSelectHtml(userGroup, role){
+    return (
+      <select defaultValue={role || 'null'} onChange={e => this.setRoleToUserGroup(e.currentTarget.value, userGroup)}>
+        <option value="null">---</option>
+        {
+          this.state.roles.map(
+            ({slug, display}) => <option key={slug} value={slug}>{display}</option>
+          )
+        }
+      </select>
+    );
   }
 
   renderPageInstructionSection(){
@@ -213,7 +274,20 @@ export default class RolesPermissions extends Component {
       <div className="section-container">
         <div className="section-title">Edit User/Group Roles</div>
         <div className="role-entries-subsection">
-          {}
+          <ul>
+            {
+              this.state.userGroupRolePairs.map(
+                ({userGroup, role}) => {
+                  const label = userGroup.type === 'user' ? userGroup.display_name : userGroup.group_name;
+                  return <li key={userGroup.type+userGroup.id}>
+                    <span className="name">{label}</span>
+                    {this.roleSelectHtml(userGroup, role)}
+                    <div className="actions"><button className="remove-entry"><i className="dashicons dashicons-no-alt" onClick={() => this.removeRole(role, userGroup)}></i></button></div>
+                  </li>;
+                }
+              )
+            }
+          </ul>
         </div>
         <div className="grant-permission-subsection">
           <span>Grant permission to </span>
@@ -224,7 +298,7 @@ export default class RolesPermissions extends Component {
             noMatchMessage={<React.Fragment><i className="dashicons dashicons-warning"></i> No match found</React.Fragment>}
             searchFieldValueOnSelection={this.searchFieldValueOnSelection}
           />
-          <button className='btn btn-add-grant' onClick={() => this.willGrantPermissionTo(this.searchSelection)}>Add</button>
+          <button className='btn btn-add-grant' onClick={() => this.addRoleHTMLFor(this.searchSelection)}>Add</button>
         </div>
       </div>
     );
