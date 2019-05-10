@@ -45,7 +45,7 @@ export async function testLdapConnection() {
     });
 }
 
-export async function searchUserGroups(keyword){
+export async function searchAccounts(keyword){
   const payload = {
     command: 'search',
     data: keyword
@@ -60,7 +60,7 @@ export async function searchUserGroups(keyword){
     });
 }
 
-export async function fetchAvailableRoles(){
+export async function fetchAllRoles(){
   const payload = {
     command: 'get_all_roles',
   };
@@ -79,12 +79,28 @@ export async function fetchAvailableRoles(){
  * @param {String|Number} id id of the user or group
  * @param {String} type 'user'|'group'
  */
-export async function setRoleToUserGroup(role, id, type) {
+export async function addPerm(role, account_id, account_type) {
   console.log('setting role');
 
   const payload = {
-    command: 'set_role',
-    data: {type, id, role}
+    command: 'add_perm',
+    data: {account_type, account_id, role}
+  };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+export async function updatePerm(role, perm_id) {
+  console.log('update perm');
+
+  const payload = {
+    command: 'update_perm',
+    data: {perm_id, role}
   };
   return await axios
     .post(permissionsRestURL, payload, config)
@@ -101,11 +117,23 @@ export async function setRoleToUserGroup(role, id, type) {
  * @param {String|Number} id id of the user or group
  * @param {String} type 'user'|'group'
  */
-export async function removeRoleFromUserGroup(role, id, type) {
+export async function removeRoleFromAccount(role, id, type) {
   const payload = {
-    command: 'remove_role',
+    command: 'del_perm',
     data: {type, id, role}
   };
+  return await axios
+    .post(permissionsRestURL, payload, config)
+    .then(resp => {
+      return resp.data;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+export async function fetchPerms(){
+  const payload = {command: 'get_all_perms'};
   return await axios
     .post(permissionsRestURL, payload, config)
     .then(resp => {

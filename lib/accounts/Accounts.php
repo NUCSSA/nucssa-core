@@ -33,6 +33,25 @@ class Accounts {
   }
 
   /**
+   * Fetch all perms
+   */
+  public function allPerms(){
+    global $wpdb;
+    $query =
+      "SELECT perm.id as id, role, account_type, u.id as account_id, u.display_name as account_display_name
+        FROM nucssa_perm as perm JOIN nucssa_user as u
+        ON perm.account_type = 'USER' AND u.id = perm.account_id
+        UNION
+        SELECT perm.id as id, role, account_type, g.id as account_id, g.group_name as account_display_name
+        FROM nucssa_perm as perm JOIN nucssa_group as g
+        ON perm.account_type = 'GROUP' AND g.id = perm.account_id;
+      ";
+    $perms = $wpdb->get_results($query);
+
+    return $perms;
+  }
+
+  /**
    * Users
    * columns: uid, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
    */

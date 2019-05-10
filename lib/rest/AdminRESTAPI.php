@@ -8,6 +8,7 @@ namespace NUCSSACore\REST;
 use NUCSSACore\Utils\Logger;
 use NUCSSACore\Accounts\Accounts;
 use NUCSSACore\Accounts\UserDirectory;
+use NUCSSACore\Accounts\Perm;
 
 class AdminRESTAPI
 {
@@ -138,6 +139,7 @@ class AdminRESTAPI
         'methods' => 'POST',
         'callback' => function($request) {
           $params = $request->get_params();
+          global $wpdb;
           switch ($params['command']) {
             case 'search':
               $keyword = $params['data'];
@@ -148,7 +150,6 @@ class AdminRESTAPI
                * 4. encapsoluate them into an array and return it back
                */
               // Logger::singleton()->log_action('search keyword', $keyword);
-              global $wpdb;
 
               $user_query =
                 "SELECT id, display_name
@@ -169,26 +170,39 @@ class AdminRESTAPI
                 'groups' => $groups
               );
               return rest_ensure_response($resp);
-              break;
 
             case 'get_all_roles':
               global $wp_roles;
               $roles = $wp_roles->role_names;
 
               return rest_ensure_response($roles);
-              break;
 
-            case 'set_role':
+            case 'get_all_perms':
+              /**
+               * get existing user/group-role pairs
+               *
+               * [account-role]s (aka. perms) are persisted in nucssa_perm table
+               * @return [
+               *  {id, role, account_type, account_id, account_display_name}
+               * ]
+               */
+              $perms = (new Accounts)->allPerms();
+              return rest_ensure_response($perms);
+
+            case 'add_perm':
               /**
                * no need to return
                */
-              ['type' => $type, 'id' => $id, 'role' => $role] = $params['data'];
+              ['account_type' => $account_type, 'account_id' => $account_id, 'role' => $role] = $params['data'];
               Logger::singleton()->log_action('set role called', );
-              Logger::singleton()->log_action('type', $type);
-              // TODO: think about how to treat this with your own tables
+              Logger::singleton()->log_action('type', $account_type);
+              $perm = Perm::new($role, $account_type, $account_id);
+              $perm->store();
+              return rest_ensure_response($perm->id);
+
               break;
 
-            case 'remove_role':
+            case 'del_perm':
               /**
                * return true on success
                */

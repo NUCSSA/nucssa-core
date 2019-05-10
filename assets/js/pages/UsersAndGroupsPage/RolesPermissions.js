@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {
-  searchUserGroups,
-  fetchAvailableRoles,
-  setRoleToUserGroup,
-  removeRoleFromUserGroup
+  searchAccounts,
+  fetchAllRoles,
+  addPerm,
+  updatePerm,
+  removeRoleFromAccount,
+  fetchPerms
 } from '../../utils/api';
 import SearchDropdown from "../../components/SearchDropdown";
 import PropTypes from "prop-types";
@@ -14,16 +16,16 @@ export default class RolesPermissions extends Component {
 
     this.state = {
       roles: [],
-      userGroupRolePairs: [],
+      perms: [],
       shouldDropdownShown: false,
     };
 
-    this.findUserGroupMatch = this.findUserGroupMatch.bind(this);
+    this.findMatchedAccounts = this.findMatchedAccounts.bind(this);
     this.renderMatchItem    = this.renderMatchItem.bind(this);
     this.searchFieldValueOnSelection = this.searchFieldValueOnSelection.bind(this);
     this.roleSelectHtml = this.roleSelectHtml.bind(this);
-    this.setRoleToUserGroup = this.setRoleToUserGroup.bind(this);
-    this.removeRole = this.removeRole.bind(this);
+    this.setRoleToAccount = this.setRoleToAccount.bind(this);
+    this.removePerm = this.removePerm.bind(this);
 
     this.searchSelection = null;
   }
@@ -36,27 +38,27 @@ export default class RolesPermissions extends Component {
      * @var allAvailableRoles
      * {editor: "Editor", author: "Author", ...}
      */
-    const allAvailableRoles = await fetchAvailableRoles();
+    const allAvailableRoles = await fetchAllRoles();
     const role_slugs = Object.keys(allAvailableRoles);
     let roles = role_slugs.map((slug) => ({slug, display: allAvailableRoles[slug]}));
-    // TODO: fetch existing userGroup roles pairs in the system
-    this.setState({roles});
+    let perms = await fetchPerms();
+    this.setState({roles, perms});
   }
 
   /**
-   * search for users an groups matching the given keyword
+   * search for users and groups matching the given keyword
    * @param {String} keyword
    * @return {Array} array of matched items
    */
-  async findUserGroupMatch(keyword){
+  async findMatchedAccounts(keyword){
     let matches = [];
     if (keyword.length >= 2){
       /**
        * search DB for matching users and groups
        */
-      const {users, groups} = await searchUserGroups(keyword);
-      const user_matches = users.map(user => ({...user, key: user.id, type: 'user'}));
-      const group_matches = groups.map(group=> ({...group, key: group.id, type: 'group'}));
+      const {users, groups} = await searchAccounts(keyword);
+      const user_matches = users.map(user => ({key: user.id + 'USER', account_id: user.id, account_display_name: user.display_name, account_type: 'USER'}));
+      const group_matches = groups.map(group=> ({key: group.id + 'GROUP', account_id: group.id, account_display_name: group.group_name, account_type: 'GROUP'}));
       matches = [...user_matches, ...group_matches];
       // console.log('matches', matches);
       this.setState({shouldDropdownShown: true});
@@ -68,66 +70,80 @@ export default class RolesPermissions extends Component {
 
   /**
    * Add a new entry for assigning role to given user or group
-   * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
+   * @param {Object} account {account_id, account_display_name, key, account_type='USER'|'GROUP'}
    */
-  addRoleHTMLFor(userGroup){
-    console.log(">>>> will grant permission to ", userGroup);
-    const userGroupRolePairs = [...this.state.userGroupRolePairs, {userGroup, role: null}];
-    this.setState({userGroupRolePairs});
+  addPermHTMLFor(account){
+    console.log(">>>> will grant permission to ", account);
+    const perms = [...this.state.perms, {...account, role: null}];
+    this.setState({perms});
   }
 
   /**
    * send API request to add role to selected user or group
    * @param {String} role_slug
-   * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
+   * @param {Object} account {id, account_display_name, key, account_id, account_type='USER'|'GROUP'}
    */
-  setRoleToUserGroup(role_slug, userGroup){
-    setRoleToUserGroup(role_slug, userGroup.id, userGroup.type);
+  async setRoleToAccount(role_slug, {id, account_id, account_type}){
+    if (id){
+
+      console.log('update , id', id, 'account_id', account_id);
+      updatePerm(role_slug, id);
+    } else {
+      console.log('add new');
+      const new_perm_id = await addPerm(role_slug, account_id, account_type);
+      console.log('new_perm_id', new_perm_id);
+      const newPerms = this.state.perms.map((perm) => {
+        if (perm.role === role_slug && perm.account_id === account_id && perm.account_type === account_type) {
+          return {...perm, id: new_perm_id};
+        } else {
+          return perm;
+        }
+      });
+      this.setState({perms: newPerms});
+    }
   }
 
   /**
    * send API request to remove role from selected user or group
    * @param {String} role_slug
-   * @param {Object} userGroup {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
+   * @param {Object} account {id, display_name, key, type='user'} | {id, group_name, key, type='group'}
    */
-  async removeRole(role_slug, userGroup){
-    const success = await removeRoleFromUserGroup(role_slug, userGroup.id, userGroup.type);
+  async removePerm(role_slug, account){
+    const success = await removeRoleFromAccount(role_slug, account.id, account.type);
     if (success){
-      const userGroupRolePairs = this.state.userGroupRolePairs.filter(
-        ({type, id}) => type === userGroup.type && id === userGroup.id
+      const perms = this.state.perms.filter(
+        ({type, id}) => type === account.type && id === account.id
       );
-      this.setState({userGroupRolePairs})
+      this.setState({perms})
     }
   }
 
   /**
-   * @param {Any} item item represents every single individual item of matches returned from `findUserGroupMatch`
+   * @param {Any} item item represents every single individual item of matches returned from `findMatchedAccounts`
    * @return {PropTypes.ReactElementLike}
    */
   renderMatchItem(item){
     console.log("item", item);
-    if (item.type === 'user'){
-      return <span><i className="dashicons dashicons-admin-users"></i>{item.display_name}</span>;
+    let dashicon = null;
+    if (item.account_type === 'USER'){
+      dashicon = 'dashicons-admin-users';
     } else {
-      return <span><i className="dashicons dashicons-groups"></i>{item.group_name}</span>;
+      dashicon = 'dashicons-groups';
     }
+    return (<span><i className={`dashicons ${dashicon}`}></i>{item.account_display_name}</span>);
   }
 
   searchFieldValueOnSelection(selection){
     console.log("selected", selection);
 
     this.searchSelection = selection;
-
-    if (selection.type === 'user'){
-      return selection.display_name;
-    } else {
-      return selection.group_name;
-    }
+    return selection.account_display_name;
   }
 
-  roleSelectHtml(userGroup, role){
+  roleSelectHtml(account, role){
+    console.log('account', account);
     return (
-      <select defaultValue={role || 'null'} onChange={e => this.setRoleToUserGroup(e.currentTarget.value, userGroup)}>
+      <select defaultValue={role || 'null'} onChange={e => this.setRoleToAccount(e.currentTarget.value, account)}>
         <option value="null">---</option>
         {
           this.state.roles.map(
@@ -156,111 +172,40 @@ export default class RolesPermissions extends Component {
               </tr>
               <tr className='subheading'>
                 <th></th>
-                <th>Add</th>
-                <th>Edit Own</th>
-                <th>Edit Others</th>
-                <th>Publish</th>
-
-                <th>Add</th>
-                <th>Edit Own</th>
-                <th>Edit Others</th>
-                <th>Publish</th>
-
-                <th>Add</th>
-                <th>Edit Own</th>
-                <th>Edit Others</th>
-                <th>Send</th>
-
-                <th>Manage Plugins</th>
-                <th>Manage Users</th>
-                <th>Manage Themes</th>
-                <th></th>
+                <th>Add</th><th>Edit Own</th><th>Edit Others</th><th>Publish</th>
+                <th>Add</th><th>Edit Own</th><th>Edit Others</th><th>Publish</th>
+                <th>Add</th><th>Edit Own</th><th>Edit Others</th><th>Send</th>
+                <th>Manage Plugins</th><th>Manage Users</th><th>Manage Themes</th><th></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th>Administrators</th>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td>
               </tr>
               <tr>
                 <th>Editors</th>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{check}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{check}</td><td>{check}</td><td>{check}</td><td>{check}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
               </tr>
               <tr>
                 <th>Authors</th>
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{check}</td>
-                <td>{check}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
+                <td>{check}</td><td>{check}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{check}</td><td>{check}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
               </tr>
               <tr>
                 <th>Subscribers</th>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
-                <td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
+                <td>{uncheck}</td><td>{uncheck}</td><td>{uncheck}</td>
               </tr>
             </tbody>
           </table>
@@ -269,20 +214,24 @@ export default class RolesPermissions extends Component {
     );
   }
 
-  renderRolesEditingSection(){
+  renderPermsEditingSection(){
+    console.log('perms', this.state.perms);
     return (
       <div className="section-container">
         <div className="section-title">Edit User/Group Roles</div>
         <div className="role-entries-subsection">
           <ul>
             {
-              this.state.userGroupRolePairs.map(
-                ({userGroup, role}) => {
-                  const label = userGroup.type === 'user' ? userGroup.display_name : userGroup.group_name;
-                  return <li key={userGroup.type+userGroup.id}>
-                    <span className="name">{label}</span>
-                    {this.roleSelectHtml(userGroup, role)}
-                    <div className="actions"><button className="remove-entry"><i className="dashicons dashicons-no-alt" onClick={() => this.removeRole(role, userGroup)}></i></button></div>
+              this.state.perms.map(
+                (perm) => {
+                  return <li key={perm.account_type + perm.account_id + perm.role}>
+                    <span className="name">{perm.account_display_name}</span>
+                    {this.roleSelectHtml(perm, perm.role)}
+                    <div className="actions">
+                      <button className="remove-entry">
+                        <i className="dashicons dashicons-no-alt" onClick={() => this.removePerm(perm.id)}></i>
+                      </button>
+                    </div>
                   </li>;
                 }
               )
@@ -292,13 +241,13 @@ export default class RolesPermissions extends Component {
         <div className="grant-permission-subsection">
           <span>Grant permission to </span>
           <SearchDropdown
-            search={this.findUserGroupMatch}
+            search={this.findMatchedAccounts}
             renderMatchItem={this.renderMatchItem}
             shouldDropdownShown={this.state.shouldDropdownShown}
             noMatchMessage={<React.Fragment><i className="dashicons dashicons-warning"></i> No match found</React.Fragment>}
             searchFieldValueOnSelection={this.searchFieldValueOnSelection}
           />
-          <button className='btn btn-add-grant' onClick={() => this.addRoleHTMLFor(this.searchSelection)}>Add</button>
+          <button className='btn btn-add-grant' onClick={() => this.addPermHTMLFor(this.searchSelection)}>Add</button>
         </div>
       </div>
     );
@@ -309,7 +258,7 @@ export default class RolesPermissions extends Component {
     return (
       <div className="roles-permissions-page">
         {this.renderPageInstructionSection()}
-        {this.renderRolesEditingSection()}
+        {this.renderPermsEditingSection()}
       </div>
     );
   }
