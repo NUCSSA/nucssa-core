@@ -57,10 +57,9 @@
   }
 
   .role-entries-subsection, .grant-permission-subsection {
-    padding: 1rem 0;
+    padding: 1rem 2rem;
   }
   .role-entries-subsection {
-    border-bottom: 1px solid $divider-thick-light-gray;
     ul {
       li { display: flex; align-items: center;
         .name{
@@ -99,6 +98,7 @@
   .grant-permission-subsection {
     display: flex;
     align-items: center;
+    border-top: 1px solid $divider-thick-light-gray;
     span{color: $header-text-gray; margin-right: 0.5rem;}
 
     .btn-add-grant {
@@ -111,4 +111,18 @@
     }
   }
 
+  .btns-container{
+
+    input[type="button"][value="Edit"] {
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 70px;
+      font-size: larger;
+      background-color: $highlight;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }

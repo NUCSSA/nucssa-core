@@ -2,7 +2,8 @@
   "scripts": {
     "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "start": "npm run development -- --watch"
+    "start": "npm run development -- --watch",
+    "compile": "composer dump-autoload -o"
   },
   "dependencies": {
     "bootstrap-4-grid": "^2.4.1",
@@ -16,6 +17,7 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "axios": "^0.18.0",
     "browser-sync": "^2.26.3",
