@@ -8,7 +8,7 @@ class SearchDropdown extends Component {
     this.state = {
       matches: [],
       selfDismissDropdown: false,
-      value: ''
+      value: '',
     };
 
     this.search = this.search.bind(this);
@@ -38,7 +38,7 @@ class SearchDropdown extends Component {
       let nextActiveLiNode = null;
       // debugger;
       switch (e.key) {
-        case "ArrowDown":
+        case 'ArrowDown':
           // find the current active node, move to its next sibling
           // if no node is active, make the first one active
           if (currentActiveLiNode) {
@@ -49,7 +49,7 @@ class SearchDropdown extends Component {
           e.preventDefault();
           break;
 
-        case "ArrowUp":
+        case 'ArrowUp':
           if (currentActiveLiNode) {
             nextActiveLiNode = currentActiveLiNode.previousSibling || this.ulNodeRef.current.lastChild;
           } else {
@@ -58,11 +58,11 @@ class SearchDropdown extends Component {
           e.preventDefault();
           break;
 
-        case "Escape":
+        case 'Escape':
           this.setState({selfDismissDropdown: true});
           return;
 
-        case "Enter":
+        case 'Enter':
           if (currentActiveLiNode){
             // find the match related to this node and call `onSelect` on it.
             // debugger;
@@ -97,7 +97,7 @@ class SearchDropdown extends Component {
   }
 
   makeCurrentElementInactive(e){
-    e.currentTarget.classList.remove("active");
+    e.currentTarget.classList.remove('active');
   }
 
   controlElementHTML() {
@@ -118,7 +118,7 @@ class SearchDropdown extends Component {
           this.state.matches.map(match => (
             <li
               key={match.key}
-              onMouseDown={() => {console.log(">>> called"); this.onSelection(match);}}
+              onMouseDown={() => {console.log('>>> called'); this.onSelection(match);}}
               onMouseOver={this.makeCurrentElementActive}
               onMouseOut={this.makeCurrentElementInactive}
               tabIndex="0"
