@@ -8,9 +8,7 @@ use NUCSSACore\Accounts\UserDirectory;
 use NUCSSACore\Utils\Logger;
 
 class Accounts {
-  public function construct(){
-
-  }
+  public function construct(){}
 
   /**
    * sync users and groups from LDAP server to wordpress database
@@ -28,8 +26,26 @@ class Accounts {
    * @param String $keyword
    * @return Array array(users => [], groups => [])
    */
-  public function findUserOrGroup($keyword){
+  public function findAccount($keyword){
+    global $wpdb;
+    $user_query =
+      "SELECT id, display_name
+                  FROM nucssa_user
+                  WHERE CONCAT_WS('', username, first_name, last_name, display_name) LIKE '%$keyword%';
+                ";
+    $group_query =
+      "SELECT id, group_name
+                  FROM nucssa_group
+                  WHERE CONCAT_WS('', group_name, description) LIKE '%$keyword%';
+                ";
 
+    $users = $wpdb->get_results($user_query);
+    $groups = $wpdb->get_results($group_query);
+
+    return array(
+      'users' => $users,
+      'groups' => $groups
+    );
   }
 
   /**
