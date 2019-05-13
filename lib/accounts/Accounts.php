@@ -26,7 +26,7 @@ class Accounts {
    * @param String $keyword
    * @return Array array(users => [], groups => [])
    */
-  public function findAccount($keyword){
+  public function search($keyword){
     global $wpdb;
     $user_query =
       "SELECT id, display_name

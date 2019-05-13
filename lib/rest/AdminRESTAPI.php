@@ -142,7 +142,7 @@ class AdminRESTAPI
           switch ($params['command']) {
             case 'search':
               $keyword = $params['data'];
-              $resp = (new Accounts)->findAccount($keyword);
+              $resp = (new Accounts)->search($keyword);
               return rest_ensure_response($resp);
 
             case 'get_all_roles':
