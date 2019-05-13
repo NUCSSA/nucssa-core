@@ -8,7 +8,7 @@ class SearchDropdown extends Component {
     this.state = {
       matches: [],
       selfDismissDropdown: false,
-      value: '',
+      value: ''
     };
 
     this.search = this.search.bind(this);
@@ -118,7 +118,7 @@ class SearchDropdown extends Component {
           this.state.matches.map(match => (
             <li
               key={match.key}
-              onMouseDown={() => {console.log('>>> called'); this.onSelection(match);}}
+              onMouseDown={() => {console.log('>>> called'); this.onSelection(match)}}
               onMouseOver={this.makeCurrentElementActive}
               onMouseOut={this.makeCurrentElementInactive}
               tabIndex="0"
@@ -146,7 +146,7 @@ SearchDropdown.propTypes = {
   renderMatchItem: PropTypes.func.isRequired, // match item must have a key prop
   shouldDropdownShown: PropTypes.bool.isRequired,
   searchFieldValueOnSelection: PropTypes.func.isRequired,
-  noMatchMessage: PropTypes.element,
+  noMatchMessage: PropTypes.element
 };
 
 export default SearchDropdown;

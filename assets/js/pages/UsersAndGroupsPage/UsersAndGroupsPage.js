@@ -10,7 +10,7 @@ import RolesPermissions from './RolesPermissions';
 
 const store = createStore(
   combineReducers({
-    rolesPerissions: rolesPermissionsReducer,
+    rolesPerissions: rolesPermissionsReducer
   }),
   compose(
     applyMiddleware(thunk),

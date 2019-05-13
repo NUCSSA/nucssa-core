@@ -3,7 +3,7 @@ import {
   searchAccounts,
   fetchAllRoles,
   fetchPerms,
-  savePerms,
+  savePerms
 } from '../../utils/api';
 import SearchDropdown from '../../components/SearchDropdown';
 import PropTypes from 'prop-types';
@@ -13,7 +13,7 @@ import PermEntry from './PermEntry';
 const permActions = {
   add: 'add',
   update: 'update',
-  delete: 'delete',
+  delete: 'delete'
 };
 
 export default class RolesPermissions extends Component {
@@ -24,7 +24,7 @@ export default class RolesPermissions extends Component {
       roles: [],
       perms: [],
       editingMode: false,
-      shouldDropdownShown: false,
+      shouldDropdownShown: false
     };
 
     this.findAccounts = this.findAccounts.bind(this);

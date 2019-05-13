@@ -35,13 +35,13 @@ PermEntry.propTypes = {
   editable: PropTypes.bool,
   allRoles: PropTypes.array,
   onDelete: PropTypes.func,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 PermEntry.defaultProps = {
   editable: false,
   onDelete: null,
-  onChange: null,
+  onChange: null
 };
 
 export default PermEntry;
