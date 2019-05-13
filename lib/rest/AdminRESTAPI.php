@@ -8,19 +8,27 @@ namespace NUCSSACore\REST;
 use NUCSSACore\Utils\Logger;
 use NUCSSACore\Accounts\Accounts;
 use NUCSSACore\Accounts\UserDirectory;
+use NUCSSACore\Accounts\Perm;
 
 class AdminRESTAPI
 {
   public function __construct()
   {
     add_action('rest_api_init', function(){
-      // adding '/nucssa-core/v1/ldap-config' path
-      // GET & POST
-      $this->ldapConfig();
+      // GET & POST '/nucssa-core/v1/ldap-config'
+      $this->ldapConfigAPI();
+
+      // POST '/nucssa-core/v1/permissions'
+      $this->permissionsAPI();
     });
   }
 
-  private function ldapConfig()
+  public function permissionCheck($request)
+  {
+    return current_user_can('manage_options');
+  }
+
+  private function ldapConfigAPI()
   {
     $rest_namespace = 'nucssa-core/v1';
     $rest_route = 'ldap-config';
@@ -102,7 +110,7 @@ class AdminRESTAPI
 
   private function syncLdap()
   {
-    // Logger::singleton()->log_action('sync ldap ');
+    // Logger::singleton()->log_action('syncLdap called');
     (new Accounts)->syncFromDirectory();
     // process will die if LDAP failed
 
@@ -122,9 +130,100 @@ class AdminRESTAPI
     }
   }
 
-  public function permissionCheck($request)
-  {
-    return current_user_can('manage_options');
+  private function permissionsAPI(){
+    $namespace = 'nucssa-core/v1';
+    $route = 'permissions';
+
+    register_rest_route($namespace, $route, array(
+      [
+        'methods' => 'POST',
+        'callback' => function($request) {
+          $params = $request->get_params();
+          global $wpdb;
+          switch ($params['command']) {
+            case 'search':
+              $keyword = $params['data'];
+              /**
+               * 1. log the keyword
+               * 2. search keyword from user table
+               * 3. search keyword from group table
+               * 4. encapsoluate them into an array and return it back
+               */
+              // Logger::singleton()->log_action('search keyword', $keyword);
+
+              $user_query =
+                "SELECT id, display_name
+                  FROM nucssa_user
+                  WHERE CONCAT_WS('', username, first_name, last_name, display_name) LIKE '%$keyword%';
+                ";
+              $group_query =
+                "SELECT id, group_name
+                  FROM nucssa_group
+                  WHERE CONCAT_WS('', group_name, description) LIKE '%$keyword%';
+                ";
+
+              $users = $wpdb->get_results($user_query);
+              $groups = $wpdb->get_results($group_query);
+
+              $resp = array(
+                'users' => $users,
+                'groups' => $groups
+              );
+              return rest_ensure_response($resp);
+
+            case 'get_all_roles':
+              global $wp_roles;
+              $roles = $wp_roles->role_names;
+
+              return rest_ensure_response($roles);
+
+            case 'get_all_perms':
+              /**
+               * get existing user/group-role pairs
+               *
+               * [account-role]s (aka. perms) are persisted in nucssa_perm table
+               * @return [
+               *  {id, role, account_type, account_id, account_display_name}
+               * ]
+               */
+              $perms = (new Accounts)->allPerms();
+              return rest_ensure_response($perms);
+
+            case 'save_perms':
+              $perms = $params['data'];
+              foreach ($perms as $perm) {
+                ['account_type' => $account_type, 'account_id' => $account_id, 'role' => $role, 'action' => $action, 'id' => $id] = $perm;
+                switch ($action) {
+                  case 'add':
+                    $perm = Perm::new($role, $account_type, $account_id);
+                    $perm->store();
+                    break;
+
+                  case 'update':
+                    $perm = Perm::find($id);
+                    $perm->role = $role;
+                    $perm->store();
+                    break;
+
+                  case 'delete':
+                    $perm = Perm::find($id);
+                    $perm->delete();
+                    break;
+
+                  default:
+                    break;
+                }
+              }
+              return rest_ensure_response($perm->id);
+              break;
+
+            default:
+              break;
+          }
+        },
+        'permission_callback' => array($this, 'permissionCheck')
+      ]
+    ));
   }
 
 }

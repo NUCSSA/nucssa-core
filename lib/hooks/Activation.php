@@ -80,9 +80,25 @@ create_group_table;
     ) $charset_collate;
 create_membership_table;
 
+    $sql_perm_table = <<<create_perm_table
+    CREATE TABLE IF NOT EXISTS nucssa_perm (
+      id BIGINT NOT NULL AUTO_INCREMENT,
+      account_id BIGINT NOT NULL,
+      account_type VARCHAR(5) NOT NULL,
+      role VARCHAR(255) NOT NULL,
+
+      PRIMARY KEY (id),
+      KEY idx_perm_role (role),
+      KEY idx_perm_account_id_type (account_id, account_type),
+      UNIQUE KEY unique_perm_account_id_type_role (account_id, account_type, role)
+    ) $charset_collate;
+create_perm_table;
+
+
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql_user_table);
     dbDelta($sql_group_table);
     dbDelta($sql_membership_table);
+    dbDelta($sql_perm_table);
   }
 }

@@ -22,7 +22,7 @@ class Deactivation {
   private static function dropDBTables(){
     global $wpdb;
 
-    $tables = ['nucssa_user', 'nucssa_group', 'nucssa_membership'];
+    $tables = ['nucssa_user', 'nucssa_group', 'nucssa_membership', 'nucssa_perm'];
 
     $wpdb->query('SET foreign_key_checks = 0;');
     array_walk($tables, function($table) use ($wpdb){
