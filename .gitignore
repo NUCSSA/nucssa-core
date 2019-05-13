@@ -7,3 +7,4 @@ node_modules
 config/ldap.php
 public
 log.txt
+.idea/
