@@ -139,36 +139,10 @@ class AdminRESTAPI
         'methods' => 'POST',
         'callback' => function($request) {
           $params = $request->get_params();
-          global $wpdb;
           switch ($params['command']) {
             case 'search':
               $keyword = $params['data'];
-              /**
-               * 1. log the keyword
-               * 2. search keyword from user table
-               * 3. search keyword from group table
-               * 4. encapsoluate them into an array and return it back
-               */
-              // Logger::singleton()->log_action('search keyword', $keyword);
-
-              $user_query =
-                "SELECT id, display_name
-                  FROM nucssa_user
-                  WHERE CONCAT_WS('', username, first_name, last_name, display_name) LIKE '%$keyword%';
-                ";
-              $group_query =
-                "SELECT id, group_name
-                  FROM nucssa_group
-                  WHERE CONCAT_WS('', group_name, description) LIKE '%$keyword%';
-                ";
-
-              $users = $wpdb->get_results($user_query);
-              $groups = $wpdb->get_results($group_query);
-
-              $resp = array(
-                'users' => $users,
-                'groups' => $groups
-              );
+              $resp = (new Accounts)->findAccount($keyword);
               return rest_ensure_response($resp);
 
             case 'get_all_roles':
@@ -179,12 +153,9 @@ class AdminRESTAPI
 
             case 'get_all_perms':
               /**
-               * get existing user/group-role pairs
-               *
-               * [account-role]s (aka. perms) are persisted in nucssa_perm table
-               * @return [
-               *  {id, role, account_type, account_id, account_display_name}
-               * ]
+               * get existing permission records
+               * perms are persisted in nucssa_perm table
+               * @return [...{id, role, account_type, account_id, account_display_name}...]
                */
               $perms = (new Accounts)->allPerms();
               return rest_ensure_response($perms);
