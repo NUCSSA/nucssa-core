@@ -3,12 +3,10 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\REST;
+namespace nucssa_core\inc\rest;
 
-use NUCSSACore\Utils\Logger;
-use NUCSSACore\Accounts\Accounts;
-use NUCSSACore\Accounts\UserDirectory;
-use NUCSSACore\Accounts\Perm;
+use function nucssa_core\utils\{console_log, file_log};
+use nucssa_core\inc\accounts\{Accounts, UserDirectory, DirectoryPerm};
 
 class AdminRESTAPI
 {
@@ -65,7 +63,7 @@ class AdminRESTAPI
         'methods' => 'POST',
         'callback' => function($request) use ($option_keys) {
           $params = $request->get_params();
-          // Logger::singleton()->log_action('post params', $params);
+          // file_log('post params', $params);
           switch ($params['command']) {
             case 'save':
               return $this->saveLdapConfig($params['data'], $option_keys);
@@ -96,7 +94,7 @@ class AdminRESTAPI
     $membership_schema = $data['membership_schema'];
 
 
-    // Logger::singleton()->log_action('group_schema ', $group_schema);
+    // file_log('group_schema ', $group_schema);
     update_option($option_keys['server'], $server);
     update_option($option_keys['schema'], $schema);
     update_option($option_keys['user_schema'], $user_schema);
@@ -110,18 +108,18 @@ class AdminRESTAPI
 
   private function syncLdap()
   {
-    // Logger::singleton()->log_action('syncLdap called');
-    (new Accounts)->syncFromDirectory();
+    // file_log('syncLdap called');
+    Accounts::syncFromDirectory();
     // process will die if LDAP failed
 
     // send success message
-    // Logger::singleton()->log_action('sync success');
+    // file_log('sync success');
     return rest_ensure_response('success');
   }
 
   private function testLdapConnection()
   {
-    // Logger::singleton()->log_action('test ldap connection');
+    // file_log('test ldap connection');
     if (UserDirectory::singleton()->testConnection()){
       return rest_ensure_response('success');
     } else {
@@ -142,7 +140,7 @@ class AdminRESTAPI
           switch ($params['command']) {
             case 'search':
               $keyword = $params['data'];
-              $resp = (new Accounts)->search($keyword);
+              $resp = Accounts::search($keyword);
               return rest_ensure_response($resp);
 
             case 'get_all_roles':
@@ -157,7 +155,7 @@ class AdminRESTAPI
                * perms are persisted in nucssa_perm table
                * @return [...{id, role, account_type, account_id, account_display_name}...]
                */
-              $perms = (new Accounts)->allPerms();
+              $perms = Accounts::allPerms();
               return rest_ensure_response($perms);
 
             case 'save_perms':
@@ -166,18 +164,18 @@ class AdminRESTAPI
                 ['account_type' => $account_type, 'account_id' => $account_id, 'role' => $role, 'action' => $action, 'id' => $id] = $perm;
                 switch ($action) {
                   case 'add':
-                    $perm = Perm::new($role, $account_type, $account_id);
+                    $perm = DirectoryPerm::new($role, $account_type, $account_id);
                     $perm->store();
                     break;
 
                   case 'update':
-                    $perm = Perm::find($id);
+                    $perm = DirectoryPerm::find($id);
                     $perm->role = $role;
                     $perm->store();
                     break;
 
                   case 'delete':
-                    $perm = Perm::find($id);
+                    $perm = DirectoryPerm::find($id);
                     $perm->delete();
                     break;
 

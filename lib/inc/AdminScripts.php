@@ -3,10 +3,9 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Hooks;
+namespace nucssa_core\inc;
 
-use NUCSSACore\Utils\Constants;
-use NUCSSACore\Utils\Logger;
+use function nucssa_core\utils\console_log;
 
 /**
  * Manage all JS and CSS scripts used in the admin dashboard
@@ -26,7 +25,6 @@ class AdminScripts
 
   private function loadAdminScripts($hook)
   {
-    // Logger::singleton()->log_action("hook", $hook);
     if ($hook != 'toplevel_page_admin-menu-page-nucssa-core') {
       return;
     }
@@ -35,7 +33,7 @@ class AdminScripts
     // load core script
     wp_enqueue_script(
       $handle,
-      Constants::singleton()->plugin_dir_url . 'public/js/admin.js',
+      NUCSSA_CORE_DIR_URL . 'public/js/admin.js',
       array(), // deps
       false, // version
       true // in_footer?
@@ -60,11 +58,12 @@ class AdminScripts
 
   private function loadAdminStyles($hook)
   {
+    console_log( NUCSSA_CORE_DIR_URL);
     // NUCSSA Core Plugin Page only Styles
     if ($hook === 'toplevel_page_admin-menu-page-nucssa-core') {
       wp_enqueue_style(
         'nucssa_core_admin_plugin_page_style',
-        Constants::singleton()->plugin_dir_url . 'public/css/admin-plugin-page.css',
+        NUCSSA_CORE_DIR_URL . 'public/css/admin-plugin-page.css',
         array(), // deps
         false,   // version
         'all'    // media
@@ -74,7 +73,7 @@ class AdminScripts
     // Global Styles
     wp_enqueue_style(
       'nucssa_core_admin_global_style',
-      Constants::singleton()->plugin_dir_url . 'public/css/admin-global.css',
+      NUCSSA_CORE_DIR_URL . 'public/css/admin-global.css',
       array(), // deps
       false,   // version
       'all'    // media

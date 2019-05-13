@@ -3,20 +3,38 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Hooks;
+namespace nucssa_core\inc;
 
-use NUCSSACore\Admin\CronSchedules;
-use NUCSSACore\Utils\Logger;
+use nucssa_core\inc\Cron;
+use function nucssa_core\utils\file_log;
 
 class Activation {
   public static function init(){
 
     self::createDBTables();
+    self::alterWPUsersTable();
     self::scheduleCronTasks();
   }
 
   private static function scheduleCronTasks(){
-    (new CronSchedules())->scheduleCron();
+    (new Cron())->scheduleCron();
+  }
+
+  private static function alterWPUsersTable() {
+    global $wpdb;
+    $query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE table_name = {$wpdb->users}
+            AND   table_schema = {$wpdb->dbname}
+            AND   column_name = 'external_id'";
+    $results = $wpdb->get_results($query);
+    if (empty($results)) {
+      file_log('altering');
+      $query = "ALTER TABLE {$wpdb->users}
+        ADD COLUMN external_id VARCHAR(255),
+        ADD KEY idx_user_external_id (external_id),
+        ADD UNIQUE KEY unique_external_id (external_id)";
+      $wpdb->query($query);
+    }
   }
 
   private static function createDBTables() {

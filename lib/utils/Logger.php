@@ -3,7 +3,7 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Utils;
+namespace nucssa_core\utils;
 
 class Logger
 {
@@ -28,7 +28,7 @@ class Logger
 
   private function __construct()
   {
-    $this->logfilepath = Constants::singleton()->plugin_dir_path . 'log.txt';
+    $this->logfilepath = NUCSSA_CORE_DIR_PATH . 'log.txt';
   }
 
   /**

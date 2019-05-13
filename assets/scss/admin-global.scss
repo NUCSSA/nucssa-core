@@ -1,8 +1,9 @@
-@import 'icomoon-fonts';
+// import nucssa-icon-font
+@import url(https://s3.amazonaws.com/nucssa-icon-font/style.css);
 #adminmenu{
   .toplevel_page_admin-menu-page-nucssa-core {
     div.wp-menu-image::before {
-      font-family: 'icomoon';
+      font-family: 'nucssa-icon-font';
       font-size: 0.9rem;
       content: "\e900";
       vertical-align: middle;
