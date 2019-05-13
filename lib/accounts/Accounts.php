@@ -10,6 +10,16 @@ use NUCSSACore\Utils\Logger;
 class Accounts {
   public function construct(){}
 
+  public function signin($user, $pass){
+    if ((new UserDirectory)->authenticateUser($user, $pass)){
+      // sync LDAP on user login
+      $this->syncFromDirectory();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /**
    * sync users and groups from LDAP server to wordpress database
    */
