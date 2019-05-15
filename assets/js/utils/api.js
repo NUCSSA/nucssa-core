@@ -3,7 +3,7 @@ import { ldapConfigRestURL, permissionsRestURL, nonce } from './constants';
 
 const ACTIONS = {
   GET: 'get',
-  POST: 'post',
+  POST: 'post'
 };
 
 /**
@@ -18,7 +18,7 @@ const authenticatedRequest = async function(action, URL, payload = null) {
     method: action,
     url: URL,
     data: payload,
-    ...config,
+    ...config
   }).then(resp => {
     return resp.data;
   }).catch(error => {
@@ -27,41 +27,41 @@ const authenticatedRequest = async function(action, URL, payload = null) {
 };
 
 
-export const fetchLdapConfig = async function() {
+export const fetchLdapConfig = async () => {
   return await authenticatedRequest(ACTIONS.GET, ldapConfigRestURL);
 };
 
-export const setLdapConfig = async function(data) {
+export const setLdapConfig = async data => {
   const payload = { command: 'save', data };
   return await authenticatedRequest(ACTIONS.POST, ldapConfigRestURL, payload);
 };
 
-export const syncLdap = async function() {
+export const syncLdap = async () => {
   const payload = { command: 'sync' };
   return await authenticatedRequest(ACTIONS.POST, ldapConfigRestURL, payload);
 };
 
-export const testLdapConnection = async function() {
+export const testLdapConnection = async () => {
   const payload = { command: 'test_connection' };
   return await authenticatedRequest(ACTIONS.POST, ldapConfigRestURL, payload);
 };
 
-export const searchAccounts = async function(keyword){
+export const searchAccounts = async keyword => {
   const payload = {
     command: 'search',
-    data: keyword,
+    data: keyword
   };
   return await authenticatedRequest(ACTIONS.POST, permissionsRestURL, payload);
 };
 
-export const fetchAllRoles = async function(){
+export const fetchAllRoles = async () => {
   const payload = {
-    command: 'get_all_roles',
+    command: 'get_all_roles'
   };
   return await authenticatedRequest(ACTIONS.POST, permissionsRestURL, payload);
 };
 
-export const fetchPerms = async function() {
+export const fetchPerms = async () => {
   const payload = { command: 'get_all_perms' };
   return await authenticatedRequest(ACTIONS.POST, permissionsRestURL, payload);
 };
@@ -71,10 +71,10 @@ export const fetchPerms = async function() {
  * @param {Array} perms Array of perms need to be updated/inserted/deleted
  *                      A perm is of shape {account_id, account_type, action, role?, id?}
  */
-export async function savePerms(perms){
+export const savePerms = async perms => {
   const payload = {
     command: 'save_perms',
-    data: perms,
+    data: perms
   };
   return await authenticatedRequest(ACTIONS.POST, permissionsRestURL, payload);
 }
