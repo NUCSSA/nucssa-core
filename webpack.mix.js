@@ -25,4 +25,4 @@ mix.sass('assets/scss/admin-plugin-page.scss', 'public/css')
    .options({
      processCssUrls: false,
    })
-    .sourceMaps(false, 'eval-source-map');
+   .sourceMaps(false, 'eval-source-map');
