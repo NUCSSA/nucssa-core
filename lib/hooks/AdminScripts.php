@@ -27,9 +27,9 @@ class AdminScripts
   private function loadAdminScripts($hook)
   {
     // Logger::singleton()->log_action("hook", $hook);
-    // if ($hook != 'toplevel_page_admin-menu-page-nucssa-core') {
-    //   return;
-    // }
+    if ($hook != 'toplevel_page_admin-menu-page-nucssa-core') {
+      return;
+    }
 
     $handle = 'nucssa_core_amdin_script';
     // load core script
