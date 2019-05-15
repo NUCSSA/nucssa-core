@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { HashRouter, Route, Switch, NavLink } from 'react-router-dom';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import rolesPermissionsReducer from '../../redux/reducers/roles-permissions-reducer';
+import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 import thunk from 'redux-thunk';
 import UserDirectory from './UserDirectory';
 import RolesPermissions from './RolesPermissions';
@@ -12,9 +13,8 @@ const store = createStore(
   combineReducers({
     rolesPerissions: rolesPermissionsReducer
   }),
-  compose(
-    applyMiddleware(thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() || compose
+  composeWithDevTools(
+    applyMiddleware(thunk)
   )
 );
 
