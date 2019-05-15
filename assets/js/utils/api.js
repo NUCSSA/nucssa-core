@@ -12,7 +12,7 @@ const ACTIONS = {
  * @param {String} URL
  * @param {Any} payload
  */
-const authenticatedRequest = async function(action, URL, payload = null) {
+const authenticatedRequest = async (action, URL, payload = null) => {
   const config = { 'headers': { 'X-WP-Nonce': nonce } };
   return await axios({
     method: action,
