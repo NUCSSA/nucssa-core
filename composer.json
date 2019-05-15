@@ -2,7 +2,7 @@
     "require": {
     },
     "autoload": {
-        "files": ["config/config.php"],
+        "files": ["config/config.php", "lib/utils/utils.php"],
         "psr-4": {
             "":["lib/"]
         }
