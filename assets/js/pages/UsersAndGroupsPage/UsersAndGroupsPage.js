@@ -31,7 +31,7 @@ render(
           <NavLink to="/roles-permissions" activeClassName="active" exact>Roles & Permissions</NavLink>
         </div>
         <Switch>
-          <Route path={["", "/user-directory"]} exact component={UserDirectory} />
+          <Route path={['', '/user-directory']} exact component={UserDirectory} />
           <Route path="/roles-permissions" exact component={RolesPermissions} />
         </Switch>
       </div>

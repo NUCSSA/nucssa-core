@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import PropTypes from "prop-types";
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 const PermSelect = ({value, roles, onChange}) => {
 
@@ -16,16 +16,16 @@ const PermSelect = ({value, roles, onChange}) => {
       ))}
     </select>
   );
-}
+};
 
 PermSelect.propTypes = {
   roles: PropTypes.array.isRequired,
   value: PropTypes.string,
-  onChange: PropTypes.func.isRequired, // signature: (value) => nil
+  onChange: PropTypes.func.isRequired // signature: (value) => nil
 };
 
 PermSelect.defaultProps = {
-  value: 'null',
+  value: 'null'
 };
 
 export default PermSelect;

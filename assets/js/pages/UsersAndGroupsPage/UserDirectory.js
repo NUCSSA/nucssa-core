@@ -12,8 +12,8 @@ export default class UserDirectory extends Component {
         schema: {},
         user_schema: {},
         group_schema: {},
-        membership_schema: {}
-      }
+        membership_schema: {},
+      },
     };
 
     this.testConnectionBtnRef     = React.createRef();
@@ -37,7 +37,7 @@ export default class UserDirectory extends Component {
   async componentDidMount(){
     // fetch ldap config from server
     const ldapConfig = await fetchLdapConfig();
-    console.log(">>>> ", ldapConfig);
+    console.log('>>>> ', ldapConfig);
 
     this.setState({ldapConfig});
   }
@@ -56,9 +56,9 @@ export default class UserDirectory extends Component {
         ...this.state.ldapConfig,
         [section]: {
           ...this.state.ldapConfig[section],
-          [attribute]: value
-        }
-      }
+          [attribute]: value,
+        },
+      },
     });
   }
 
@@ -68,7 +68,7 @@ export default class UserDirectory extends Component {
 
     this.setState({
       editMode: false,
-      ldapConfig
+      ldapConfig,
     });
   }
 
@@ -80,7 +80,7 @@ export default class UserDirectory extends Component {
 
     // show spinner & hide button
     this.testConnectionSpinnerRef.current.classList.add('active');
-    this.testConnectionBtnRef.current.textContent = "";
+    this.testConnectionBtnRef.current.textContent = '';
 
     const resp = await testLdapConnection();
 
@@ -88,14 +88,14 @@ export default class UserDirectory extends Component {
     this.testConnectionSpinnerRef.current.classList.remove('active');
 
     if (resp == 'success'){
-      this.testConnectionBtnRef.current.textContent = "✓";
+      this.testConnectionBtnRef.current.textContent = '✓';
       this.testConnectionBtnRef.current.style.backgroundColor = btnColor.original;
     } else {
-      this.testConnectionBtnRef.current.textContent = "Connection Failed"
+      this.testConnectionBtnRef.current.textContent = 'Connection Failed';
       this.testConnectionBtnRef.current.style.backgroundColor = btnColor.error;
     }
     setTimeout(() => {
-      this.testConnectionBtnRef.current.textContent = "Test Connection";
+      this.testConnectionBtnRef.current.textContent = 'Test Connection';
       this.testConnectionBtnRef.current.style.backgroundColor = btnColor.original;
     }, 1700);
   }
@@ -108,7 +108,7 @@ export default class UserDirectory extends Component {
 
     // show spinner & hide button
     this.ldapSyncSpinnerRef.current.classList.add('active');
-    this.ldapSyncBtnRef.current.textContent = "";
+    this.ldapSyncBtnRef.current.textContent = '';
 
     const resp = await syncLdap();
 
@@ -116,14 +116,14 @@ export default class UserDirectory extends Component {
     this.ldapSyncSpinnerRef.current.classList.remove('active');
 
     if (resp == 'success') {
-      this.ldapSyncBtnRef.current.textContent = "✓";
+      this.ldapSyncBtnRef.current.textContent = '✓';
       this.ldapSyncBtnRef.current.style.backgroundColor = btnColor.original;
     } else {
-      this.ldapSyncBtnRef.current.textContent = "Sync Failed"
+      this.ldapSyncBtnRef.current.textContent = 'Sync Failed';
       this.ldapSyncBtnRef.current.style.backgroundColor = btnColor.error;
     }
     setTimeout(() => {
-      this.ldapSyncBtnRef.current.textContent = "Manual Sync";
+      this.ldapSyncBtnRef.current.textContent = 'Manual Sync';
       this.ldapSyncBtnRef.current.style.backgroundColor = btnColor.original;
     }, 1700);
 
@@ -139,8 +139,8 @@ export default class UserDirectory extends Component {
     const server_attrs = ['host', 'port', 'username', 'password'];
     const schema_attrs = ['base_dn', 'additional_user_dn', 'additional_group_dn'];
     const user_attrs = ['object_class', 'object_filter', 'username_attribute',
-        'firstname_attribute', 'lastname_attribute', 'display_name_attribute',
-        'email_attribute', 'user_id_attribute'];
+      'firstname_attribute', 'lastname_attribute', 'display_name_attribute',
+      'email_attribute', 'user_id_attribute'];
     const group_attrs = ['object_class', 'object_filter', 'name_attribute', 'description_attribute', 'group_id_attribute'];
     const membership_attrs = ['group_membership_attribute', 'user_membership_attribute'];
     if (!config) return false;
@@ -343,7 +343,7 @@ export default class UserDirectory extends Component {
 
   spinner(ref){
     return (
-      <div className={`nucssa-spinner`} ref={ref}>
+      <div className={'nucssa-spinner'} ref={ref}>
         <div className="bounce1"></div>
         <div className="bounce2"></div>
         <div className="bounce3"></div>
