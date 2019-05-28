@@ -3,12 +3,11 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Admin;
+namespace nucssa_core\inc;
 
-use NUCSSACore\Utils\Logger;
-use NUCSSACore\Accounts\Accounts;
+use nucssa_core\inc\accounts\Accounts;
 
-class CronSchedules {
+class Cron {
   private $cron_hook = 'nucssa-core-cron-hook';
   private $interval_name_10m = '10-min';
 
@@ -27,7 +26,6 @@ class CronSchedules {
         'interval'    => 600,
         'display'     => __('Every Ten Minutes')
       );
-      // Logger::singleton()->log_action('schedules', $schedules);
       return $schedules;
     });
 
@@ -49,7 +47,6 @@ class CronSchedules {
   }
 
   private function tenMinuteCronTasks(){
-    Logger::singleton()->log_action('running Cron Task');
-    (new Accounts())->syncFromDirectory();
+    Accounts::syncFromDirectory();
   }
 }

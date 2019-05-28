@@ -1,10 +1,10 @@
 <?php
-namespace NUCSSACore\Accounts;
+namespace nucssa_core\inc\accounts;
 
 /**
  * Represents a perm record from the database `nucssa_perm` table
  */
-class Perm {
+class DirectoryPerm {
   private static $table = 'nucssa_perm';
   public $id;
   public $role; // @param {String} name of the role, lower-case string
@@ -46,9 +46,9 @@ class Perm {
   public function loadDisplayName(){
     if (!$this->account_displayName){
       if ($this->account_type === 'GROUP') {
-        $this->account_displayName = Group::find($this->account_id)->group_name;
+        $this->account_displayName = DirectoryGroup::find($this->account_id)->group_name;
       } else {
-        $this->account_displayName = User::find($this->account_id)->display_name;
+        $this->account_displayName = DirectoryUser::find($this->account_id)->display_name;
       }
     }
   }

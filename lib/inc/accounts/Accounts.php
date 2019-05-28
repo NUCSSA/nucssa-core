@@ -3,31 +3,129 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Accounts;
-use NUCSSACore\Accounts\UserDirectory;
-use NUCSSACore\Utils\Logger;
+namespace nucssa_core\inc\accounts;
+use function nucssa_core\utils\{file_log, console_log};
 
 class Accounts {
-  public function construct(){}
+  private function construct(){}
 
-  public function signin($user, $pass){
-    if ((new UserDirectory)->authenticateUser($user, $pass)){
-      // sync LDAP on user login
-      $this->syncFromDirectory();
-      return true;
-    } else {
-      return false;
+  /**
+   * Try to authenticate user in the authentication queue
+   * first search LDAP users and then fallback to local users if remote user is not found.
+   *
+   * @param null|WP_User|WP_Error $user   null indicates no process has authenticated the user yet;
+   *                                      WP_Error indicates another process has failed the authentication;
+   *                                      WP_User indicates another process has authenticated the user.
+   * @param string $username              username or email
+   * @param string $password
+   */
+  public static function login($user, $username, $password) {
+    if ($user instanceof WP_User) {
+      return $user;
+    }
+    if (empty($username) || empty($password)) return null;
+
+    // authentication services prior to our service failed
+    // OR
+    // no service has tried to authenticate the user yet, let's authenticate against our LDAP system
+    $directory = UserDirectory::singleton();
+    if ($directory->userExists($username)) {
+      /**
+       * Process:
+       * 1. check changes since last sync and do a sync if diff
+       * 2. Does user already exist locally?
+       * 3. Create local user if not
+       * 4. remove local authentication action
+       * 5. return WP_User object
+       */
+      // 1. re-sync if there are changes
+      // must do a full sync because deletions won't show in updates
+      // `self::syncFromDirectory()` can take care of deletions with a full sync
+      $lastSyncTimestamp = self::getLastSyncTimestamp();
+      $filter = "(& (modifyTimestamp>={$lastSyncTimestamp})(|(objectClass=inetOrgPerson)(objectClass=posixGroup)))";
+      $res = $directory->search($filter, ['uid']);
+      if (\ldap_count_entries($directory->conn, $res) > 0) {
+        self::updateLastSyncTimestamp();
+        self::syncFromDirectory();
+
+        $entry = ldap_first_entry($directory->conn, $res);
+        do {
+          $uidNumber = @ldap_get_values($directory->conn, $entry, $directory->user_schema['user_id_attribute'])[0];
+          if ($uidNumber) {
+            $dir_user = DirectoryUser::findByExternalID($uidNumber);
+            // find user id in wp_users table
+            global $wpdb;
+            $query = "SELECT ID FROM {$wpdb->users} WHERE external_id = {$uidNumber}";
+            $user_id = $wpdb->get_var($query);
+            // update user in wp-users
+            wp_update_user([
+              'ID' => $user_id,
+              'user_login' => $dir_user->username,
+              'first_name' => $dir_user->first_name,
+              'last_name' => $dir_user->last_name,
+              'user_email' => $dir_user->email,
+              'display_name' => $dir_user->display_name,
+            ]);
+          }
+        } while ($entry = ldap_next_entry($directory->conn, $entry));
+      }
+
+      // 2. Does user exists locally in wp-users table?
+      $user = get_user_by('login', $username); // get user in wp_users table
+      file_log("username", $username);
+      file_log("userobj", $user);
+      console_log($user);
+      // 3. Create local user if not exists
+      if (!$user) {
+        $dir_user = DirectoryUser::findByUsername($username); // get user in nucssa_user table
+        $userdata = [
+          'user_login' => $dir_user->username,
+          'first_name' => $dir_user->first_name,
+          'last_name' => $dir_user->last_name,
+          'user_email' => $dir_user->email,
+          'display_name' => $dir_user->display_name,
+        ];
+        $new_user_id = wp_insert_user($userdata);
+        $user = new \WP_User($new_user_id);
+        // update external_id of user record
+        global $wpdb;
+        // file_log("new_user_id", $new_user_id);
+        $wpdb->query(
+          "UPDATE {$wpdb->users} SET external_id = {$dir_user->external_id}
+            WHERE ID = {$new_user_id}"
+        );
+      }
+
+      // now try to authenticate against LDAP record
+      if ($directory->authenticateUser($username, $password)){
+        return $user;
+      } else {
+        return new \WP_Error('denied', __('Wrong password.'));
+      }
+    } else { // give a chance for local authentication
+      return new \WP_Error('denied', __('Invalid username.'));
     }
   }
 
   /**
    * sync users and groups from LDAP server to wordpress database
    */
-  public function syncFromDirectory() {
+  public static function syncFromDirectory() {
     $allRecords = UserDirectory::singleton() -> fetchAll();
-    $this->syncUsers($allRecords["users"]);
-    $this->syncGroups($allRecords["groups"]);
-    $this->syncMembership($allRecords["groups"]);
+    self::syncUsers($allRecords["users"]);
+    self::syncGroups($allRecords["groups"]);
+    self::syncMembership($allRecords["groups"]);
+
+    // save sync timestamp in wp-option
+    self::updateLastSyncTimestamp();
+  }
+
+  public static function updateLastSyncTimestamp() {
+    update_option(\LDAP_SYNC_LAST_TIMESTAMP, (new \DateTime())->format('YmdHis\Z'), false);
+  }
+
+  public static function getLastSyncTimestamp() {
+    return get_option(\LDAP_SYNC_LAST_TIMESTAMP, '19700101000000Z');
   }
 
   /**
@@ -36,7 +134,7 @@ class Accounts {
    * @param String $keyword
    * @return Array array(users => [], groups => [])
    */
-  public function search($keyword){
+  public static function search($keyword){
     global $wpdb;
     $user_query =
       "SELECT id, display_name
@@ -61,7 +159,7 @@ class Accounts {
   /**
    * Fetch all perms
    */
-  public function allPerms(){
+  public static function allPerms(){
     global $wpdb;
     $query =
       "SELECT perm.id as id, role, account_type, u.id as account_id, u.display_name as account_display_name
@@ -81,7 +179,9 @@ class Accounts {
    * Users
    * columns: uid, givenName, sn, displayName, mailPrimaryAddress, uidNumber (used for identifying user across uid changes)
    */
-  private function syncUsers($usersFromDirectory){
+  private static function syncUsers($usersFromDirectory){
+    if (!$usersFromDirectory) return;
+
     global $wpdb;
     $directory = UserDirectory::singleton();
 
@@ -96,12 +196,23 @@ class Accounts {
       $usersFromDirectory
     );
     $uidNumbers_of_deleted_users = array_diff($uidNumbers_in_db, $uidNumbers_in_directory);
+    // remove deleted users from nucssa_user table
     $wpdb->query(
       $wpdb->prepare(
         "DELETE FROM $table_name WHERE external_id IN (%s)",
         implode(',', $uidNumbers_of_deleted_users)
       )
     );
+
+    // remove deleted users from wp_users table
+    // get_user_by('external_id', $uidNumber);
+    $wpdb->query(
+      $wpdb->prepare(
+        "DELETE FROM {$wpdb->users} WHERE external_id IN (%s)",
+        implode(',', $uidNumbers_of_deleted_users)
+      )
+    );
+
 
     /***** Then upsert updated users to db *****/
     $values_string = implode(
@@ -136,7 +247,9 @@ class Accounts {
    * Groups
    * columns: cn, description, gidNumber, uniqueMember (used for identifying group across name changes)
    */
-  private function syncGroups($groupsFromDirectory){
+  private static function syncGroups($groupsFromDirectory){
+    if (!$groupsFromDirectory) return;
+
     global $wpdb;
 
     $table_name = "nucssa_group";
@@ -191,7 +304,9 @@ class Accounts {
    * group->uniqueMember->extract uid tag: found user record in our db
    * upsert the two records in the membership table
    */
-  private function syncMembership($groups){
+  private static function syncMembership($groups){
+    if (!$groups) return;
+
     global $wpdb;
     $directory = UserDirectory::singleton();
 
@@ -210,7 +325,7 @@ class Accounts {
 
       foreach($memberDNs as $memberDN){
         $child_group_id = $child_user_id = 'NULL';
-        ["type" => $type, "name" => $name] = $this->getMemberTypeAndName($memberDN);
+        ["type" => $type, "name" => $name] = self::getMemberTypeAndName($memberDN);
 
         if ($type == "user") {
           // find user id with $name
@@ -250,7 +365,7 @@ class Accounts {
   /**
    * @return array("type" => , "name" => )
    */
-  private function getMemberTypeAndName(string $memberDN){
+  private static function getMemberTypeAndName(string $memberDN){
     $directory = UserDirectory::singleton();
 
     $firstPart = explode(',', $memberDN)[0];

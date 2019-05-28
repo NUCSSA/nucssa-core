@@ -3,10 +3,7 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Admin\MenuPage;
-
-use NUCSSACore\Utils\Constants;
-use NUCSSACore\Utils\Logger;
+namespace nucssa_core\admin_dashboard\menu_page;
 
 /**
  * The top level menu for the core plugin
@@ -53,7 +50,7 @@ class TopLevelMenuPage
     $year = date('Y');
     echo '<div class="nucssa-footer">
       <div class="brand-title">NUCSSA IT</div>
-      <img class="brand-image" src="' . Constants::singleton()->plugin_dir_url . '/public/images/logo.png' . '" />
+      <img class="brand-image" src="' . NUCSSA_CORE_DIR_URL . '/public/images/logo.png' . '" />
       <div class="copyright">© ' . $year . ' NUCSSA IT All Rights Reserved</div>
     </div>';
   }

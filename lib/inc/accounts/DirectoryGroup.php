@@ -1,10 +1,10 @@
 <?php
-namespace NUCSSACore\Accounts;
+namespace nucssa_core\inc\accounts;
 
 /**
  * Represents a group record from database table `nucssa_group`
  */
-class Group {
+class DirectoryGroup {
   private static $table = 'nucssa_group';
   private $id, $group_name, $description, $external_id;
 

@@ -3,14 +3,14 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Accounts;
+namespace nucssa_core\inc\accounts;
+use function nucssa_core\utils\{file_log};
 
-use NUCSSACore\Utils\Logger;
 
 class UserDirectory {
   private static $_instance = null;
 
-  private $conn;
+  public $conn;
   public $server, $schema, $user_schema, $group_schema, $membership_schema;
 
   private $isBind = false;  // cache for binding status
@@ -36,6 +36,10 @@ class UserDirectory {
   }
 
   /**
+   * Get Last Modified Time of User Object
+   */
+
+  /**
    * @return bool
    */
   public function testConnection()
@@ -56,7 +60,28 @@ class UserDirectory {
     $user_attrib = $this->user_schema['username_attribute'];
     $additional_user_dn = $this->schema['additional_user_dn'];
     $user_dn = "{$user_attrib}=$username,$additional_user_dn,{$this->schema['base_dn']}";
-    return ldap_bind($this->conn, $user_dn, $password);
+    return @ldap_bind($this->conn, $user_dn, $password);
+  }
+
+  public function userExists($username) {
+    $this->bindWPUser() or die("Could not bind to LDAP");
+    $base_dn = $this->schema['additional_user_dn'] . "," . $this->schema['base_dn'];
+    $filter = "(& {$this->user_schema['object_filter']} ({$this->user_schema['username_attribute']}=$username))";
+    $res = ldap_search($this->conn, $base_dn, $filter) or exit("Unable to search");
+
+    return ldap_count_entries($this->conn, $res) > 0;
+  }
+
+  /**
+   * Initiate a custom search
+   *
+   * @return LDAP_Result_Type
+   */
+  public function search(string $filter, array $attributes = []) {
+    $this->bindWPUser() or die("Could not bind to LDAP");
+
+    $res = ldap_search($this->conn, $this->schema['base_dn'], $filter, $attributes);
+    return $res;
   }
 
   /**
@@ -112,12 +137,16 @@ class UserDirectory {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
      return array(
-       "users" => $this->fetchAllUsers(),
-       "groups" => $this->fetchAllGroups()
+       "users" => $this->fetchUsers(),
+       "groups" => $this->fetchGroups()
      );
   }
 
-  private function fetchAllUsers() {
+  /**
+   * Fetches users with provided $filters.
+   * Fetches all users if $filters is empty
+   */
+  public function fetchUsers($filters = []) {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
     /**
@@ -126,7 +155,8 @@ class UserDirectory {
      */
     $users = [];
     $base_dn = $this->schema['additional_user_dn'] . "," . $this->schema['base_dn'];
-    $filter = $this->user_schema['object_filter'];
+    $filters[] = $this->user_schema['object_filter'];
+    $filter = $filters->count == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
     $atts = array(
       $this->user_schema['username_attribute'],
       $this->user_schema['firstname_attribute'],
@@ -160,7 +190,11 @@ class UserDirectory {
     return $users;
   }
 
-  private function fetchAllGroups() {
+  /**
+   * Fetches groups with provided $filters.
+   * Fetches all groups if $filters is empty
+   */
+  public function fetchGroups($filters = []) {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
     /**
@@ -169,7 +203,8 @@ class UserDirectory {
      */
     $groups = [];
     $base_dn = $this->schema["additional_group_dn"] . "," . $this->schema['base_dn'];
-    $filter = $this->group_schema['object_filter'];
+    $filters[] = $this->group_schema['object_filter'];
+    $filter = $filters->count == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
     $atts = array(
       $this->group_schema['name_attribute'],
       $this->group_schema['description_attribute'],
@@ -214,7 +249,7 @@ class UserDirectory {
 
       $success = @ldap_bind($this->conn, $wp_dn, $wp_pw);
       $this->isBind = $success;
-      Logger::singleton()->log_action(">>> ldap status", \ldap_error($this->conn));
+      file_log(">>> ldap status", \ldap_error($this->conn));
       return $success;
     }
     return true;

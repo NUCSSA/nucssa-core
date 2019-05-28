@@ -1,10 +1,4 @@
 <?php
-use NUCSSACore\Accounts\Accounts;
-use NUCSSACore\Hooks\AdminScripts;
-use NUCSSACore\Utils\Logger;
-use NUCSSACore\REST\AdminRESTAPI;
-use NUCSSACore\Admin\CronSchedules;
-
 /**
  * Plugin Name:     NUCSSA Core Plugin
  * Plugin URI:      https://www.nucssa.org
@@ -23,19 +17,12 @@ defined ( 'ABSPATH' ) || exit;
 
 include_once __DIR__ . '/vendor/autoload.php';
 
-// use NUCSSACore\Accounts\UserDirectory;
+// use function nucssa_core\utils\{console_log, file_log};
+require_once 'lib/bootstrap/index.php';
 
-// $directory = UserDirectory::instance();
-// $directory->getUserGroups('jilu');
-// $directory->getGroupMembers('IT部门');
-// NUCSSACore\Hooks\Activation::init();
-
-/**
- * Required
- */
-register_activation_hook(__FILE__, ['NUCSSACore\Hooks\Activation', 'init']); // can only call static method this way
-register_deactivation_hook(__FILE__, ['NUCSSACore\Hooks\Deactivation', 'init']);
-new NUCSSACore\Admin\MenuPage\TopLevelMenuPage();
-new AdminScripts();
-new AdminRESTAPI();
-(new CronSchedules())->addCronInterval();
+// $jasonj = (new Accounts)->signin('jasonj', 'erqeaZg#0q5*&GNPmkFMdax&');
+// $jilu = (new Accounts)->signin('jilu', 'Dg8D22C3fjJo');
+// $wrong = (new Accounts)->signin('jilu', 'kkkk');
+// var_dump($jasonj);
+// var_dump($jilu);
+// var_dump($wrong);

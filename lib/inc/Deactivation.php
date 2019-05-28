@@ -3,9 +3,9 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace NUCSSACore\Hooks;
+namespace nucssa_core\inc;
 
-use NUCSSACore\Admin\CronSchedules;
+use nucssa_core\inc\Cron;
 
 class Deactivation {
   public static function init(){
@@ -16,7 +16,7 @@ class Deactivation {
   }
 
   private static function removeCronTasks(){
-    (new CronSchedules())->unscheduleCron();
+    (new Cron())->unscheduleCron();
   }
 
   private static function dropDBTables(){

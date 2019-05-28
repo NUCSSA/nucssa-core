@@ -1,5 +1,5 @@
 <?php
-namespace NUCSSACore\Utils;
+namespace nucssa_core\utils;
 
 /**
  * Utility - log info to console (browser)
@@ -26,6 +26,6 @@ CONSOLE;
  * @param string|object $message
  */
 
- function file_log($action, $message = ''){
+function file_log($action, $message = ''){
   Logger::singleton()->log_action($action, $message);
 }
