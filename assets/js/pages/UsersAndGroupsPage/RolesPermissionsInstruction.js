@@ -3,6 +3,7 @@ import React from 'react';
 const RolesPermissionsInstruction = () => {
   const check = <i className='dashicons dashicons-yes'></i>;
   const uncheck = <i className='dashicons dashicons-no-alt'></i>;
+  /* eslint-disable */
   return (
     <div className="section-container">
       <div className="section-title" style={{textAlign: 'center'}}>About Roles and Permissions</div>
@@ -58,6 +59,7 @@ const RolesPermissionsInstruction = () => {
       </div>
     </div>
   );
+  /* eslint-enable */
 };
 
 export default RolesPermissionsInstruction;

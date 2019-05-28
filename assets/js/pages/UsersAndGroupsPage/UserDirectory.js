@@ -143,6 +143,8 @@ export default class UserDirectory extends Component {
       'email_attribute', 'user_id_attribute'];
     const group_attrs = ['object_class', 'object_filter', 'name_attribute', 'description_attribute', 'group_id_attribute'];
     const membership_attrs = ['group_membership_attribute', 'user_membership_attribute'];
+
+    // eslint-disable
     if (!config) return false;
     if (!config.server) return false;
     if (!config.schema) return false;
@@ -156,6 +158,7 @@ export default class UserDirectory extends Component {
     if (!membership_attrs.every((attr) => config.membership_schema.hasOwnProperty(attr) && config.membership_schema[attr] != '') ) return false;
 
     return true;
+    // eslint-enable
   }
 
   async handleFormSubmit(e){
@@ -177,6 +180,7 @@ export default class UserDirectory extends Component {
   }
 
   renderEditForm(){
+    /* eslint-disable */
     return (
       <form onSubmit={this.handleFormSubmit}>
 
@@ -305,6 +309,7 @@ export default class UserDirectory extends Component {
 
       </form>
     );
+    /* eslint-enable */
   }
 
   renderViewOnlyMode(){
