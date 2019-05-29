@@ -5,7 +5,7 @@
  */
 namespace nucssa_core\inc\rest;
 
-use function nucssa_core\utils\{console_log, file_log};
+use function nucssa_core\utils\debug\{console_log, file_log};
 use nucssa_core\inc\accounts\{Accounts, UserDirectory, DirectoryPerm};
 
 class AdminRESTAPI

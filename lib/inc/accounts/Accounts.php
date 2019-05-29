@@ -4,7 +4,8 @@
  * Github: https://github.com/JJPro
  */
 namespace nucssa_core\inc\accounts;
-use function nucssa_core\utils\{file_log, console_log};
+use function nucssa_core\utils\debug\{file_log, console_log};
+use function nucssa_core\utils\pluggable\{get_user_by};
 
 class Accounts {
   private function construct(){}
@@ -54,12 +55,10 @@ class Accounts {
           if ($uidNumber) {
             $dir_user = DirectoryUser::findByExternalID($uidNumber);
             // find user id in wp_users table
-            global $wpdb;
-            $query = "SELECT ID FROM {$wpdb->users} WHERE external_id = {$uidNumber}";
-            $user_id = $wpdb->get_var($query);
+            $user = get_user_by('external_id', $uidNumber);
             // update user in wp-users
             wp_update_user([
-              'ID' => $user_id,
+              'ID' => $user->ID,
               'user_login' => $dir_user->username,
               'first_name' => $dir_user->first_name,
               'last_name' => $dir_user->last_name,
@@ -91,8 +90,8 @@ class Accounts {
         global $wpdb;
         // file_log("new_user_id", $new_user_id);
         $wpdb->query(
-          "UPDATE {$wpdb->users} SET external_id = {$dir_user->external_id}
-            WHERE ID = {$new_user_id}"
+          "UPDATE $wpdb->users SET external_id = $dir_user->external_id
+          WHERE ID = $new_user_id"
         );
       }
 

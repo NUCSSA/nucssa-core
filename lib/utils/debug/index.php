@@ -1,5 +1,5 @@
 <?php
-namespace nucssa_core\utils;
+namespace nucssa_core\utils\debug;
 
 /**
  * Utility - log info to console (browser)

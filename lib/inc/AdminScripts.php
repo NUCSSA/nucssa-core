@@ -5,7 +5,7 @@
  */
 namespace nucssa_core\inc;
 
-use function nucssa_core\utils\console_log;
+use function nucssa_core\utils\debug\console_log;
 
 /**
  * Manage all JS and CSS scripts used in the admin dashboard

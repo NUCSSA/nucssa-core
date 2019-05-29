@@ -3,7 +3,7 @@ use nucssa_core\admin_dashboard\menu_page\TopLevelMenuPage;
 use nucssa_core\inc\AdminScripts;
 use nucssa_core\inc\rest\AdminRESTAPI;
 use nucssa_core\inc\Cron;
-use function nucssa_core\utils\{console_log};
+use function nucssa_core\utils\debug\{console_log};
 /**
  * Required
  */
