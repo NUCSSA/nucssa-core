@@ -17,7 +17,7 @@ defined ( 'ABSPATH' ) || exit;
 
 include_once __DIR__ . '/vendor/autoload.php';
 
-// use function nucssa_core\utils\{console_log, file_log};
+// use function nucssa_core\utils\debug\{console_log, file_log};
 require_once 'lib/bootstrap/index.php';
 
 // $jasonj = (new Accounts)->signin('jasonj', 'erqeaZg#0q5*&GNPmkFMdax&');

@@ -1,7 +1,7 @@
 <?php
 namespace nucssa_core\inc\accounts;
 
-use function nucssa_core\utils\{file_log};
+use function nucssa_core\utils\debug\{file_log};
 
 /**
  * Class represents a user from nucssa_user table

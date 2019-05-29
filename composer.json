@@ -2,7 +2,7 @@
     "require": {
     },
     "autoload": {
-        "files": ["lib/constants.php","lib/utils/index.php"],
+        "files": ["lib/constants.php", "lib/utils/debug/index.php", "lib/utils/pluggable.php"],
         "psr-4": {
             "":["lib/"]
         }

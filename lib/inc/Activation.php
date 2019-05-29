@@ -6,7 +6,7 @@
 namespace nucssa_core\inc;
 
 use nucssa_core\inc\Cron;
-use function nucssa_core\utils\file_log;
+use function nucssa_core\utils\debug\file_log;
 
 class Activation {
   public static function init(){
