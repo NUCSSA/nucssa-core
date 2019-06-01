@@ -6,13 +6,16 @@
 namespace nucssa_core\inc;
 
 use nucssa_core\inc\Cron;
+use nucssa_core\inc\accounts\DirectoryUser;
+use function nucssa_core\utils\pluggable\{get_user_by};
 
 class Deactivation {
   public static function init(){
 
-    // Remove Cron Tasks
     self::removeCronTasks();
+    self::cleanUsersAndUsermetas();
     self::dropDBTables();
+    self::cleanOptions();
   }
 
   private static function removeCronTasks(){
@@ -29,5 +32,20 @@ class Deactivation {
       $wpdb->query("DROP TABLE IF EXISTS $table;");
     });
     $wpdb->query('SET foreign_key_checks = 1;');
+  }
+
+  private static function cleanOptions(){
+    // remove option `LDAP_SYNC_LAST_TIMESTAMP`
+    delete_option(\LDAP_SYNC_LAST_TIMESTAMP);
+  }
+
+  private static function cleanUsersAndUsermetas(){
+    global $wpdb;
+    $query = "SELECT external_id FROM nucssa_user";
+    foreach ($wpdb->get_col($query) as $external_id) {
+      if ($user = get_user_by('external_id', $external_id)){
+        \wp_delete_user($user->ID, 1);
+      }
+    }
   }
 }
