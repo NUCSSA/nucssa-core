@@ -22,6 +22,7 @@ const authenticatedRequest = async (action, URL, payload = null) => {
   }).then(resp => {
     return resp.data;
   }).catch(error => {
+    // eslint-disable-next-line
     console.log(error);
   });
 };
@@ -77,4 +78,4 @@ export const savePerms = async perms => {
     data: perms
   };
   return await authenticatedRequest(ACTIONS.POST, permissionsRestURL, payload);
-}
+};

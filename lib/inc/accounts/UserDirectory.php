@@ -4,7 +4,7 @@
  * Github: https://github.com/JJPro
  */
 namespace nucssa_core\inc\accounts;
-use function nucssa_core\utils\debug\{file_log};
+use function nucssa_core\utils\debug\{file_log, console_log};
 
 
 class UserDirectory {
@@ -105,7 +105,7 @@ class UserDirectory {
   }
 
   /**
-   * Get group members
+   * Get group member dns
    * @return array
    */
   public function getGroupMembers(string $groupname) {
@@ -115,17 +115,23 @@ class UserDirectory {
     $group_members_attrib = $this->membership_schema["group_membership_attribute"];
     $additional_group_dn = $this->schema["additional_group_dn"];
 
-    $base_dn = "{$additional_group_dn},{$this->schema['base_dn']}";
+    $base_dn = "{$this->schema['base_dn']}";
     $filter = "({$name_attrib}={$groupname})";
 
     $res = ldap_search($this->conn, $base_dn, $filter, [$group_members_attrib]);
-    $entries = ldap_get_entries($this->conn, $res);
+    $record = ldap_first_entry($this->conn, $res);
+    $entries = ldap_get_values($this->conn, $record, $group_members_attrib);
+    unset($entries['count']);
+
+    // console_log($base_dn, 'base_dn');
+    // console_log($filter, 'filter');
+    // console_log($group_members_attrib, 'group_members_attrib');
+    // console_log($entries, 'entries');
 
     // No information found, bad user
-    if ($entries['count'] == 0) return [];
+    if (ldap_count_entries($this->conn, $res) == 0) return [];
 
-    // var_dump ($entries[0][ $group_members_attrib]);
-    return $entries[0][ $group_members_attrib];
+    return $entries;
   }
 
   /**
@@ -135,8 +141,8 @@ class UserDirectory {
    */
   public function fetchAll(){
     $this->bindWPUser() or die("Could not bind to LDAP");
-
-     return array(
+    // file_log('fetch all');
+    return array(
        "users" => $this->fetchUsers(),
        "groups" => $this->fetchGroups()
      );
@@ -166,27 +172,17 @@ class UserDirectory {
       $this->user_schema['user_id_attribute'],
     );
     $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
-    $entries = ldap_get_entries($this->conn, $res);
-
-    if ($entries["count"] != 0) {
-      array_shift($entries);
-      foreach ($entries as $entry) {
+    if (ldap_count_entries($this->conn, $res) > 0) {
+      $entry = \ldap_first_entry($this->conn, $res);
+      do {
         foreach ($atts as $att) {
-          if ($vals = @$entry[strtolower($att)]) {
-            if ($vals["count"] == 1) {
-              $val = $vals[0];
-            } else {
-              array_shift($vals);
-              $val = $vals;
-            }
-          } else {
-            $val = NULL;
-          }
-          $user[$att] = $val;
+          $user[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
         }
         $users[] = $user;
-      }
+      } while ($entry = ldap_next_entry($this->conn, $entry));
     }
+
+    // file_log('users', gettype($users));
     return $users;
   }
 
@@ -212,26 +208,20 @@ class UserDirectory {
       $this->membership_schema['group_membership_attribute'],
     );
     $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
-    $entries = ldap_get_entries($this->conn, $res);
-
-    if ($entries["count"] != 0) {
-      array_shift($entries);
-      foreach ($entries as $entry) {
+    if (ldap_count_entries($this->conn, $res) > 0) {
+      $entry = \ldap_first_entry($this->conn, $res);
+      do {
         foreach ($atts as $att) {
-          if ($vals = @$entry[strtolower($att)]) {
-            if ($vals["count"] == 1) {
-              $val = $vals[0];
-            } else {
-              array_shift($vals);
-              $val = $vals;
-            }
-          } else {
-            $val = NULL;
+          if ($att !== $this->membership_schema['group_membership_attribute'])
+            $group[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
+          else {
+            $vals = @ldap_get_values($this->conn, $entry, $att);
+            unset($vals['count']);
+            $group[$att] = $vals;
           }
-          $group[$att] = $val;
         }
         $groups[] = $group;
-      }
+      } while ($entry = ldap_next_entry($this->conn, $entry));
     }
     return $groups;
   }

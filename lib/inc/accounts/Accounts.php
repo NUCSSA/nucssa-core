@@ -93,6 +93,14 @@ class Accounts {
           "UPDATE $wpdb->users SET external_id = $dir_user->external_id
           WHERE ID = $new_user_id"
         );
+
+        self::updateUserRoles($user, $dir_user);
+
+        /**
+         * @param WP_User $user
+         * @param DirectoryUser $dir_user
+         */
+        do_action('nucssa_user_created', $user, $dir_user);
       }
 
       // now try to authenticate against LDAP record
@@ -107,13 +115,43 @@ class Accounts {
   }
 
   /**
+   * Update roles on usermeta to keep sync with user/group permissions
+   *
+   * Provide one of the params below, would be even efficient if both are provided.
+   * @param WP_User|null $user
+   * @param DirectoryUser|null $dir_user
+   */
+  public static function updateUserRoles(\WP_User $user, DirectoryUser $dir_user){
+    // file_log('>>>> add user roles');
+    if (!$user && !$dir_user) return;
+
+    if (!$user) $user = get_user_by('external_id', $dir_user->external_id);
+    if (!$dir_user) $dir_user = DirectoryUser::findByUserID($user->ID);
+
+    if ($user && $dir_user){ // make sure we are not editing locally created users by accident
+      // first clear existing roles from user
+      $user->set_role('');
+
+      // add roles to user
+      $roles = $dir_user->allRoles();
+      foreach($roles as $role) {
+        // file_log("..... role", $role);
+        $user->add_role( $role );
+      }
+    }
+  }
+
+  /**
    * sync users and groups from LDAP server to wordpress database
    */
   public static function syncFromDirectory() {
     $allRecords = UserDirectory::singleton() -> fetchAll();
+    // file_log('all records', $allRecords);
+
     self::syncUsers($allRecords["users"]);
     self::syncGroups($allRecords["groups"]);
     self::syncMembership($allRecords["groups"]);
+    file_log('here');
 
     // save sync timestamp in wp-option
     self::updateLastSyncTimestamp();
@@ -311,14 +349,13 @@ class Accounts {
 
     $user_table_name = "nucssa_user";
     $group_table_name = "nucssa_group";
-    $group_table_name = "nucssa_group";
     $membership_table_name = "nucssa_membership";
     $touchedRecords = [];
     /***** First update memberships in db and track touched records by ID *****/
     foreach($groups as $group){
       $memberDNs = $group[$directory->membership_schema["group_membership_attribute"]];
-      if ($memberDNs === NULL) continue; // skip if NULL
-      $memberDNs = ("string" == gettype($memberDNs)) ? [$memberDNs] : $memberDNs;
+      // file_log('memberDns', $memberDNs);
+      if ($memberDNs === NULL) continue; // skip if NULL, aka. no members in this group
       $gidNumber = $group[$directory->group_schema["group_id_attribute"]];
       $parent_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE external_id = {$gidNumber}");
 
@@ -326,31 +363,35 @@ class Accounts {
         $child_group_id = $child_user_id = 'NULL';
         ["type" => $type, "name" => $name] = self::getMemberTypeAndName($memberDN);
 
+        file_log('member type', $type);
+        file_log('member name', $name);
+
         if ($type == "user") {
           // find user id with $name
           $child_user_id = $wpdb->get_var("SELECT id FROM {$user_table_name} WHERE username = '{$name}'");
+          file_log('child_user_id', $child_user_id);
         } else {
           // find group id with gidNumber
           $child_group_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE group_name = '{$name}'");
+          file_log('child_group_id', $child_group_id);
         }
+        $wpdb->query(
+          "INSERT INTO {$membership_table_name}
+            (parent_id, child_group_id, child_user_id)
+            VALUES ($parent_id, $child_group_id, $child_user_id)
+            ON DUPLICATE KEY UPDATE
+            parent_id = $parent_id
+          "
+        );
+
+        // track touched membership record
+        $child_col = $child_group_id !== 'NULL' ? 'child_group_id' : 'child_user_id';
+        $child_val = $child_group_id !== 'NULL' ? $child_group_id : $child_user_id;
+        $touchedRecords[] = $wpdb->get_var("SELECT id FROM {$membership_table_name}
+          WHERE parent_id = {$parent_id}
+          AND {$child_col} = {$child_val}"
+        );
       }
-
-      $wpdb->query(
-        "INSERT INTO {$membership_table_name}
-          (parent_id, child_group_id, child_user_id)
-          VALUES ($parent_id, $child_group_id, $child_user_id)
-          ON DUPLICATE KEY UPDATE
-          parent_id = $parent_id
-        "
-      );
-
-      // track touched membership record
-      $child_col = $child_group_id !== 'NULL' ? 'child_group_id' : 'child_user_id';
-      $child_val = $child_group_id !== 'NULL' ? $child_group_id : $child_user_id;
-      $touchedRecords[] = $wpdb->get_var("SELECT id FROM {$membership_table_name}
-        WHERE parent_id = {$parent_id}
-        AND {$child_col} = {$child_val}"
-      );
     }
 
     /***** Delete untouched records *****/

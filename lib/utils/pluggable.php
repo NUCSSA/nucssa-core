@@ -21,7 +21,7 @@ function get_user_by($field, $value) {
 
       update_user_caches($userdata);
 
-      $user = new WP_User;
+      $user = new \WP_User;
       $user->init($userdata);
       return $user;
 
