@@ -6,7 +6,6 @@ import {
   savePerms
 } from '../../utils/api';
 import SearchDropdown from '../../components/SearchDropdown';
-import PropTypes from 'prop-types';
 import Instruction from './RolesPermissionsInstruction';
 import PermEntry from './PermEntry';
 
@@ -82,7 +81,7 @@ export default class RolesPermissions extends Component {
    * @param {Object} account {account_id, account_display_name, key, account_type='USER'|'GROUP'}
    */
   addPerm(account){
-    console.log('>>>> will grant permission to ', account);
+    // console.log('>>>> will grant permission to ', account);
     const perms = [...this.state.perms, {...account, role: null, dirty: true, action: permActions.add}];
     this.setState({perms});
   }
@@ -128,7 +127,7 @@ export default class RolesPermissions extends Component {
    * @return {PropTypes.ReactElementLike}
    */
   renderMatchItem(item){
-    console.log('item', item);
+    // console.log('item', item);
     let dashicon = null;
     if (item.account_type === 'USER'){
       dashicon = 'dashicons-admin-users';
@@ -139,7 +138,7 @@ export default class RolesPermissions extends Component {
   }
 
   searchFieldValueOnSelection(selection){
-    console.log('selected', selection);
+    // console.log('selected', selection);
 
     this.searchSelection = selection;
     return selection.account_display_name;
@@ -147,8 +146,9 @@ export default class RolesPermissions extends Component {
 
   async save(){
     const dirtyPerms = this.state.perms.filter((p) => !!p.dirty);
+    // eslint-disable-next-line
     const status = savePerms(dirtyPerms);
-    console.log('save status', status);
+    // console.log('save status', status);
     this.setState({ editingMode: false });
   }
 

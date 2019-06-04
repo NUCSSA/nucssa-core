@@ -88,7 +88,7 @@ class SearchDropdown extends Component {
     this.inputNodeRef.current.blur();
   }
 
-  onBlur(e) {
+  onBlur() {
     this.setState({selfDismissDropdown: true});
   }
 
@@ -118,7 +118,7 @@ class SearchDropdown extends Component {
           this.state.matches.map(match => (
             <li
               key={match.key}
-              onMouseDown={() => {console.log('>>> called'); this.onSelection(match)}}
+              onMouseDown={() => {this.onSelection(match)}}
               onMouseOver={this.makeCurrentElementActive}
               onMouseOut={this.makeCurrentElementInactive}
               tabIndex="0"

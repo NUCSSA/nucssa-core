@@ -37,8 +37,6 @@ export default class UserDirectory extends Component {
   async componentDidMount(){
     // fetch ldap config from server
     const ldapConfig = await fetchLdapConfig();
-    console.log('>>>> ', ldapConfig);
-
     this.setState({ldapConfig});
   }
 

@@ -46,9 +46,5 @@ module.exports = {
             'error',
             'expression'
         ],
-        'comma-dangle': [
-            'error',
-            'never'
-        ],
     }
 };
