@@ -16,7 +16,6 @@ mix.sass('assets/scss/admin-plugin-page.scss', 'public/css')
    .sass('assets/scss/admin-global.scss', 'public/css')
    .react('assets/js/admin.js', 'public/js')
    .copyDirectory('assets/images/', 'public/images/')
-   .copyDirectory('assets/fonts/', 'public/fonts/')
    .browserSync({
      proxy: 'wp.localhost',
      files: [ '*.php', 'lib/', 'config/', 'public/'],

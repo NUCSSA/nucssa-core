@@ -19,6 +19,7 @@ new AdminScripts();
 new AdminRESTAPI();
 (new Cron())->addCronInterval();
 
+// authenticate via LDAP
 add_filter('authenticate', 'nucssa_core\inc\accounts\Accounts::login', 0, 3);
 
 
