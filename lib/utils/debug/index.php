@@ -11,6 +11,7 @@ namespace nucssa_core\utils\debug;
  * console_log($router->getRoutes(), "routes");
  */
 function console_log($data, string $label = ''){
+  if (!WP_DEBUG) return;
   $json_data = json_encode($data);
   echo <<<CONSOLE
 <script>
@@ -27,5 +28,6 @@ CONSOLE;
  */
 
 function file_log($action, $message = ''){
+  if (!WP_DEBUG) return;
   Logger::singleton()->log_action($action, $message);
 }

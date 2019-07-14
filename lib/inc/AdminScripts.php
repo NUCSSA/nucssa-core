@@ -58,7 +58,6 @@ class AdminScripts
 
   private function loadAdminStyles($hook)
   {
-    console_log( NUCSSA_CORE_DIR_URL);
     // NUCSSA Core Plugin Page only Styles
     if ($hook === 'toplevel_page_admin-menu-page-nucssa-core') {
       wp_enqueue_style(
