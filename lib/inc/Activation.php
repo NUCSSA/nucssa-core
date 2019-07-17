@@ -22,10 +22,7 @@ class Activation {
 
   private static function alterWPUsersTable() {
     global $wpdb;
-    $query = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE table_name = {$wpdb->users}
-            AND   table_schema = {$wpdb->dbname}
-            AND   column_name = 'external_id'";
+    $query = "SHOW COLUMNS FROM {$wpdb->users} LIKE 'external_id'";
     $results = $wpdb->get_results($query);
     if (empty($results)) {
       file_log('altering');
