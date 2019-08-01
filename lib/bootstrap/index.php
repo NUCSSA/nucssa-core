@@ -18,6 +18,7 @@ new TopLevelMenuPage();
 new AdminScripts();
 new AdminRESTAPI();
 (new Cron())->addCronInterval();
+add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
 
 // authenticate via LDAP
 add_filter('authenticate', 'nucssa_core\inc\accounts\Accounts::login', 0, 3);
