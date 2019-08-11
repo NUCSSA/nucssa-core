@@ -162,7 +162,7 @@ class UserDirectory {
     $users = [];
     $base_dn = $this->schema['additional_user_dn'] . "," . $this->schema['base_dn'];
     $filters[] = $this->user_schema['object_filter'];
-    $filter = $filters->count == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
+    $filter = count($filters) == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
     $atts = array(
       $this->user_schema['username_attribute'],
       $this->user_schema['firstname_attribute'],
@@ -174,15 +174,20 @@ class UserDirectory {
     $res = ldap_search($this->conn, $base_dn, $filter, $atts) or exit("Unable to search");
     if (ldap_count_entries($this->conn, $res) > 0) {
       $entry = \ldap_first_entry($this->conn, $res);
+
       do {
-        foreach ($atts as $att) {
-          $user[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
-        }
+
+        // loop through each attribute and store to $user
+        $att = \ldap_first_attribute($this->conn, $entry);
+        do {
+          if (\in_array($att, $atts)) {
+            $user[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
+          }
+        } while($att = \ldap_next_attribute($this->conn, $entry));
         $users[] = $user;
       } while ($entry = ldap_next_entry($this->conn, $entry));
     }
 
-    // file_log('users', gettype($users));
     return $users;
   }
 
@@ -200,7 +205,7 @@ class UserDirectory {
     $groups = [];
     $base_dn = $this->schema["additional_group_dn"] . "," . $this->schema['base_dn'];
     $filters[] = $this->group_schema['object_filter'];
-    $filter = $filters->count == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
+    $filter = count($filters) == 1 ? $filters[0] : '(& ' . implode($filters) . ')';
     $atts = array(
       $this->group_schema['name_attribute'],
       $this->group_schema['description_attribute'],
@@ -211,15 +216,21 @@ class UserDirectory {
     if (ldap_count_entries($this->conn, $res) > 0) {
       $entry = \ldap_first_entry($this->conn, $res);
       do {
-        foreach ($atts as $att) {
-          if ($att !== $this->membership_schema['group_membership_attribute'])
-            $group[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
-          else {
-            $vals = @ldap_get_values($this->conn, $entry, $att);
-            unset($vals['count']);
-            $group[$att] = $vals;
+
+        // loop through each attribute and store to $group
+        $att = \ldap_first_attribute($this->conn, $entry);
+        do {
+          if (\in_array($att, $atts)) {
+            if ($att !== $this->membership_schema['group_membership_attribute'])
+              $group[$att] = @ldap_get_values($this->conn, $entry, $att)[0];
+            else {
+              $vals = @ldap_get_values($this->conn, $entry, $att);
+              unset($vals['count']);
+              $group[$att] = $vals;
+            }
+
           }
-        }
+        } while ($att = \ldap_next_attribute($this->conn, $entry));
         $groups[] = $group;
       } while ($entry = ldap_next_entry($this->conn, $entry));
     }

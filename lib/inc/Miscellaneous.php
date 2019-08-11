@@ -10,9 +10,9 @@ class Miscellaneous
    */
   public static function trackViews($post, $query) {
     if ($query->is_single || $query->is_page){
-      $views = get_post_meta($post->ID, 'views', true);
+      $views = get_post_meta($post->ID, '_views', true);
       $views = empty($views) ? 0 : $views;
-      update_post_meta($post->ID, 'views', $views + 1);
+      update_post_meta($post->ID, '_views', $views + 1);
     }
   }
 }

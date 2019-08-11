@@ -5,48 +5,32 @@
  */
 namespace nucssa_core\inc;
 
-use nucssa_core\inc\accounts\Accounts;
-
 class Cron {
-  private $cron_hook = 'nucssa-core-cron-hook';
-  private $interval_name_10m = '10-min';
-
-  public function __construct(){}
+  const ten_min_cron_hook = 'nucssa-core-10-min-cron';
+  const interval_name = '10-min';
 
   /**
-   * @param Array $schedules Existing cron jobs
+   * @param Array $schedules Existing cron schedules/intervals
    * @return Array $schedules
    */
-  public function addCronInterval()
-  {
+  public static function registerCronInterval($schedules){
     // Add 10min Cron Interval
-    add_filter('cron_schedules', function ($schedules) {
-
-      $schedules[$this->interval_name_10m] = array(
-        'interval'    => 600,
-        'display'     => __('Every Ten Minutes')
-      );
-      return $schedules;
-    });
-
+    $schedules[self::interval_name] = array(
+      'interval'    => 600,
+      'display'     => __('Every Ten Minutes')
+    );
+    return $schedules;
   }
 
 
-  public function scheduleCron(){
-    add_action($this->cron_hook, function () {
-      $this->tenMinuteCronTasks();
-    });
-    if (!\wp_next_scheduled($this->cron_hook)) {
-      \wp_schedule_event(time(), $this->interval_name_10m, $this->cron_hook);
+  public static function scheduleEvents(){
+    if (!\wp_next_scheduled(self::ten_min_cron_hook)) {
+      \wp_schedule_event(time(), self::interval_name, self::ten_min_cron_hook);
     }
   }
 
-  public function unscheduleCron(){
-    $timestamp = \wp_next_scheduled($this->cron_hook);
-    \wp_unschedule_event($timestamp, $this->cron_hook);
-  }
-
-  private function tenMinuteCronTasks(){
-    Accounts::syncFromDirectory();
+  public static function unscheduleCron(){
+    $timestamp = \wp_next_scheduled(self::ten_min_cron_hook);
+    \wp_unschedule_event($timestamp, self::ten_min_cron_hook);
   }
 }

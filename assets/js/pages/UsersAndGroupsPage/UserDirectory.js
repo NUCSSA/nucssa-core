@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import { Component } from '@wordpress/element';
 import { fetchLdapConfig, setLdapConfig, syncLdap, testLdapConnection } from '../../utils/api';
 
 export default class UserDirectory extends Component {

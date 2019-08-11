@@ -14,12 +14,12 @@ class Deactivation {
 
     self::removeCronTasks();
     self::cleanUsersAndUsermetas();
-    self::dropDBTables();
-    self::cleanOptions();
+    // self::dropDBTables();
+    // self::cleanOptions();
   }
 
   private static function removeCronTasks(){
-    (new Cron())->unscheduleCron();
+    Cron::unscheduleCron();
   }
 
   private static function dropDBTables(){

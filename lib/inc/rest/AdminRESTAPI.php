@@ -5,20 +5,17 @@
  */
 namespace nucssa_core\inc\rest;
 
-use function nucssa_core\utils\debug\{console_log, file_log};
 use nucssa_core\inc\accounts\{Accounts, UserDirectory, DirectoryPerm};
 
 class AdminRESTAPI
 {
   public function __construct()
   {
-    add_action('rest_api_init', function(){
-      // GET & POST '/nucssa-core/v1/ldap-config'
-      $this->ldapConfigAPI();
+    // GET & POST '/nucssa-core/v1/ldap-config'
+    $this->ldapConfigAPI();
 
-      // POST '/nucssa-core/v1/permissions'
-      $this->permissionsAPI();
-    });
+    // POST '/nucssa-core/v1/permissions'
+    $this->permissionsAPI();
   }
 
   public function permissionCheck($request)

@@ -8,32 +8,28 @@ namespace nucssa_core\admin_dashboard\menu_page;
 /**
  * The top level menu for the core plugin
  */
-class TopLevelMenuPage
+class AdminMenu
 {
-  private $page;
-
-  public function __construct()
+  public static function init()
   {
     // create the sidebar menu item
-    add_action( 'admin_menu', function(){
-      $this->addMenus();
-      $this->removeWpFooter();
-    } );
+    self::addMenuPage();
+    self::removeWpFooter();
   }
 
-  private function addMenus()
+  private static function addMenuPage()
   {
     // add top level menu
-    add_menu_page('Settings for NUCSSA Core', 'NUCSSA Core', 'manage_options', 'admin-menu-page-nucssa-core', function(){$this->render();}, 'none');
+    add_menu_page('Settings for NUCSSA Core', 'NUCSSA Core', 'manage_options', 'admin-menu-page-nucssa-core', function(){self::render();}, 'none');
   }
 
-  private function removeWpFooter()
+  private static function removeWpFooter()
   {
     add_filter('update_footer', '__return_empty_string', 11);
     add_filter('admin_footer_text', '__return_empty_string', 11);
   }
 
-  private function render()
+  private static function render()
   {
     global $menu, $_parent_pages, $_registered_pages, $admin_page_hooks;
     // $this->page->render();
