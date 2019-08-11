@@ -4,7 +4,6 @@ import { compose } from '@wordpress/compose';
 import { TextControl } from '@wordpress/components';
 
 const FeaturedPostExtension = (props) => {
-  console.log('reload');
   const toggleFeaturedPost = () => {
     if (props.isFeaturedPost) {
       props.cancelFeaturedPost();

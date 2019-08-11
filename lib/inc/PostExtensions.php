@@ -7,15 +7,13 @@ class PostExtensions {
   }
 
   public static function registerPostMetas() {
-    function auth_cb(){
-      current_user_can( 'edit_posts' );
-    }
-
     register_post_meta(
       '', '_views',
       [
         'show_in_rest' => true, 'type' => 'number', 'single' => true,
-        'auth_callback' => function() {auth_cb();}
+        'auth_callback' => function() {
+          return current_user_can('edit_posts');
+        }
       ]
     );
 
@@ -24,7 +22,7 @@ class PostExtensions {
       [
         'show_in_rest' => true, 'type' => 'number', 'single' => true,
         'auth_callback' => function () {
-          auth_cb();
+          return current_user_can('edit_posts');
         }
       ]
     );
