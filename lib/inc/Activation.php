@@ -5,20 +5,14 @@
  */
 namespace nucssa_core\inc;
 
-use nucssa_core\inc\Cron;
 use function nucssa_core\utils\debug\file_log;
 
 class Activation {
   public static function init(){
-
     self::createDBTables();
     self::alterWPUsersTable();
-    self::scheduleCronTasks();
   }
 
-  private static function scheduleCronTasks(){
-    (new Cron())->scheduleCron();
-  }
 
   private static function alterWPUsersTable() {
     global $wpdb;

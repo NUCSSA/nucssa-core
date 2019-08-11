@@ -5,25 +5,21 @@
  */
 namespace nucssa_core\inc;
 
-use function nucssa_core\utils\debug\console_log;
-
 /**
  * Manage all JS and CSS scripts used in the admin dashboard
  */
 class AdminScripts
 {
-  public function __construct()
+  public static function init($hook)
   {
-    add_action('admin_enqueue_scripts', function($hook){
-      $this->loadAdminScripts($hook);
-      $this->loadAdminStyles($hook);
-    });
+    self::loadAdminScripts($hook);
+    self::loadAdminStyles($hook);
 
     // load browserSync script for development
-    $this->enableBrowserSyncOnDebugMode();
+    self::enableBrowserSyncOnDebugMode();
   }
 
-  private function loadAdminScripts($hook)
+  private static function loadAdminScripts($hook)
   {
     if ($hook != 'toplevel_page_admin-menu-page-nucssa-core') {
       return;
@@ -34,8 +30,8 @@ class AdminScripts
     wp_enqueue_script(
       $handle,
       NUCSSA_CORE_DIR_URL . 'public/js/admin.js',
-      array(), // deps
-      false, // version
+      ['wp-element'], // deps
+      WP_DEBUG ? time() : false, // version
       true // in_footer?
     );
 
@@ -56,7 +52,7 @@ class AdminScripts
 
   }
 
-  private function loadAdminStyles($hook)
+  private static function loadAdminStyles($hook)
   {
     // NUCSSA Core Plugin Page only Styles
     if ($hook === 'toplevel_page_admin-menu-page-nucssa-core') {
@@ -80,7 +76,7 @@ class AdminScripts
   }
 
 
-  private function enableBrowserSyncOnDebugMode()
+  private static function enableBrowserSyncOnDebugMode()
   {
     if (WP_DEBUG) {
       add_action('admin_print_scripts', function () {

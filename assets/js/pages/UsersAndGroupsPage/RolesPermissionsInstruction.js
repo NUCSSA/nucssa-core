@@ -1,5 +1,3 @@
-import React from 'react';
-
 const RolesPermissionsInstruction = () => {
   const check = <i className='dashicons dashicons-yes'></i>;
   const uncheck = <i className='dashicons dashicons-no-alt'></i>;

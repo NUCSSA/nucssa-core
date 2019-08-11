@@ -151,7 +151,6 @@ class Accounts {
     self::syncUsers($allRecords["users"]);
     self::syncGroups($allRecords["groups"]);
     self::syncMembership($allRecords["groups"]);
-    file_log('here');
 
     // save sync timestamp in wp-option
     self::updateLastSyncTimestamp();
@@ -256,28 +255,37 @@ class Accounts {
       ",",
       array_map(
         function ($user) use ($directory) {
-          return "(" . '"' . $user[$directory->user_schema["username_attribute"]] . '"' . ","
-            . '"' . $user[$directory->user_schema["firstname_attribute"]] . '"' . ","
-            . '"' . $user[$directory->user_schema["lastname_attribute"]] . '"' . ","
-            . '"' . $user[$directory->user_schema["display_name_attribute"]] . '"' . ","
-            . '"' . $user[$directory->user_schema["email_attribute"]] . '"' . ","
-            . '"' . $user[$directory->user_schema["user_id_attribute"]] . '"' .
+          $username = $user[$directory->user_schema["username_attribute"]];
+          $firstname = $user[$directory->user_schema["firstname_attribute"]] ?? null;
+          $lastname = $user[$directory->user_schema["lastname_attribute"]] ?? null;
+          $display_name = $user[$directory->user_schema["display_name_attribute"]] ?? null;
+          $email = $user[$directory->user_schema["email_attribute"]] ?? null;
+          $user_id = $user[$directory->user_schema["user_id_attribute"]];
+          $value_str = "("
+            . "'$username'" . ","
+            . ($firstname ? "'$firstname'" : 'NULL') . ","
+            . ($lastname ? "'$lastname'" : 'NULL') . ","
+            . ($display_name ? "'$display_name'" : 'NULL') . ","
+            . ($email ? "'$email'" : 'NULL') . ","
+            . $user_id .
             ")";
+          return $value_str;
         },
         $usersFromDirectory
       )
     );
-    $wpdb->query(
-      "INSERT INTO $table_name
-        (username, first_name, last_name, display_name, email, external_id)
-        VALUES " . $values_string .
-        " ON DUPLICATE KEY UPDATE
-        username = VALUES(username),
-        first_name = VALUES(first_name),
-        last_name = VALUES(last_name),
-        display_name = VALUES(display_name),
-        email = VALUES(email);"
-    );
+    $query = <<<insert_query
+    INSERT INTO $table_name
+    (username, first_name, last_name, display_name, email, external_id)
+    VALUES $values_string
+    ON DUPLICATE KEY UPDATE
+    username = VALUES(username),
+    first_name = VALUES(first_name),
+    last_name = VALUES(last_name),
+    display_name = VALUES(display_name),
+    email = VALUES(email);
+insert_query;
+    $wpdb->query($query);
   }
 
   /**
@@ -313,9 +321,13 @@ class Accounts {
       ",",
       array_map(
         function ($group) use ($directory) {
-          return "(" . '"' . $group[$directory->group_schema["name_attribute"]] . '"' . ","
-            . '"' . $group[$directory->group_schema["description_attribute"]] . '"' . ","
-            . '"' . $group[$directory->group_schema["group_id_attribute"]] . '"' .
+          $name = $group[$directory->group_schema["name_attribute"]];
+          $description = $group[$directory->group_schema["description_attribute"]] ?? null;
+          $group_id = $group[$directory->group_schema["group_id_attribute"]];
+          return "("
+            . "'$name'" . ","
+            . ($description ? "'$description'" : 'NULL') . ","
+            . $group_id .
             ")";
         },
         $groupsFromDirectory
@@ -360,11 +372,10 @@ class Accounts {
       $parent_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE external_id = {$gidNumber}");
 
       foreach($memberDNs as $memberDN){
+        if (strpos($memberDN, 'cn=users') === false) continue;
+
         $child_group_id = $child_user_id = 'NULL';
         ["type" => $type, "name" => $name] = self::getMemberTypeAndName($memberDN);
-
-        file_log('member type', $type);
-        file_log('member name', $name);
 
         if ($type == "user") {
           // find user id with $name
@@ -375,14 +386,13 @@ class Accounts {
           $child_group_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE group_name = '{$name}'");
           file_log('child_group_id', $child_group_id);
         }
-        $wpdb->query(
-          "INSERT INTO {$membership_table_name}
-            (parent_id, child_group_id, child_user_id)
-            VALUES ($parent_id, $child_group_id, $child_user_id)
-            ON DUPLICATE KEY UPDATE
-            parent_id = $parent_id
-          "
-        );
+        $query = "INSERT INTO {$membership_table_name}
+          (parent_id, child_group_id, child_user_id)
+          VALUES ($parent_id, $child_group_id, $child_user_id)
+          ON DUPLICATE KEY UPDATE
+          parent_id = $parent_id
+        ";
+        $wpdb->query($query);
 
         // track touched membership record
         $child_col = $child_group_id !== 'NULL' ? 'child_group_id' : 'child_user_id';
