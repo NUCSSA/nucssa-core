@@ -3,5 +3,6 @@
     "/public/js/editor.js": "/public/js/editor.js",
     "/public/css/admin-plugin-page.css": "/public/css/admin-plugin-page.css",
     "/public/css/admin-global.css": "/public/css/admin-global.css",
-    "/public/css/editor.css": "/public/css/editor.css"
+    "/public/css/editor.css": "/public/css/editor.css",
+    "/public/css/style.css": "/public/css/style.css"
 }

@@ -7,13 +7,16 @@ add_action('admin_menu', ['nucssa_core\admin_dashboard\menu_page\AdminMenu', 'in
 add_action('admin_enqueue_scripts', ['nucssa_core\inc\AdminScripts', 'init']);
 add_action('rest_api_init', function () {new nucssa_core\inc\rest\AdminRESTAPI();});
 add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
-add_action('init', ['nucssa_core\inc\PostExtensions', 'init']);
+add_action('init', ['nucssa_core\inc\PostExtensions', 'init']); // add post metas
+add_action('init', ['nucssa_core\inc\CustomPostTypes', 'register']); // register new post types
+add_filter('manage_edit-club_columns', ['nucssa_core\inc\CustomPostTypes', 'manageClubTableColumns']); // register new post types
 
 // Authenticate via LDAP
 add_filter('authenticate', ['nucssa_core\inc\accounts\Accounts', 'login'], 0, 3);
 
 // Gutenberg Features
-add_action('enqueue_block_editor_assets', ['nucssa_core\inc\gutenberg\BlockEditorAssets', 'init']);
+add_action('enqueue_block_editor_assets', ['nucssa_core\inc\gutenberg\BlockEditorAssets', 'editorAssets']);
+add_action('enqueue_block_assets', ['nucssa_core\inc\gutenberg\BlockEditorAssets', 'sharedAssets']);
 
 // Cron Events
 add_filter('cron_schedules', ['nucssa_core\inc\Cron', 'registerCronInterval']);

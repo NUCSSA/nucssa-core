@@ -2,10 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-.nucssa-theme-featured-posts {
-  .components-base-control {
-    .components-base-control__help {
-      @apply mt-1;
-    }
-  }
-}
+@import '../js/gutenberg/editor-extensions/featured-post/editor.scss';
+@import '../js/gutenberg/blocks/club-info/editor.scss';

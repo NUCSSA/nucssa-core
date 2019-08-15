@@ -1,0 +1,20 @@
+#adminmenu{
+
+  // NUCSSA Core Menu Icon
+  .toplevel_page_admin-menu-page-nucssa-core {
+    div.wp-menu-image::before {
+      font-family: 'nucssa-icon-font';
+      font-size: 0.9rem;
+      content: "\e900";
+      vertical-align: middle;
+      line-height: 1.1rem;
+    }
+  }
+
+
+  // Club Post Type Menu Icon
+  #menu-posts-club .wp-menu-image::before {
+    font-family: 'nucssa-icon-font';
+    content: "\e917",
+  }
+}
