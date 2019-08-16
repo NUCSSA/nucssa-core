@@ -30,6 +30,7 @@ mix.webpackConfig({
 .sass('assets/scss/admin-plugin-page.scss', 'public/css')
 .sass('assets/scss/admin-global.scss', 'public/css')
 .sass('assets/scss/editor.scss', 'public/css')
+.sass('assets/scss/style.scss', 'public/css') // shared block styles
 .react('assets/js/admin.js', 'public/js')
 .js('assets/js/editor.js', 'public/js')
 .copyDirectory('assets/images/', 'public/images/')

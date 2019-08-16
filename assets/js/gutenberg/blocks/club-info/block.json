@@ -1,0 +1,25 @@
+{
+  "name": "nucssa/club-info",
+  "category": "widgets",
+  "attributes": {
+    "thumbnail": {
+      "type": "object",
+      "default": {
+        "url": "",
+        "id": null
+      }
+    },
+    "mainContact": {
+      "type": "object",
+      "default": {
+        "name": "",
+        "wechat": "",
+        "phone": "",
+        "email": ""
+      }
+    },
+    "workshopLocationAndTime": {
+      "type": "string"
+    }
+  }
+}

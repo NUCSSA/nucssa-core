@@ -1,13 +1,12 @@
+@import '../../../scss/SourceSansPro-fonts';
+@import '../../../scss/variables';
+
 #users-and-groups-admin-page {
   font-family: 'Source Sans Pro', sans-serif;
   padding: 20px 25px;
   min-height: calc(100vh - 278px - 32px); // 278px for NUCSSAIT footer branding
                                           // 32px  for wp admin bar
 
-
-  // Subpages
-  @import './user-directory';
-  @import './roles-permissions';
 
   // Nav Tabs on The Top
   .nav {

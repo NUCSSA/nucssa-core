@@ -1,5 +1,6 @@
 import { Component } from '@wordpress/element';
 import { fetchLdapConfig, setLdapConfig, syncLdap, testLdapConnection } from '../../utils/api';
+import './UserDirectory.scss';
 
 export default class UserDirectory extends Component {
   constructor(props){

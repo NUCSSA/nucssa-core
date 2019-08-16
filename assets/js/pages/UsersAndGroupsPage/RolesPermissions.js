@@ -8,6 +8,7 @@ import {
 import SearchDropdown from '../../components/SearchDropdown';
 import Instruction from './RolesPermissionsInstruction';
 import PermEntry from './PermEntry';
+import './RolesPermissions.scss';
 
 const permActions = {
   add: 'add',

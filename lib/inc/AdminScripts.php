@@ -30,7 +30,7 @@ class AdminScripts
     wp_enqueue_script(
       $handle,
       NUCSSA_CORE_DIR_URL . 'public/js/admin.js',
-      ['wp-element'], // deps
+      [ 'wp-element' ], // deps
       WP_DEBUG ? time() : false, // version
       true // in_footer?
     );

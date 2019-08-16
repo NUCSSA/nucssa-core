@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import { HashRouter, Route, Switch, NavLink } from 'react-router-dom';
 import UserDirectory from './UserDirectory';
 import RolesPermissions from './RolesPermissions';
+import './UsersAndGroupsPage.scss';
 
 const defaultActive = (match, location) => {
   return match || location.pathname == '/';
