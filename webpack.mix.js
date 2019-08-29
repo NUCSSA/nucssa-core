@@ -20,6 +20,7 @@ mix.webpackConfig({
     '@wordpress/edit-post': ['wp', 'editPost'],
     '@wordpress/i18n': ['wp', 'i18n'],
     '@wordpress/editor': ['wp', 'editor'],
+    '@wordpress/block-editor': ['wp', 'blockEditor'],
     '@wordpress/components': ['wp', 'components'],
     '@wordpress/blob': ['wp', 'blob'],
     '@wordpress/data': ['wp', 'data'],

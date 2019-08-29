@@ -40,5 +40,17 @@ class PostExtensions {
         }
       ]
     );
+
+    // Workshop info meta for club post type
+    register_post_meta(
+      'club', '_workshop_schedule',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
   }
 }
