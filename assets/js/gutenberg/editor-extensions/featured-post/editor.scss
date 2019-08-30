@@ -1,7 +1,11 @@
-.nucssa-theme-featured-posts {
+@import '../../../components/FeaturedPostBannerImage.scss';
+.nucssa-theme-featured-posts .configs {@apply border border-dashed border-gray-500 mt-2 ml-2 p-2;
   .components-base-control {
     .components-base-control__help {
       @apply mt-1;
     }
   }
+  .divider {@apply border border-dashed border-gray-500 my-4 mx-16;}
+  .hint {@apply mb-1;}
+  .help {@apply italic text-center mb-1;}
 }

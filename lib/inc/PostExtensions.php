@@ -29,6 +29,24 @@ class PostExtensions {
       ]
     );
 
+    // Add banner images to **all post types**
+    register_post_meta( '', '_banner_image_wide',
+      [
+        'show_in_rest' => true, 'type' => 'number', 'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('upload_files');
+        }
+      ]
+    );
+    register_post_meta( '', '_banner_image_narrow',
+      [
+        'show_in_rest' => true, 'type' => 'number', 'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('upload_files');
+        }
+      ]
+    );
+
     // Add the ability to add page icon to **pages**
     register_post_meta(
       'page', '_page_icon',

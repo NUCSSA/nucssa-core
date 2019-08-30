@@ -3,6 +3,8 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { TextControl } from '@wordpress/components';
 
+import FeaturedPostBannerImage, {BANNER_SIZE_NARROW, BANNER_SIZE_WIDE} from '../../../components/FeaturedPostBannerImage';
+
 const FeaturedPostExtension = (props) => {
   const toggleFeaturedPost = () => {
     if (props.isFeaturedPost) {
@@ -18,7 +20,17 @@ const FeaturedPostExtension = (props) => {
         <label><input type="checkbox" onChange={toggleFeaturedPost} checked={props.isFeaturedPost} />Set as Featured Post</label>
         {
           props.isFeaturedPost &&
-          <TextControl type='number' value={props.priority} label="Priority" help="featured posts will show in Homepage carousel" onChange={props.updateFeaturedPostPriority} />
+          <div className="configs">
+            <TextControl type='number' value={props.priority} label="Priority" help="featured posts will show in Homepage carousel" onChange={props.updateFeaturedPostPriority} />
+            <div className="divider"></div>
+            <p className="hint">Wide Banner Image (1920x400)</p>
+            <div className="help">shows on large screen</div>
+            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_WIDE} recommendedSize="1920x400" />
+            <div className="divider"></div>
+            <p className="hint">Wide Banner Image (640x314)</p>
+            <div className="help">shows on mobile</div>
+            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_NARROW} recommendedSize="640x314" />
+          </div>
         }
       </div>
     </PluginPostStatusInfo>
