@@ -14,4 +14,5 @@ export const settings = {
   supports: { html: false, align: ["wide"] },
   attributes,
   edit,
+  useOnce: true,
 };
