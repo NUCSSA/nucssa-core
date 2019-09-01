@@ -70,5 +70,48 @@ class PostExtensions {
         }
       ]
     );
+
+    // Metas for **coupon**
+    register_post_meta(
+      'coupon', 'amount',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+    register_post_meta(
+      'coupon', 'terms',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+    register_post_meta(
+      'coupon', 'phone',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+    register_post_meta(
+      'coupon', 'address',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+
   }
 }

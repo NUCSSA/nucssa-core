@@ -1,0 +1,35 @@
+{
+  "name": "nucssa/coupon",
+  "title": "Coupon",
+  "category": "widgets",
+  "keywords": ["coupon", "nucssa", "商家", "business", "赞助", "coop", "合作"],
+  "description": "赞助商家的Coupon",
+  "attributes": {
+    "style": {
+      "type": "string",
+      "source": "attribute",
+      "selector": "[data-style]",
+      "attribute": "data-style"
+    },
+    "amount": {
+      "type": "string",
+      "source": "meta",
+      "meta": "amount"
+    },
+    "terms": {
+      "type": "string",
+      "source": "meta",
+      "meta": "terms"
+    },
+    "phone": {
+      "type": "string",
+      "source": "meta",
+      "meta": "phone"
+    },
+    "address": {
+      "type": "string",
+      "source": "meta",
+      "meta": "address"
+    }
+  }
+}

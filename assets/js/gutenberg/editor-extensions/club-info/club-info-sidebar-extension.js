@@ -22,7 +22,6 @@ const ClubInfoExtension = (props) => {
       icon='none'
     >
       <TextControl value={location} label="Workshop地点" onChange={location => props.changeWorkshopSchedule({...props.workshop, location})} />
-      {/* <TextControl value={days} label="Workshop Days" onChange={days => props.changeWorkshopSchedule({...props.workshop, days})} /> */}
       <SelectControl
         multiple
         label="Workshop Days"
