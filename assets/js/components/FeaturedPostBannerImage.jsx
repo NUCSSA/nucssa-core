@@ -81,6 +81,7 @@ function FeaturedPostBannerImage({ bannerImageId, media, onUpdateImage, onRemove
 
 FeaturedPostBannerImage.propTypes = {
   bannerSize: PropTypes.string.isRequired, // BANNER_SIZE_WIDE | BANNER_SIZE_NARROW
+  recommendedSize: PropTypes.string,
 }
 
 const mapStateToProps = withSelect( (select, props) => {

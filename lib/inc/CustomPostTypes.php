@@ -50,7 +50,7 @@ class CustomPostTypes {
       'show_in_rest' => true,
       // 'rest_controller_class'
       'menu_icon' => 'dashicons-tickets-alt',
-      'supports' => ['title','editor', 'revisions', 'trackbacks', 'custom-fields', 'author'],
+      'supports' => ['title','editor', 'revisions', 'trackbacks', 'custom-fields', 'author', 'thumbnail'],
       'delete_with_user' => false,
     ]);
 
