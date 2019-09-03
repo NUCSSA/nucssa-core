@@ -9,7 +9,8 @@ add_action('rest_api_init', function () {new nucssa_core\inc\rest\AdminRESTAPI()
 add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
 add_action('init', ['nucssa_core\inc\PostExtensions', 'init']); // add post metas
 add_action('init', ['nucssa_core\inc\CustomPostTypes', 'register']); // register new post types
-add_filter('manage_edit-club_columns', ['nucssa_core\inc\CustomPostTypes', 'manageClubTableColumns']); // register new post types
+add_filter('manage_edit-club_columns', ['nucssa_core\inc\CustomPostTypes', 'manageClubTableColumns']); // change club main column name to 社团名称
+add_filter('manage_edit-coupon_columns', ['nucssa_core\inc\CustomPostTypes', 'manageCouponTableColumns']); // change coupon main column name to 赞助商家
 add_action('show_user_profile', ['nucssa_core\admin_dashboard\UserProfileMods', 'addOccupationField']); // NUCSSA职位 - display - user editing own
 add_action('edit_user_profile', ['nucssa_core\admin_dashboard\UserProfileMods', 'addOccupationField']); // NUCSSA职位 - display - admin editing others'
 add_action('personal_options_update', ['nucssa_core\admin_dashboard\UserProfileMods', 'saveOccupationInfo']); // NUCSSA职位 - save - user editing own

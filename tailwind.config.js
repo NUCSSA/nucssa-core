@@ -12,6 +12,19 @@ module.exports = {
     colors: {
       transparent: 'transparent',
 
+      nucssa: {
+        'standard': '#d92110',
+        'title': '#d92110c2',
+        'subtitle': '#d92110ad',
+        'section-title': '#601c16',
+        'nav-item': '#601C16',
+        'nav-item-highlight': '#D92110C2',
+        'view-all-btn': '#FA6980',
+        'tooltip-1': '#601c16',
+        'tooltip-2': '#43425D',
+        'tooltip-3': '#D92110',
+      },
+
       black: '#000',
       white: '#fff',
 

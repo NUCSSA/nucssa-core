@@ -1,13 +1,15 @@
 import { registerBlockType } from '@wordpress/blocks';
 import * as clubInfo from './club-info';
+import * as coupon from './coupon';
 
 
 const registerBlock = block => {
-  const {metadata, settings, name} = block;
+  const {settings, name} = block;
   registerBlockType(name, settings);
 }
 
 
 [
-  clubInfo
+  clubInfo,
+  coupon
 ].forEach( registerBlock );

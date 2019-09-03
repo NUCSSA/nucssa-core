@@ -1,0 +1,17 @@
+.wp-block-nucssa-coupon {
+  .coupon-editing {
+    .header {@apply text-center mb-4;}
+
+    .content {
+      .nucssa-media-uploader {@apply flex flex-col items-center;
+        .nucssa-media-uploader__preview {@apply w-auto;
+          img {@apply inline-block border-none; max-height: 150px;}
+        }
+      }
+    }
+
+    .footer {
+      .btn-preview {@apply block mx-auto my-4; }
+    }
+  }
+}
