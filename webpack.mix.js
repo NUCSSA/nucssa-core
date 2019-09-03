@@ -26,6 +26,9 @@ mix.webpackConfig({
     '@wordpress/data': ['wp', 'data'],
     '@wordpress/html-entities': ['wp', 'htmlEntities'],
     '@wordpress/compose': ['wp', 'compose'],
+    '@wordpress/hooks': ['wp', 'hooks'],
+    '@wordpress/api-fetch': ['wp', 'apiFetch'],
+    '@wordpress/url': ['wp', 'url'],
   }
 })
 .sass('assets/scss/admin-plugin-page.scss', 'public/css')
