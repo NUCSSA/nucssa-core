@@ -38,6 +38,7 @@ class PostExtensions {
       'hierarchical' => false,
       'show_in_rest' => true,
       'show_admin_column' => true,
+      'meta_box_cb' => false,
     ];
     register_taxonomy( 'column', ['post'], $args );
   }
