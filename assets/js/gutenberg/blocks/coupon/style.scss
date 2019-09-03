@@ -1,36 +1,143 @@
-.wp-block-nucssa-club-info,
-body.single-club .club-info,
-body.page-template-page-template-clubs .club-info {@apply relative flex justify-center items-center mb-16;
-  .content {@apply flex relative items-center w-full;min-height: 340px;border-radius: 32px;background: rgba(255, 255, 255, 0.78);box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.16);
-    margin-left: 45px;
+/**
+ * Shared stylings between editor view and frontend
+ */
+.wp-block-nucssa-coupon,
+.wp-block-nucssa-coupon.is-style-style-1-pattern-1 {@apply w-full;max-width: 558px;
+  .coupon-preview {@apply w-full; font-family: Roboto;
+    .card-container {@apply relative mx-auto w-full;
+      height: 236px;
+      box-shadow: 10px 10px 6px rgba(0, 0, 0, 0.16);
 
-    .thumbnail {@apply absolute bg-cover bg-center border-none; width: 220px;height: 220px;border-radius: 20px;box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.16);
-      left: -45px;
-    }
-    .detail {@apply pr-6 py-6; padding-left: 220px; font-family: Roboto;
-      .workshop-schedule {@apply font-bold text-xs;color: rgba(39, 34, 34, 0.62);}
-      .club-name {@apply font-bold text-lg;color: #272222;}
-      .excerpt {@apply font-light mt-2 text-sm mx-auto; color: #272222; max-width: 680px;}
+      .upper,
+      .lower {@apply px-6 py-4; height: 50%;}
+
+      .upper {background: #FF9E0D;
+        .business-name {@apply font-bold text-5xl leading-none; color: rgba(0, 0, 0, 0.72);}
+        .coupon-literal {@apply uppercase font-bold text-4xl text-white leading-none mt-1; letter-spacing: 0.54em;}
+      }
+
+      .lower {@apply flex items-center; padding-right: 190px;
+        img {@apply border-none flex-grow-0 mr-6; height: 82px; }
+        .details {@apply flex-grow; font-size: 11px;
+          .terms {color: rgba(0, 0, 0, 0.8);
+            .header {@apply uppercase font-bold leading-none; }
+            .content {@apply leading-snug;}
+          }
+          .contact {@apply leading-snug mt-1;
+            .label {@apply capitalize font-bold text-right align-top; }
+            .content {@apply pl-1 align-top;}
+          }
+        }
+      }
+
+      .coupon-amount-container {@apply absolute right-0 flex flex-col justify-center items-center pl-8 pr-4 text-white leading-none;
+        top: 50%; transform: translateY(-50%);
+        height: 112px;
+        background: linear-gradient(to right, rgba(198, 4, 4, 0.68) 0%, rgba(198, 4, 4, 0.83) 100%);
+
+        $notch-width: 35px;
+
+        &::before {
+          @apply h-0 absolute left-0 top-0;
+          transform: translateX(-100%);
+          content: '';
+          border-top: 56px solid rgba(198, 4, 4, 0.68);
+          border-bottom: 56px solid rgba(198, 4, 4, 0.68);
+          border-left: $notch-width solid transparent;
+        }
+
+        .outline {@apply absolute left-0;width: calc(100% + #{$notch-width} - 7px);
+          &::before,
+          &::after {@apply block border-solid border-white; content: ''; height: 56px;}
+
+          // top half
+          &::before {@apply border-t-2; border-left-width: 3px; transform: skewX(32deg) translate3d(-13px, 2.5px, 0) scaleY(0.92);}
+          // bottom half
+          &::after {@apply border-b-2; border-left-width: 3px; transform: skewX(-32deg) translate3d(-13px, -2.5px, 0) scaleY(0.92);}
+        }
+
+        .outline-top {@apply border-t-2 border-solid border-white; width: calc(100% + 3rem + #{$notch-width}); height: 56px;}
+        .outline-bottom {@apply border-b-2 border-solid border-white;width: calc(100% + 3rem + #{$notch-width}); height: 56px;}
+
+        .coupon-amount {@apply font-bold; font-size: 50px;}
+        .off-literal {@apply font-bold uppercase; letter-spacing: .1em; font-size: 17px;}
+      }
     }
   }
-  .hover-help-message {@apply absolute hidden text-white text-center px-8;}
 }
 
-.wp-block-nucssa-club-info:hover .hover-help-message {@apply block;}
-.wp-block-nucssa-club-info:hover .content {@apply cursor-pointer; filter: brightness(.3);}
+.wp-block-nucssa-coupon.is-style-style-1-pattern-2 {
+  .upper {background: #82CE2D !important}
+  .coupon-amount-container {background: linear-gradient(to right, rgba(8, 119, 126, 0.5) 0%, #08777e 100%) !important;
+    &::before {
+      border-top-color: rgba(8, 119, 126, 0.5) !important;
+      border-bottom-color: rgba(8, 119, 126, 0.5) !important;
+    }
+  }
+}
+.wp-block-nucssa-coupon.is-style-style-1-pattern-3 {
+  .upper {background: #D93D53 !important}
+  .coupon-amount-container {background: linear-gradient(to right, rgba(182, 198, 89, 0.68) 0%, rgba(182, 198, 89, 0.83) 100%) !important;
+    &::before {
+      border-top-color: rgba(182, 198, 89, 0.68) !important;
+      border-bottom-color: rgba(182, 198, 89, 0.68) !important;
+    }
+  }
+}
+.wp-block-nucssa-coupon.is-style-style-1-pattern-4 {
+  .upper {background: #5C60C3 !important}
+  .coupon-amount-container {background: linear-gradient(to right, rgba(239, 165, 68, 0.68) 0%, rgba(239, 165, 68, 0.83) 100%) !important;
+    &::before {
+      border-top-color: rgba(239, 165, 68, 0.68) !important;
+      border-bottom-color: rgba(239, 165, 68, 0.68) !important;
+    }
+  }
+}
 
-@screen md {
-  .wp-block-nucssa-club-info,
-  body.single-club .club-info {
-    .content {@apply flex-col h-auto mx-0 min-h-0;
-      margin-top: 100px;
+.wp-block-nucssa-coupon.is-style-style-2-pattern-1 {
+  .card-container {@apply flex; padding: 6px;
+    .left,
+    .right {@apply h-full;}
 
-      .thumbnail {@apply w-11/12 left-auto; height: 185px; top: -100px;}
-      .detail {@apply px-0 pb-8 w-10/12; padding-top: 110px;
-        .workshop-schedule,
-        .club-name,
-        .excerpt {@apply text-center;}
+    $edge-width: 25px;
+    .left {@apply relative flex flex-col flex-grow items-center justify-center px-8 leading-none text-white flex-grow text-center;
+      background: #D93D53;
+
+      &::after {@apply absolute right-0 top-0;
+        content: '';
+        transform: translateX(100%);
+        border-top: #D93D53 solid 224px;
+        border-right: transparent solid 56px;
       }
+
+      // phone number on the edge
+      border-left: solid $edge-width #730415;
+      .phone {@apply absolute text-white font-bold;
+        left: -$edge-width; top: 50%; line-height: $edge-width;
+        transform-origin: 0 0;
+        transform: rotate(-90deg) translateX(-50%);
+      }
+      .coupon-amount {@apply font-bold; font-size: 60px;}
+      .off-literal {@apply uppercase font-bold; font-size: 23px;}
+      .business-name {@apply font-bold mt-2; font-size: 19px; letter-spacing: 0.1em;}
+      .terms-header {@apply font-semibold uppercase mt-2; font-size: 11px; line-height: 10px;}
+      .terms-content {@apply mt-1 font-light leading-snug; font-size: 11px;}
+      .website {@apply mt-2; font-size: 11px;}
+      .address {@apply mt-1; font-size: 12px;}
+
+    }
+
+    .right {@apply relative flex flex-col flex-grow-0 justify-center; background: #B6C659;
+
+      margin-left: 61px;
+      &::before {@apply absolute left-0 top-0;
+        content: '';
+        transform: translateX(-100%);
+        border-top: transparent solid 224px;
+        border-right: #B6C659 solid 56px;
+      }
+
+      .logo {@apply mr-6 rounded-full; width: 184px; height: 184px; background-size: cover !important; background-position: center !important;}
     }
   }
 }

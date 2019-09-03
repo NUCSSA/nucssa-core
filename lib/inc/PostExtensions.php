@@ -73,6 +73,16 @@ class PostExtensions {
 
     // Metas for **coupon**
     register_post_meta(
+      'coupon', 'style',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+    register_post_meta(
       'coupon', 'amount',
       [
         'show_in_rest' => true,
@@ -103,6 +113,16 @@ class PostExtensions {
       ]
     );
     register_post_meta(
+      'coupon', 'website',
+      [
+        'show_in_rest' => true,
+        'single' => true,
+        'auth_callback' => function () {
+          return current_user_can('edit_posts');
+        }
+      ]
+    );
+    register_post_meta(
       'coupon', 'address',
       [
         'show_in_rest' => true,
@@ -112,6 +132,5 @@ class PostExtensions {
         }
       ]
     );
-
   }
 }
