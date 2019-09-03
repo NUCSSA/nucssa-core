@@ -3,13 +3,6 @@ import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { SelectControl } from '@wordpress/components';
 
-
-// export default function columnTaxSelector( OriginalComponent ) {
-//   // console.log(OriginalComponent);
-//   return function(props) {
-//     return <div>hi</div>;
-//   };
-// }
 const DEFAULT_QUERY = {
   orderby: 'name',
   order: 'asc',
@@ -41,7 +34,7 @@ class ColumnTaxonomyMetabox extends Component {
     })
     .then(
       terms => { // resolve
-        console.log('terms', terms);
+        // console.log('terms', terms);
         this.setState({availableTerms: terms});
       },
       xhr => { // reject
@@ -53,7 +46,7 @@ class ColumnTaxonomyMetabox extends Component {
   }
 
   onChangeTerm( col ) {
-    const { onUpdateTerms, terms = [], taxonomy } = this.props;
+    const { onUpdateTerms, taxonomy } = this.props;
     // this.props.onUpdateTerms(newTerms, taxonomy.rest_base)
     // taxonomy: caps, description, labels, name, rest_base, slug, types
 
@@ -65,9 +58,9 @@ class ColumnTaxonomyMetabox extends Component {
   }
 
   render(){
-    const { taxonomy, slug, terms } = this.props;
+    const { terms } = this.props;
     const selectTermId = terms.length == 0 ? -1 : terms[0];
-    console.log('proops', this.props);
+    // console.log('proops', this.props);
 
     const termOptions = this.state.availableTerms.map(term => ({ value: term.id, label: term.name }));
     return (
