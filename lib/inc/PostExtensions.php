@@ -4,43 +4,6 @@ namespace nucssa_core\inc;
 class PostExtensions {
   public static function init() {
     self::registerPostMetas();
-    self::registerTaxonomies();
-  }
-
-  private static function registerTaxonomies() {
-    /**
-     * 专栏Taxonomies:
-     *  - 东篱说
-     *  - 狗粮
-     *  - 摄影
-     */
-    $labels = [
-      'name' => '专栏',
-      'singular_name' => '专栏',
-      'search_items' => '专栏搜索',
-      'popular_items' => '常用专栏',
-      'all_items' => '所有专栏',
-      'edit_item' => '编辑专栏',
-      'view_item' => '查看专栏',
-      'update_item' => '更新专栏',
-      'add_new_item' => '添加新专栏',
-      'new_item_name' => '新专栏名称',
-      'separate_items_with_commas' => '用逗号分隔专栏',
-      'add_or_remove_items' => '添加/删除专栏',
-      'choose_from_most_used' => '选择常用专栏',
-      'not_found' => '没有此专栏',
-      'no_terms' => '还没有添加专栏',
-    ];
-    $args = [
-      'labels' => $labels,
-      'description' => '专栏分支',
-      'public' => true,
-      'hierarchical' => false,
-      'show_in_rest' => true,
-      'show_admin_column' => true,
-      'meta_box_cb' => false,
-    ];
-    register_taxonomy( 'column', ['post'], $args );
   }
 
   private static function registerPostMetas() {
