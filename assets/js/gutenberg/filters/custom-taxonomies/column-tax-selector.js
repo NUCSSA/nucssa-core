@@ -1,3 +1,7 @@
+/**
+ * WARNING: Removed from import, this file is not in use any more, but kept for future reference when similar functions are needed.
+ */
+
 import { Component } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
