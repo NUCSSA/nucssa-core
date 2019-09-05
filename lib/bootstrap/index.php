@@ -15,6 +15,7 @@ add_action('show_user_profile', ['nucssa_core\admin_dashboard\UserProfileMods', 
 add_action('edit_user_profile', ['nucssa_core\admin_dashboard\UserProfileMods', 'addOccupationField']); // NUCSSA职位 - display - admin editing others'
 add_action('personal_options_update', ['nucssa_core\admin_dashboard\UserProfileMods', 'saveOccupationInfo']); // NUCSSA职位 - save - user editing own
 add_action('edit_user_profile_update', ['nucssa_core\admin_dashboard\UserProfileMods', 'saveOccupationInfo']); // NUCSSA职位 - save - admin editing others'
+add_action('admin_init', ['nucssa_core\inc\accounts\RoleMods', 'init']);
 
 // Authenticate via LDAP
 add_filter('authenticate', ['nucssa_core\inc\accounts\Accounts', 'login'], 0, 3);
