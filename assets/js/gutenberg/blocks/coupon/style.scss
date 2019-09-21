@@ -38,7 +38,7 @@ $style-2-left-edge-width-sm: 25px;
     .coupon-literal {@apply uppercase font-bold text-2xl text-white leading-none mt-3; letter-spacing: 0.54em;}
   }
 
-  .lower {@apply flex items-center; padding-right: calc(4rem + $coupon-amount-notch-width);
+  .lower {@apply flex items-center; padding-right: calc(4rem + #{$coupon-amount-notch-width});
     img {@apply hidden border-none flex-grow-0 mr-3; height: 70px;
       @screen sm {@apply block;}
     }
