@@ -1,16 +1,16 @@
 .wp-block-nucssa-club-info,
 body.single-club .club-info,
-body.page-template-page-template-clubs .club-info {@apply relative flex justify-center items-center mb-16;
-  .content {@apply flex relative items-center w-full;min-height: 340px;border-radius: 32px;background: rgba(255, 255, 255, 0.78);box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.16);
-    margin-left: 45px;
+body.page-template-page-template-clubs .club-info {@apply relative flex justify-center items-center mb-8 w-full;
+  .content {@apply flex relative items-center w-full;min-height: 12rem;border-radius: 32px;background: rgba(255, 255, 255, 0.78);box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.16);
+    margin-left: 30px;
 
-    .thumbnail {@apply absolute bg-cover bg-center border-none; width: 220px;height: 220px;border-radius: 20px;box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.16);
-      left: -45px;
+    .thumbnail {@apply absolute bg-cover bg-center border-none; width: 150px;height: 150px;border-radius: 20px;box-shadow: 15px 15px 15px rgba(0, 0, 0, 0.16);
+      left: -30px;
     }
-    .detail {@apply pr-6 py-6; padding-left: 220px; font-family: Roboto;
+    .detail {@apply pr-6 py-6; padding-left: 150px; font-family: Roboto;
       .workshop-schedule {@apply font-bold text-xs;color: rgba(39, 34, 34, 0.62);}
       .club-name {@apply font-bold text-lg;color: #272222;}
-      .excerpt {@apply font-light mt-2 text-sm mx-auto; color: #272222; max-width: 680px;}
+      .excerpt {@apply font-light mt-2 text-sm mx-auto; color: #272222;}
     }
   }
   .hover-help-message {@apply absolute hidden text-white text-center px-8;}
@@ -18,6 +18,17 @@ body.page-template-page-template-clubs .club-info {@apply relative flex justify-
 
 .wp-block-nucssa-club-info:hover .hover-help-message {@apply block;}
 .wp-block-nucssa-club-info:hover .content {@apply cursor-pointer; filter: brightness(.3);}
+
+@screen sm {
+  .wp-block-nucssa-club-info,
+  body.single-club .club-info,
+  body.page-template-page-template-clubs .club-info {@apply mb-16;
+    .content {min-height: 340px; margin-left: 45px;
+      .thumbnail {width: 220px;height: 220px;left: -45px;}
+      .detail {padding-left: 220px;}
+    }
+  }
+}
 
 @screen md {
   .wp-block-nucssa-club-info,

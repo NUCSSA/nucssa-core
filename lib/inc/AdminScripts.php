@@ -26,12 +26,15 @@ class AdminScripts
     }
 
     $handle = 'nucssa_core_amdin_script';
+    $fpath = NUCSSA_CORE_DIR_PATH . 'public/js/admin.js';
+    $furl = NUCSSA_CORE_DIR_URL . 'public/js/admin.js';
+    $version = filemtime($fpath);
     // load core script
     wp_enqueue_script(
       $handle,
-      NUCSSA_CORE_DIR_URL . 'public/js/admin.js',
+      $furl,
       [ 'wp-element' ], // deps
-      WP_DEBUG ? time() : false, // version
+      $version,
       true // in_footer?
     );
 
@@ -56,21 +59,27 @@ class AdminScripts
   {
     // NUCSSA Core Plugin Page only Styles
     if ($hook === 'toplevel_page_admin-menu-page-nucssa-core') {
+      $fpath = NUCSSA_CORE_DIR_PATH . 'public/css/admin-plugin-page.css';
+      $furl = NUCSSA_CORE_DIR_URL . 'public/css/admin-plugin-page.css';
+      $version = filemtime($fpath);
       wp_enqueue_style(
         'nucssa_core_admin_plugin_page_style',
-        NUCSSA_CORE_DIR_URL . 'public/css/admin-plugin-page.css',
+        $furl,
         array(), // deps
-        false,   // version
+        $version,   // version
         'all'    // media
       );
     }
 
     // Global Styles
+    $fpath = NUCSSA_CORE_DIR_PATH . 'public/css/admin-global.css';
+    $furl = NUCSSA_CORE_DIR_URL . 'public/css/admin-global.css';
+    $version = filemtime($fpath);
     wp_enqueue_style(
       'nucssa_core_admin_global_style',
-      NUCSSA_CORE_DIR_URL . 'public/css/admin-global.css',
+      $furl,
       array(), // deps
-      false,   // version
+      $version,   // version
       'all'    // media
     );
   }
