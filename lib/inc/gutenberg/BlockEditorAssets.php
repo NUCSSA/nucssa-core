@@ -15,20 +15,24 @@ class BlockEditorAssets {
   }
 
   private static function sharedStyle() {
-    $version = WP_DEBUG ? time() : false;
+    $fpath = NUCSSA_CORE_DIR_PATH . '/public/css/style.css';
+    $furl = NUCSSA_CORE_DIR_URL . '/public/css/style.css';
+    $version = filemtime($fpath);
     wp_enqueue_style(
       'nucssa_core_block_shared_style',
-      NUCSSA_CORE_DIR_URL . '/public/css/style.css',
+      $furl,
       [],
       $version
     );
   }
 
   private static function editorScript() {
-    $version = WP_DEBUG ? time() : false;
+    $fpath = NUCSSA_CORE_DIR_PATH . '/public/js/editor.js';
+    $furl = NUCSSA_CORE_DIR_URL . '/public/js/editor.js';
+    $version = filemtime($fpath);
     wp_enqueue_script(
       'nucssa_core_block_assets_script',
-      NUCSSA_CORE_DIR_URL.'/public/js/editor.js',
+      $furl,
       ['wp-element', 'wp-plugins', 'wp-edit-post', 'wp-data', 'wp-compose', 'wp-components', 'wp-blocks'], // deps
       $version,
       true // in_footer?
@@ -36,10 +40,12 @@ class BlockEditorAssets {
   }
 
   private static function editorStyle() {
-    $version = WP_DEBUG ? time() : false;
+    $fpath = NUCSSA_CORE_DIR_PATH . '/public/css/editor.css';
+    $furl = NUCSSA_CORE_DIR_URL . '/public/css/editor.css';
+    $version = filemtime($fpath);
     wp_enqueue_style(
       'nucssa_core_block_assets_style',
-      NUCSSA_CORE_DIR_URL.'/public/css/editor.css',
+      $furl,
       [],
       $version
     );
