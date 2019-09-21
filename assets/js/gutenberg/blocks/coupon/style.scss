@@ -4,7 +4,7 @@
 
 $coupon-height: 200px;
 $coupon-amount-height: 70px;
-$coupon-amount-notch-width: 35px;
+$coupon-amount-notch-width: 22px;
 $style-2-splitter-width: 30px;
 $style-2-left-edge-width: 20px;
 
@@ -66,7 +66,7 @@ $style-2-left-edge-width-sm: 25px;
       border-top-width: $coupon-amount-height/2;
       border-bottom-style: solid;
       border-bottom-width: $coupon-amount-height/2;
-      border-left: $coupon-amount-notch-width - 13px solid transparent;
+      border-left: $coupon-amount-notch-width solid transparent;
     }
 
     .outline {@apply absolute left-0;width: calc(100% + #{$coupon-amount-notch-width});
@@ -74,9 +74,9 @@ $style-2-left-edge-width-sm: 25px;
       &::after {@apply block border-solid border-white; content: ''; height: $coupon-amount-height/2; }
 
       // top half
-      &::before {@apply border-t-2; border-left-width: 2px; transform: skewX(32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: bottom left;}
+      &::before {@apply border-l border-t; transform: skewX(32deg) translateX(4px) scaleY(0.92);transform-origin: bottom left;}
       // bottom half
-      &::after {@apply border-b-2; border-left-width: 2px; transform: skewX(-32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: top left;}
+      &::after {@apply border-l border-b; transform: skewX(-32deg) translateX(4px) scaleY(0.92);transform-origin: top left;}
     }
 
     .coupon-amount {@apply font-bold; font-size: 30px;}
@@ -200,10 +200,17 @@ $style-2-left-edge-width-sm: 25px;
  * Larger Screens
  */
 @screen sm {
+  // BASIC
   .wp-block-nucssa-coupon {
     .coupon-preview .card-container {
       height: $coupon-height-sm;
+    }
+  }
 
+  // STYLE 1 LAYOUT (DEFAULT LAYOUT)
+  .wp-block-nucssa-coupon,
+  .wp-block-nucssa-coupon[class*="is-style-style-1"] {
+    .coupon-preview .card-container {
       .upper,
       .lower {@apply px-6 py-4;}
 
@@ -222,12 +229,17 @@ $style-2-left-edge-width-sm: 25px;
         &::before {
           border-top-width: $coupon-amount-height-sm/2;
           border-bottom-width: $coupon-amount-height-sm/2;
-          border-left-width: $coupon-amount-notch-width-sm - 13px;
+          border-left-width: $coupon-amount-notch-width-sm;
         }
 
-        .outline {
+        .outline {width: calc(100% + #{$coupon-amount-notch-width-sm});
           &::before,
-          &::after {height: $coupon-amount-height-sm/2; border-left-width: 3px; }
+          &::after {height: $coupon-amount-height-sm/2;}
+
+          // top half
+          &::before {@apply border-l-2 border-t-2;}
+          // bottom half
+          &::after {@apply border-l-2 border-b-2;}
         }
 
         .coupon-amount {font-size: 50px;}
@@ -235,7 +247,8 @@ $style-2-left-edge-width-sm: 25px;
     }
   }
 
-  .wp-block-nucssa-coupon.is-style-style-2-pattern-1 {
+  // STYLE 2 LAYOUT
+  .wp-block-nucssa-coupon[class*="is-style-style-2"] {
     .card-container {
       .left {@apply px-8;
         &::after {
