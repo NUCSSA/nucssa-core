@@ -14,69 +14,91 @@ $coupon-amount-notch-width-sm: 35px;
 $style-2-splitter-width-sm: 30px;
 $style-2-left-edge-width-sm: 25px;
 
-.wp-block-nucssa-coupon,
-.wp-block-nucssa-coupon.is-style-style-1-pattern-1 {@apply w-full;max-width: 558px;
+.wp-block-nucssa-coupon {@apply w-full;max-width: 558px;
   .coupon-preview {@apply w-full; font-family: Roboto;
     .card-container {@apply relative mx-auto w-full overflow-hidden;
 
       height: $coupon-height;
       box-shadow: 10px 10px 6px rgba(0, 0, 0, 0.16);
 
-      .upper,
-      .lower {@apply p-4; height: 50%;}
-
-      .upper {background: #FF9E0D;
-        .business-name {@apply font-bold text-3xl leading-none; color: rgba(0, 0, 0, 0.72);}
-        .coupon-literal {@apply uppercase font-bold text-2xl text-white leading-none mt-3; letter-spacing: 0.54em;}
-      }
-
-      .lower {@apply flex items-center; padding-right: calc(4rem + $coupon-amount-notch-width);
-        img {@apply hidden border-none flex-grow-0 mr-3; height: 70px;
-          @screen sm {@apply block;}
-        }
-        .details {@apply flex-grow; font-size: 11px;
-          .terms {color: rgba(0, 0, 0, 0.8);
-            .header {@apply uppercase font-bold leading-none; }
-            .content {@apply leading-snug;}
-          }
-          .contact {@apply leading-snug mt-1;
-            .label {@apply capitalize font-bold text-right align-top; }
-            .content {@apply pl-1 align-top;}
-          }
-        }
-      }
-
-      .coupon-amount-container {@apply absolute right-0 flex flex-col justify-center items-center pl-4 pr-2 text-white leading-none;
-        top: 50%; transform: translateY(-50%);
-        height: $coupon-amount-height;
-        background: linear-gradient(to right, rgba(198, 4, 4, 0.68) 0%, rgba(198, 4, 4, 0.83) 100%);
-
-        &::before {
-          @apply h-0 absolute left-0 top-0;
-          transform: translateX(-100%);
-          content: '';
-          border-top: $coupon-amount-height/2 solid rgba(198, 4, 4, 0.68);
-          border-bottom: $coupon-amount-height/2 solid rgba(198, 4, 4, 0.68);
-          border-left: $coupon-amount-notch-width - 13px solid transparent;
-        }
-
-        .outline {@apply absolute left-0;width: calc(100% + #{$coupon-amount-notch-width});
-          &::before,
-          &::after {@apply block border-solid border-white; content: ''; height: $coupon-amount-height/2; }
-
-          // top half
-          &::before {@apply border-t-2; border-left-width: 2px; transform: skewX(32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: bottom left;}
-          // bottom half
-          &::after {@apply border-b-2; border-left-width: 2px; transform: skewX(-32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: top left;}
-        }
-
-        .coupon-amount {@apply font-bold; font-size: 30px;}
-        .off-literal {@apply font-bold uppercase; letter-spacing: .1em; font-size: 17px;}
-      }
     }
   }
 }
 
+/**
+ * STYLE 1 LAYOUT (DEFAULT LAYOUT)
+ */
+.wp-block-nucssa-coupon, // default styling when there is not .is-style- class
+.wp-block-nucssa-coupon[class*="is-style-style-1"] {
+  .upper,
+  .lower {@apply p-4; height: 50%;}
+
+  .upper {
+    .business-name {@apply font-bold text-3xl leading-none; color: rgba(0, 0, 0, 0.72);}
+    .coupon-literal {@apply uppercase font-bold text-2xl text-white leading-none mt-3; letter-spacing: 0.54em;}
+  }
+
+  .lower {@apply flex items-center; padding-right: calc(4rem + $coupon-amount-notch-width);
+    img {@apply hidden border-none flex-grow-0 mr-3; height: 70px;
+      @screen sm {@apply block;}
+    }
+    .details {@apply flex-grow; font-size: 11px;
+      .terms {color: rgba(0, 0, 0, 0.8);
+        .header {@apply uppercase font-bold leading-none; }
+        .content {@apply leading-snug;}
+      }
+      .contact {@apply leading-snug mt-1;
+        .label {@apply capitalize font-bold text-right align-top; }
+        .content {@apply pl-1 align-top;}
+      }
+    }
+  }
+
+  .coupon-amount-container {@apply absolute right-0 flex flex-col justify-center items-center pl-4 pr-2 text-white leading-none;
+    top: 50%; transform: translateY(-50%);
+    height: $coupon-amount-height;
+
+    &::before {
+      @apply h-0 absolute left-0 top-0;
+      transform: translateX(-100%);
+      content: '';
+      border-top-style: solid;
+      border-top-width: $coupon-amount-height/2;
+      border-bottom-style: solid;
+      border-bottom-width: $coupon-amount-height/2;
+      border-left: $coupon-amount-notch-width - 13px solid transparent;
+    }
+
+    .outline {@apply absolute left-0;width: calc(100% + #{$coupon-amount-notch-width});
+      &::before,
+      &::after {@apply block border-solid border-white; content: ''; height: $coupon-amount-height/2; }
+
+      // top half
+      &::before {@apply border-t-2; border-left-width: 2px; transform: skewX(32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: bottom left;}
+      // bottom half
+      &::after {@apply border-b-2; border-left-width: 2px; transform: skewX(-32deg) translateX(4px) scaleY(0.9) scaleX(0.85);transform-origin: top left;}
+    }
+
+    .coupon-amount {@apply font-bold; font-size: 30px;}
+    .off-literal {@apply font-bold uppercase; letter-spacing: .1em; font-size: 17px;}
+  }
+}
+
+/**
+ * STYLE 1 COLOR PATTERNS
+ */
+// Default Pattern (Pattern 1) Color Pattern
+.wp-block-nucssa-coupon,
+.wp-block-nucssa-coupon.is-style-style-1-pattern-1 {
+  .upper {background: #FF9E0D;}
+  .coupon-amount-container {background: linear-gradient(to right, rgba(198, 4, 4, 0.68) 0%, rgba(198, 4, 4, 0.83) 100%);
+    &::before {
+      border-top-color: rgba(198, 4, 4, 0.68);
+      border-bottom-color: rgba(198, 4, 4, 0.68);
+    }
+  }
+}
+// Pattern 2 Color Pattern
 .wp-block-nucssa-coupon.is-style-style-1-pattern-2 {
   .upper {background: #82CE2D !important}
   .coupon-amount-container {background: linear-gradient(to right, rgba(8, 119, 126, 0.5) 0%, #08777e 100%) !important;
@@ -86,6 +108,7 @@ $style-2-left-edge-width-sm: 25px;
     }
   }
 }
+// Pattern 3 Color Pattern
 .wp-block-nucssa-coupon.is-style-style-1-pattern-3 {
   .upper {background: #D93D53 !important}
   .coupon-amount-container {background: linear-gradient(to right, rgba(182, 198, 89, 0.68) 0%, rgba(182, 198, 89, 0.83) 100%) !important;
@@ -95,6 +118,7 @@ $style-2-left-edge-width-sm: 25px;
     }
   }
 }
+// Pattern 4 Color Pattern
 .wp-block-nucssa-coupon.is-style-style-1-pattern-4 {
   .upper {background: #5C60C3 !important}
   .coupon-amount-container {background: linear-gradient(to right, rgba(239, 165, 68, 0.68) 0%, rgba(239, 165, 68, 0.83) 100%) !important;
@@ -105,23 +129,27 @@ $style-2-left-edge-width-sm: 25px;
   }
 }
 
-.wp-block-nucssa-coupon.is-style-style-2-pattern-1 {
+/**
+ * STYLE 2 LAYOUT
+ */
+.wp-block-nucssa-coupon[class*="is-style-style-2"] {
   .card-container {@apply flex;
     .left,
     .right {@apply h-full;}
 
     .left {@apply relative flex flex-col flex-grow items-center justify-center pl-2 pr-0 leading-none text-white flex-grow text-center;
-      background: #D93D53;
 
       &::after {@apply absolute right-0 top-0;
         content: '';
         transform: translateX(99.9%);
-        border-top: #D93D53 solid $coupon-height;
-        border-right: transparent solid $style-2-splitter-width;
+        border-style: solid;
+        border-top-width: $coupon-height;
+        border-right-width: $style-2-splitter-width;
       }
 
       // phone number on the edge
-      border-left: solid $style-2-left-edge-width #730415;
+      border-left-style: solid;
+      border-left-width: $style-2-left-edge-width;
       .phone {@apply absolute text-white font-medium text-xs;
         left: -$style-2-left-edge-width; top: 50%; line-height: $style-2-left-edge-width;
         transform-origin: 0 0;
@@ -152,6 +180,19 @@ $style-2-left-edge-width-sm: 25px;
         transform: translateX(-$style-2-splitter-width / 2 + 10px);
       }
     }
+  }
+}
+
+// STYLE 2: Pattern 1 Color Pattern
+.wp-block-nucssa-coupon.is-style-style-2-pattern-1 {
+  .left {background: #D93D53;
+    &::after {
+      border-top-color: #D93D53;
+      border-right-color: transparent;
+    }
+
+    // phone number on the edge
+    border-left-color: #730415;
   }
 }
 
