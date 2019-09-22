@@ -4,7 +4,6 @@
  * Github: https://github.com/JJPro
  */
 namespace nucssa_core\inc\accounts;
-use function nucssa_core\utils\debug\{file_log, console_log};
 use function nucssa_core\utils\pluggable\{get_user_by};
 
 class Accounts {
@@ -71,9 +70,6 @@ class Accounts {
 
       // 2. Does user exists locally in wp-users table?
       $user = get_user_by('login', $username); // get user in wp_users table
-      file_log("username", $username);
-      file_log("userobj", $user);
-      console_log($user);
       // 3. Create local user if not exists
       if (!$user) {
         $dir_user = DirectoryUser::findByUsername($username); // get user in nucssa_user table
@@ -88,7 +84,6 @@ class Accounts {
         $user = new \WP_User($new_user_id);
         // update external_id of user record
         global $wpdb;
-        // file_log("new_user_id", $new_user_id);
         $wpdb->query(
           "UPDATE $wpdb->users SET external_id = $dir_user->external_id
           WHERE ID = $new_user_id"
@@ -122,7 +117,6 @@ class Accounts {
    * @param DirectoryUser|null $dir_user
    */
   public static function updateUserRoles(\WP_User $user, DirectoryUser $dir_user){
-    // file_log('>>>> add user roles');
     if (!$user && !$dir_user) return;
 
     if (!$user) $user = get_user_by('external_id', $dir_user->external_id);
@@ -135,7 +129,6 @@ class Accounts {
       // add roles to user
       $roles = $dir_user->allRoles();
       foreach($roles as $role) {
-        // file_log("..... role", $role);
         $user->add_role( $role );
       }
     }
@@ -146,7 +139,6 @@ class Accounts {
    */
   public static function syncFromDirectory() {
     $allRecords = UserDirectory::singleton() -> fetchAll();
-    // file_log('all records', $allRecords);
 
     self::syncUsers($allRecords["users"]);
     self::syncGroups($allRecords["groups"]);
@@ -365,14 +357,12 @@ insert_query;
     $touchedRecords = [];
     /***** First update memberships in db and track touched records by ID *****/
     foreach($groups as $group){
-      $memberDNs = $group[$directory->membership_schema["group_membership_attribute"]];
-      // file_log('memberDns', $memberDNs);
+      $memberDNs = $group[$directory->membership_schema["group_membership_attribute"]] ?? NULL;
       if ($memberDNs === NULL) continue; // skip if NULL, aka. no members in this group
       $gidNumber = $group[$directory->group_schema["group_id_attribute"]];
       $parent_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE external_id = {$gidNumber}");
 
       foreach($memberDNs as $memberDN){
-        if (strpos($memberDN, 'cn=users') === false) continue;
 
         $child_group_id = $child_user_id = 'NULL';
         ["type" => $type, "name" => $name] = self::getMemberTypeAndName($memberDN);
@@ -380,11 +370,11 @@ insert_query;
         if ($type == "user") {
           // find user id with $name
           $child_user_id = $wpdb->get_var("SELECT id FROM {$user_table_name} WHERE username = '{$name}'");
-          file_log('child_user_id', $child_user_id);
-        } else {
+        } elseif ($type == "group") {
           // find group id with gidNumber
           $child_group_id = $wpdb->get_var("SELECT id FROM {$group_table_name} WHERE group_name = '{$name}'");
-          file_log('child_group_id', $child_group_id);
+        } else {
+          continue;
         }
         $query = "INSERT INTO {$membership_table_name}
           (parent_id, child_group_id, child_user_id)
@@ -422,9 +412,11 @@ insert_query;
     if (strpos($memberDN, $directory->schema["additional_user_dn"]) !== false) {
       $type = "user";
       $name = substr($firstPart, strlen($directory->user_schema["username_attribute"] . "="));
-    } else {
+    } elseif (strpos($memberDN, $directory->schema["additional_group_dn"]) !== false) {
       $type = "group";
       $name = substr($firstPart, strlen($directory->group_schema["name_attribute"] . "="));
+    } else {
+      $type = "other";
     }
 
     return array(

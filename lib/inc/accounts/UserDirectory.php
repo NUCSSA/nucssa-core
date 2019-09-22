@@ -185,6 +185,7 @@ class UserDirectory {
           }
         } while($att = \ldap_next_attribute($this->conn, $entry));
         $users[] = $user;
+        unset($user);
       } while ($entry = ldap_next_entry($this->conn, $entry));
     }
 
@@ -232,6 +233,7 @@ class UserDirectory {
           }
         } while ($att = \ldap_next_attribute($this->conn, $entry));
         $groups[] = $group;
+        unset($group);
       } while ($entry = ldap_next_entry($this->conn, $entry));
     }
     return $groups;
