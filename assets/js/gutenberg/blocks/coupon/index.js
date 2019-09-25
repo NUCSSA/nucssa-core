@@ -10,7 +10,7 @@ export const settings = {
   category,
   icon: 'tickets-alt',
   keywords,
-  supports: { html: true, },
+  supports: { html: false, },
   attributes,
   edit,
   useOnce: true,
