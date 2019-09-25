@@ -8,12 +8,12 @@ registerPlugin('nucssa-core-editor-extensions', {
   render: () => {
 
     const currentPostType = getCurrentPostType();
-    const excludedPostTypesForFeaturedPost = ['club'];
-    const excludedPostTypesForPageIcon = ['club'];
+    const postTypesForFeaturedPost = ['post', 'page', 'club'];
+    const postTypesForPageIcon = ['page'];
     return (
       <>
-        { !excludedPostTypesForFeaturedPost.includes(currentPostType) && <FeaturedPostExtension /> }
-        { !excludedPostTypesForPageIcon.includes(currentPostType) && <PageIconExtension /> }
+        { postTypesForFeaturedPost.includes(currentPostType) && <FeaturedPostExtension /> }
+        { postTypesForPageIcon.includes(currentPostType) && <PageIconExtension /> }
         { currentPostType == 'club' && <ClubInfoSidebarExtension /> }
       </>
     );
