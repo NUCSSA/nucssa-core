@@ -5,6 +5,7 @@ class CustomPostTypes {
   public static function register() {
     self::registerClubPostType();
     self::registerCouponPostType();
+    self::registerFormPostType();
   }
 
   // 学生社团 post type
@@ -70,6 +71,21 @@ class CustomPostTypes {
       return $title;
     }, 10, 2);
 
+  }
+
+  // Form Post Type
+  private static function registerFormPostType() {
+    register_post_type( 'form', [
+      'label' => '报名表&Survey',
+      'description' => '活动报名表/Survey',
+      'public' => true,
+      'exclude_from_search' => true,
+      'show_in_rest' => true,
+      // 'rest_controller_class'
+      'menu_icon' => 'dashicons-feedback',
+      'supports' => ['title', 'editor', 'revisions', 'custom-fields', 'author', 'thumbnail'],
+      'delete_with_user' => false,
+    ]);
   }
 
   public static function manageCouponTableColumns($cols) {
