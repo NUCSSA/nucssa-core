@@ -30,7 +30,7 @@ class PostExtensions {
     );
 
     // Add banner images to **all post types**
-    register_post_meta( '', '_banner_image_wide',
+    register_post_meta( '', '_banner_image_desktop',
       [
         'show_in_rest' => true, 'type' => 'number', 'single' => true,
         'auth_callback' => function () {
@@ -38,7 +38,7 @@ class PostExtensions {
         }
       ]
     );
-    register_post_meta( '', '_banner_image_narrow',
+    register_post_meta( '', '_banner_image_mobile',
       [
         'show_in_rest' => true, 'type' => 'number', 'single' => true,
         'auth_callback' => function () {

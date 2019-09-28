@@ -80,7 +80,7 @@ function FeaturedPostBannerImage({ bannerImageId, media, onUpdateImage, onRemove
 }
 
 FeaturedPostBannerImage.propTypes = {
-  bannerSize: PropTypes.string.isRequired, // BANNER_SIZE_WIDE | BANNER_SIZE_NARROW
+  bannerSize: PropTypes.string.isRequired, // BANNER_SIZE_DESKTOP | BANNER_SIZE_MOBILE
   recommendedSize: PropTypes.string,
 }
 
@@ -118,5 +118,5 @@ export default compose(
   mapDispatchToProps,
 )( FeaturedPostBannerImage );
 
-export const BANNER_SIZE_WIDE = 'wide';
-export const BANNER_SIZE_NARROW = 'narrow';
+export const BANNER_SIZE_DESKTOP = 'desktop';
+export const BANNER_SIZE_MOBILE = 'mobile';

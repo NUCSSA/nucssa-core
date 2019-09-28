@@ -3,7 +3,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { TextControl } from '@wordpress/components';
 
-import FeaturedPostBannerImage, {BANNER_SIZE_NARROW, BANNER_SIZE_WIDE} from '../../../components/FeaturedPostBannerImage';
+import FeaturedPostBannerImage, {BANNER_SIZE_MOBILE, BANNER_SIZE_DESKTOP} from '../../../components/FeaturedPostBannerImage';
 
 const FeaturedPostExtension = (props) => {
   const toggleFeaturedPost = () => {
@@ -25,11 +25,11 @@ const FeaturedPostExtension = (props) => {
             <div className="divider"></div>
             <p className="hint">Wide Banner Image (1920x400)</p>
             <div className="help">shows on large screen</div>
-            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_WIDE} recommendedSize="1920x400" />
+            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_DESKTOP} recommendedSize="1920x400" />
             <div className="divider"></div>
             <p className="hint">Wide Banner Image (640x314)</p>
             <div className="help">shows on mobile</div>
-            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_NARROW} recommendedSize="640x314" />
+            <FeaturedPostBannerImage bannerSize={BANNER_SIZE_MOBILE} recommendedSize="640x314" />
           </div>
         }
       </div>
