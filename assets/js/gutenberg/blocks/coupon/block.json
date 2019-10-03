@@ -5,38 +5,5 @@
   "keywords": ["coupon", "nucssa", "商家", "business", "赞助", "coop", "合作"],
   "description": "赞助商家的Coupon",
   "attributes": {
-    "className": {
-      "type": "string"
-    },
-    "style": {
-      "type": "string",
-      "source": "meta",
-      "meta": "style"
-    },
-    "amount": {
-      "type": "string",
-      "source": "meta",
-      "meta": "amount"
-    },
-    "terms": {
-      "type": "string",
-      "source": "meta",
-      "meta": "terms"
-    },
-    "phone": {
-      "type": "string",
-      "source": "meta",
-      "meta": "phone"
-    },
-    "website": {
-      "type": "string",
-      "source": "meta",
-      "meta": "website"
-    },
-    "address": {
-      "type": "string",
-      "source": "meta",
-      "meta": "address"
-    }
   }
 }
