@@ -1,9 +1,6 @@
-name: Node CI+CD
+name: PR - Node CI+CD
 
-on:
-  push:
-    branches:
-      - master
+on: pull_request
 
 jobs:
   build:
@@ -24,7 +21,7 @@ jobs:
     - name: Copy to production server
       uses: appleboy/scp-action@master
       env:
-        HOST: ${{ secrets.HOST }}
+        HOST: ${{ secrets.DEVHOST }}
         USERNAME: ${{ secrets.USERNAME }}
         KEY: ${{ secrets.privateKey }}
       with:
