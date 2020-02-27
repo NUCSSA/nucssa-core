@@ -32,7 +32,7 @@ class UserDirectory {
    */
   private function __construct(){
     $this->loadConfig();
-    $this->conn = ldap_connect($this->server['host'], $this->server['port']);
+    $this->conn = \ldap_connect($this->server['host'], $this->server['port']);
   }
 
   /**
