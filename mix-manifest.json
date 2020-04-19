@@ -1,8 +1,8 @@
 {
-    "/public/js/admin.js": "/public/js/admin.js",
     "/public/js/editor.js": "/public/js/editor.js",
     "/public/css/admin-plugin-page.css": "/public/css/admin-plugin-page.css",
     "/public/css/admin-global.css": "/public/css/admin-global.css",
     "/public/css/editor.css": "/public/css/editor.css",
-    "/public/css/style.css": "/public/css/style.css"
+    "/public/css/style.css": "/public/css/style.css",
+    "/public/js/page-core.js": "/public/js/page-core.js"
 }

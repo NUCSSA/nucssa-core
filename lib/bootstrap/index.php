@@ -4,6 +4,7 @@ use nucssa_core\inc\Cron;
 register_activation_hook(NUCSSA_CORE_PLUGIN_FILE_PATH, ['nucssa_core\inc\Activation', 'init']); // can only call static method this way
 register_deactivation_hook(NUCSSA_CORE_PLUGIN_FILE_PATH, ['nucssa_core\inc\Deactivation', 'init']);
 add_action('admin_menu', ['nucssa_core\admin_pages\UserDirectoryConfigPage', 'init']);
+add_action('admin_menu', ['nucssa_core\admin_pages\WechatArticleImportPage', 'init']);
 add_action('admin_enqueue_scripts', ['nucssa_core\inc\AdminScripts', 'init']);
 add_action('rest_api_init', function () {new nucssa_core\inc\rest\AdminRESTAPI();});
 add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
