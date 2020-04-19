@@ -3,12 +3,12 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace nucssa_core\admin_dashboard\menu_page;
+namespace nucssa_core\admin_pages;
 
 /**
  * The top level menu for the core plugin
  */
-class AdminMenu
+class UserDirectoryConfigPage
 {
   public static function init()
   {

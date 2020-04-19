@@ -5,7 +5,7 @@
  * Github: https://github.com/JJPro
  */
 
-namespace nucssa_core\admin_dashboard;
+namespace nucssa_core\admin_pages;
 
 class UserProfileMods {
   public static function addOccupationField($user){
