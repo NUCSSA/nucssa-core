@@ -1,0 +1,15 @@
+// Variables
+@import '../../../scss/variables';
+// Mixin
+@import '../../../scss/mixins';
+// Fonts
+@import '../../../scss/SourceSansPro-fonts';
+// Global Styles
+@import '../../../scss/global';
+
+
+#wechat-import-admin-page {
+  min-height: calc(100vh - 278px - 32px);
+  font-family: "Source Sans Pro", sans-serif;
+  padding: 20px 25px;
+}

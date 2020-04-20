@@ -4,5 +4,6 @@
     "/public/css/admin-global.css": "/public/css/admin-global.css",
     "/public/css/editor.css": "/public/css/editor.css",
     "/public/css/style.css": "/public/css/style.css",
-    "/public/js/page-core.js": "/public/js/page-core.js"
+    "/public/js/page-core.js": "/public/js/page-core.js",
+    "/public/js/page-wechat-article-import.js": "/public/js/page-wechat-article-import.js"
 }

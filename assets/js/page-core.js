@@ -1,1 +1,1 @@
-import './pages/UsersAndGroupsPage/UsersAndGroupsPage';
+import './pages/UsersAndGroupsPage';
