@@ -12,4 +12,19 @@
   min-height: calc(100vh - 278px - 32px);
   font-family: "Source Sans Pro", sans-serif;
   padding: 20px 25px;
+
+  .rs-steps {@apply mb-10 mx-auto max-w-6xl;}
+
+  .steps-content {@apply flex justify-center;
+    .step-1 {
+      label {@apply block text-center;}
+      input {margin-top: 1rem; max-width: 100%; width: 500px; height: 2rem; font-size: medium;}
+    }
+
+    .step-2 {@apply flex flex-col items-center mb-5;
+      h3 {@apply mb-10;}
+    }
+  }
+
+  .steps-action {@apply flex justify-center mt-5;}
 }

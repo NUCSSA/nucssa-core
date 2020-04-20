@@ -12,7 +12,6 @@
     "compile": "composer dump-autoload -o"
   },
   "dependencies": {
-    "antd": "^4.1.4",
     "axios": "^0.19.2",
     "bootstrap-4-grid": "^2.4.1",
     "prop-types": "^15.7.2",
@@ -52,6 +51,7 @@
     "laravel-mix": "^4.1.4",
     "purgecss-with-wordpress": "^1.1.0",
     "redux-devtools-extension": "^2.13.8",
+    "rsuite": "^4.3.4",
     "sass": "^1.26.3",
     "sass-loader": "^7.3.1",
     "tailwindcss": "^1.2.0",

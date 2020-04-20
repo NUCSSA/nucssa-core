@@ -1,72 +1,104 @@
 import { Component } from "@wordpress/element";
-import { Button, ButtonGroup } from "@wordpress/components";
-import { Steps, message } from "antd";
-import 'antd/dist/antd.css';
+import { Steps, Button, ButtonGroup, Notification } from "rsuite";
+import 'rsuite/dist/styles/rsuite-default.css';
+import StepOne from './StepOne';
+import StepTwo from "./StepTwo";
 
-const { Step } = Steps;
-
-const steps = [
-  {
-    title: 'First',
-    content: 'First-content',
-  },
-  {
-    title: 'Second',
-    content: 'Second-content',
-  },
-  {
-    title: 'Last',
-    content: 'Last-content',
-  },
-];
 
 export default class WeChatArticleImportPage extends Component {
   constructor() {
     super();
     this.state = {
-      current: 0
+      step: 0,
+      url: '',
+      importSuccess: false,
+      isURLValid: true,
+      editPostLink: '',
     };
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
+    this.setURL = this.setURL.bind(this);
   }
+
   next() {
-    const current = this.state.current + 1;
-    this.setState({ current });
+    const step = this.state.step + 1;
+    this.setState({ step });
   }
 
   prev() {
-    const current = this.state.current - 1;
-    this.setState({ current });
+    const step = this.state.step - 1;
+    this.setState({ step });
+  }
+
+  setURL(url) {
+    this.setState({ url });
+  }
+
+  validateWeChatURL() {
+    // limit this test to only Step One
+    if (this.state.step !== 0) return true;
+
+    if (!this.state.url.includes('mp.weixin.qq')){
+      Notification['error']({
+        title: 'Error',
+        description: <>
+            <p>这似乎不是微信公众号的文章</p>
+            <p>请修正</p>
+          </>,
+        style: {marginTop: "2rem", fontWeight: "bold"}
+      });
+
+      return false;
+    }
+    return true;
   }
 
   render() {
-    const { current } = this.state;
+    const { step, url } = this.state;
+    const steps = [
+      {
+        title: 'URL',
+        content: <StepOne url={url} setURL={this.setURL} />,
+      },
+      {
+        title: 'Verify',
+        content: <StepTwo url={url} />,
+      },
+      {
+        title: 'Import',
+        content: 'Last-content',
+      },
+      {
+        title: 'Done',
+        content: 'Last-content',
+      },
+    ];
+
     return (
-      <div>
-        <Steps current={current}>
+      <>
+        <Steps current={step}>
           {steps.map(item => (
-            <Step key={item.title} title={item.title} />
+            <Steps.Item key={item.title} title={item.title} />
           ))}
         </Steps>
-        <div className="steps-content">{steps[current].content}</div>
+        <div className="steps-content">{steps[step].content}</div>
         <div className="steps-action">
-          {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => this.next()}>
-              Next
-            </Button>
-          )}
-          {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => message.success('Processing complete!')}>
-              Done
-            </Button>
-          )}
-          {current > 0 && (
-            <Button style={{ margin: 8 }} onClick={() => this.prev()}>
-              Previous
-            </Button>
-          )}
+          <ButtonGroup>
+            {
+              step === 1 &&
+              <Button onClick={this.prev}>Back</Button>
+            }
+            {
+              (step !== (steps.length - 1) && url !== '') &&
+              <Button onClick={() => this.validateWeChatURL() && this.next()}>Continue</Button>
+            }
+            {
+              (step == steps.length - 1) && this.state.importSuccess &&
+              <Button href={this.state.editPostLink}>Continue Editing in Posts</Button>
+            }
+          </ButtonGroup>
         </div>
-      </div>
+      </>
     );
   }
 }

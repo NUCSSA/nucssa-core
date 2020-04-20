@@ -31,9 +31,55 @@ class WeChatArticleImportPage
     $base_rest_url = esc_url_raw( rest_url() );
     $l10n = [ // localization data goes here
       'nonce'     => wp_create_nonce('wp_rest'),
-      'rest_url'  => $base_rest_url,
+      'rest_url'  => $base_rest_url . 'nucssa-core/v1/wechat-article-import',
     ];
     wp_localize_script( $handle, 'wechat_import_page_data', $l10n );
+  }
+
+  public static function restfulCallback(\WP_REST_Request $request)
+  {
+    $purpose = $request->get_param('purpose');
+    $url     = $request->get_param('url');
+    if (substr($url, 0, 4) !== 'http'){
+      $url = 'https://' . $url;
+    }
+
+    switch ($purpose) {
+      case 'preview':
+        return self::restGetArticlePreviewData($url);
+      case 'process':
+        return self::restProcessArticle($url);
+      default:
+        return new \WP_REST_Response(null, 400);
+        break;
+    }
+  }
+
+  private static function restGetArticlePreviewData($url)
+  {
+    // $result = \wp_remote_get($url, ['timeout' => 10]);
+    $result = \wp_remote_get($url, ['timeout' => 1]);
+    if (is_wp_error($result)) {
+      return $result;
+    }
+    $content = $result['body'];
+    \preg_match('/<meta property="og:title" content="(.*)" \/>/', $content, $matches);
+    $title = $matches[1];
+    \preg_match('/<meta property="og:description" content="(.*)" \/>/', $content, $matches);
+    $description = $matches[1];
+    \preg_match('/<meta property="og:image" content="(.*)" \/>/', $content, $matches);
+    $thumbnail = $matches[1];
+
+    return rest_ensure_response( array(
+      'title' => $title,
+      'description' => $description,
+      'thumbnail' => $thumbnail
+    ) );
+  }
+
+  private static function restProcessArticle($url)
+  {
+
   }
 
   private static function registerPage()
