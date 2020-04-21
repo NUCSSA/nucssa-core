@@ -13,6 +13,7 @@ use WP_Example_Request;
  */
 class WeChatArticleImportPage
 {
+  static $asyncRequest = null;
   public static function init()
   {
     self::registerPage();
@@ -83,8 +84,8 @@ class WeChatArticleImportPage
 
   private static function restProcessArticle($url)
   {
-    $asyncRequest = new ProcessWeChatArticleRequest($url);
-    $asyncRequest->dispatch();
+    self::$asyncRequest->data(['url' => $url]);
+    self::$asyncRequest->dispatch();
   }
 
   private static function registerPage()

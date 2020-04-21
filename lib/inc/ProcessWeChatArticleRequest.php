@@ -8,27 +8,16 @@ use nucssa_core\admin_pages\WeChatArticleImportPage;
  */
 class ProcessWeChatArticleRequest extends \WP_Async_Request
 {
-  /**
-   * @var string
-   * this has to be unique, will be used to refer to this process from database
-   */
-  protected $action;
-
-  function __construct($action)
-  {
-    $this->action = $action;
-    parent::__construct();
-  }
-
   protected function handle()
   {
+    $url = $_POST['url'];
+    $transientKey = "wechat_import_$url";
 		// Step 1: analyze article for image assets
-		\set_transient($this->action, ['status' => 'processing', 'step' => 1], 60);
+		\set_transient($transientKey, ['status' => 'processing', 'step' => 1], 60);
 
-		$url = $this->action;
 		$content = file_get_contents($url);
     if (is_wp_error($content)) {
-			\set_transient($this->action, ['status' => 'error'], 60);
+			\set_transient($transientKey, ['status' => 'error'], 60);
       exit;
     }
     \preg_match('/<meta property="og:title" content="(.*)" \/>/', $content, $matches);
@@ -52,31 +41,31 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
 		$images = array_unique($images);
 
 		// Step 2: download those assets and move to media folder
-		\set_transient($this->action, ['status' => 'processing', 'step' => 2], 60);
+		\set_transient($transientKey, ['status' => 'processing', 'step' => 2], 60);
 		$path_components = explode('/', parse_url($url, PHP_URL_PATH));
 		$articleID = end($path_components);
 		foreach ($images as $img) {
 			$url = WeChatArticleImportPage::saveImage($articleID, $img);
 			if (is_wp_error( $url )) {
-				\set_transient($this->action, ['status' => 'error'], 60);
+				\set_transient($transientKey, ['status' => 'error'], 60);
 				exit;
 			}
 			$image_lookups["data-src=\"$img\""] = "src=\"$url\"";
 		}
 
 		// Step 3: process/replace image urls in article
-		\set_transient($this->action, ['status' => 'processing', 'step' => 3], 60);
+		\set_transient($transientKey, ['status' => 'processing', 'step' => 3], 60);
 		$content = str_replace(array_keys($image_lookups), array_values($image_lookups), $content);
 
 		// Step 4: process/set thumbnail
-		\set_transient($this->action, ['status' => 'processing', 'step' => 4], 60);
+		\set_transient($transientKey, ['status' => 'processing', 'step' => 4], 60);
 		// insert and retrieve thumbnail id
 		parse_str(parse_url($thumbnail, PHP_URL_QUERY), $query);
 		$format = $query['wx_fmt'];
 		$thumbnailId = media_sideload_image("$thumbnail.$format", 0, null, 'id');
 
 		// Step 5: save to wordpress
-		\set_transient($this->action, ['status' => 'processing', 'step' => 5], 60);
+		\set_transient($transientKey, ['status' => 'processing', 'step' => 5], 60);
 		$postattr = [
 			'post_content'  => $content,
 			'post_title'    => $title,
@@ -85,11 +74,11 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
 		];
 		$postID = wp_insert_post($postattr, true);
 		if (is_wp_error($postID)) {
-			\set_transient($this->action, ['status' => 'error'], 60);
+			\set_transient($transientKey, ['status' => 'error'], 60);
       exit;
 		}
 
 		// Done
-		\set_transient($this->action, ['status' => 'finished', 'postURL' => get_admin_url(null, "post.php?post=$postID&action=edit")], 60);
+		\set_transient($transientKey, ['status' => 'finished', 'postURL' => get_admin_url(null, "post.php?post=$postID&action=edit")], 60);
   }
 }

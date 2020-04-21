@@ -1,4 +1,7 @@
 <?php
+
+use nucssa_core\admin_pages\WeChatArticleImportPage;
+use nucssa_core\inc\ProcessWeChatArticleRequest;
 use nucssa_core\inc\Cron;
 
 register_activation_hook(NUCSSA_CORE_PLUGIN_FILE_PATH, ['nucssa_core\inc\Activation', 'init']); // can only call static method this way
@@ -7,6 +10,7 @@ add_action('admin_menu', ['nucssa_core\admin_pages\UserDirectoryConfigPage', 'in
 add_action('admin_menu', ['nucssa_core\admin_pages\WeChatArticleImportPage', 'init']);
 add_action('admin_enqueue_scripts', ['nucssa_core\inc\AdminScripts', 'init']);
 add_action('rest_api_init', function () {new nucssa_core\inc\rest\AdminRESTAPI();});
+add_action('admin_init', function() {WeChatArticleImportPage::$asyncRequest = new ProcessWeChatArticleRequest();});
 add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
 add_action('init', ['nucssa_core\inc\PostExtensions', 'init']); // add post metas
 add_action('init', ['nucssa_core\inc\CustomPostTypes', 'register']); // register new post types
