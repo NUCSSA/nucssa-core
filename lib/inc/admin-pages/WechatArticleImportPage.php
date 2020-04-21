@@ -13,13 +13,10 @@ use WP_Example_Request;
  */
 class WeChatArticleImportPage
 {
-  protected $asyncRequest;
-
   public static function init()
   {
     self::registerPage();
     PageUtils::removeWpFooter();
-    // self::$asyncRequest = new ProcessWeChatArticleRequest();
   }
 
   public static function enqueueScript($hook)

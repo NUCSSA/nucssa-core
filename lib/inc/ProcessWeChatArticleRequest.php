@@ -16,8 +16,8 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
 
   function __construct($action)
   {
-    parent::__construct();
     $this->action = $action;
+    parent::__construct();
   }
 
   protected function handle()
