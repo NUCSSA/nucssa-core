@@ -1,12 +1,11 @@
 /**
  * Verify
- * 1. verify the url is wechat article
- * 2. then show a preview of the article if it is
+ * show a preview of the article if it is
  *    so that user can verify they copied the right URL
  */
 import axios from "axios";
 import { useEffect, useState } from "@wordpress/element";
-import { Loader, Notification } from "rsuite";
+import { Loader, Notification, Panel } from "rsuite";
 
 export default props => {
   const {url} = props;
@@ -24,17 +23,21 @@ export default props => {
           'X-WP-Nonce': window.wechat_import_page_data.nonce
         }
       };
-      const content = await axios.post(wechat_import_page_data.rest_url,
-                                       data, config);
 
-      if (content.status === 200){
-        setArticleData({
-          title:        content.data.title,
-          description:  content.data.description,
-          thumbnail:    content.data.thumbnail,
-        });
-      } else {
+      var resp;
+      try {
+        resp = await axios.post(wechat_import_page_data.rest_url, data, config);
+      } catch(err) {
         setFetchError(true);
+      }
+
+      if (resp && resp.status === 200){
+        setArticleData({
+          title:        resp.data.title,
+          description:  resp.data.description,
+          thumbnail:    resp.data.thumbnail,
+        });
+        // setFetchError(false);
       }
     };
     getArticleData();
@@ -45,7 +48,7 @@ export default props => {
     Notification['error']({
       title: 'Error',
       description: <>
-          <p>Something has gone wrong!</p>
+          <p>Something went wrong!</p>
           <p>Try again!</p>
         </>,
       style: {marginTop: "2rem", fontWeight: "bold"}
@@ -58,7 +61,6 @@ export default props => {
   } else if (!fetchError) {
     content = <Loader size="md" content="Loading Article Preview..." vertical />;
   }
-  content = <Loader size="md" speed="slow" content="Loading Article Preview..." vertical />;
 
   return <div className="step-2">
     <h3>这是你想要导入的文章吗?</h3>
@@ -67,5 +69,12 @@ export default props => {
 };
 
 const PreviewCard = ({title, description, thumbnail}) => {
-  return <></>
+  return <Panel shaded bordered bodyFill>
+    <img src={thumbnail} alt="thunmbnail image" height="240" style={{display: 'block', margin: "0 auto"}} />
+    <Panel header={title}>
+      <p>
+        <small>{description}</small>
+      </p>
+    </Panel>
+  </Panel>
 }

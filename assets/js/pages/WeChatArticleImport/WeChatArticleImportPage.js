@@ -12,7 +12,7 @@ export default class WeChatArticleImportPage extends Component {
       step: 0,
       url: '',
       importSuccess: false,
-      isURLValid: true,
+      nextEnabled: true,
       editPostLink: '',
     };
     this.next = this.next.bind(this);

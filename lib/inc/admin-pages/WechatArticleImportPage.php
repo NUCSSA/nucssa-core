@@ -5,15 +5,21 @@
  */
 namespace nucssa_core\admin_pages;
 
+use nucssa_core\inc\ProcessWeChatArticleRequest;
+use WP_Example_Request;
+
 /**
  * SPA to process wechat article imports
  */
 class WeChatArticleImportPage
 {
+  protected $asyncRequest;
+
   public static function init()
   {
     self::registerPage();
     PageUtils::removeWpFooter();
+    // self::$asyncRequest = new ProcessWeChatArticleRequest();
   }
 
   public static function enqueueScript($hook)
@@ -57,9 +63,10 @@ class WeChatArticleImportPage
 
   private static function restGetArticlePreviewData($url)
   {
-    // $result = \wp_remote_get($url, ['timeout' => 10]);
-    $result = \wp_remote_get($url, ['timeout' => 1]);
-    if (is_wp_error($result)) {
+    try {
+      // use timeout=1 to test error in frontend
+      $result = \wp_remote_get($url, ['timeout' => 10]);
+    } catch (\Throwable $th) {
       return $result;
     }
     $content = $result['body'];
@@ -79,7 +86,8 @@ class WeChatArticleImportPage
 
   private static function restProcessArticle($url)
   {
-
+    $asyncRequest = new ProcessWeChatArticleRequest($url);
+    $asyncRequest->dispatch();
   }
 
   private static function registerPage()
@@ -108,5 +116,26 @@ class WeChatArticleImportPage
 
     PageUtils::printNUCSSAFooterBranding();
     PageUtils::printStyleFixForAdminPageLeftPadding();
+  }
+
+  /**
+   * Save image to wp-content/ without saving to DB,
+   * @param $article uuid of wechat article
+   *                 this will be the directory name for saved images
+   * @param $src     external URL to the image to import
+   * @return string URL to the saved image in our system
+   */
+  public static function saveImage(string $article, string $src)
+  {
+    $uploadsDir = wp_get_upload_dir();
+    $pathBase = $uploadsDir['basedir'] . '/' . $article;
+    $urlBase  = $uploadsDir['baseurl'] . '/' . $article;
+    $fileName = md5($src);
+
+    if (!file_exists($pathBase)) mkdir($pathBase);
+    if (!copy("$src", "$pathBase/$fileName")){
+      return new \WP_Error();
+    }
+    return "$urlBase/$fileName";
   }
 }

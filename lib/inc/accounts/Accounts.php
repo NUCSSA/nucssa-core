@@ -417,6 +417,7 @@ insert_query;
       $name = substr($firstPart, strlen($directory->group_schema["name_attribute"] . "="));
     } else {
       $type = "other";
+      $name = '';
     }
 
     return array(
