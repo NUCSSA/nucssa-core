@@ -12,7 +12,10 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
   {
     $url = $_POST['url'];
 		$transientKey = "wechat_import_$url";
-		$transientDuration = 5*60; // expire in 5 seconds
+		$transientDuration = 5*60; // expire in 5 mins for the first a few steps
+															 // (in case there are too many images to process),
+															 // and expire in 5 seconds on the last step
+
 		// Step 1: analyze article for image assets
 		\set_transient($transientKey, ['status' => 'processing', 'step' => 1], $transientDuration);
 
@@ -72,7 +75,9 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
 			'post_content'  => $content,
 			'post_title'    => $title,
 			'post_excerpt'  => $description,
-			'_thumbnail_id' => $thumbnailId
+			'_thumbnail_id' => $thumbnailId,
+			'post_name'     => $articleID, // post_name is post slug
+			'meta_input'    => ['wechat_article_id' => $articleID],
 		];
 		$postID = wp_insert_post($postattr, true);
 		if (is_wp_error($postID)) {
