@@ -135,11 +135,11 @@ class WeChatArticleImportPage
   public static function saveImage(string $article, string $src)
   {
     $uploadsDir = wp_get_upload_dir();
-    $pathBase = $uploadsDir['basedir'] . '/' . $article;
-    $urlBase  = $uploadsDir['baseurl'] . '/' . $article;
+    $pathBase = $uploadsDir['basedir'] . '/wechat-imports/' . $article;
+    $urlBase  = $uploadsDir['baseurl'] . '/wechat-imports/' . $article;
     $fileName = md5($src);
 
-    if (!file_exists($pathBase)) mkdir($pathBase);
+    if (!file_exists($pathBase)) mkdir($pathBase, 0777, true);
     if (!copy("$src", "$pathBase/$fileName")){
       return new \WP_Error();
     }
