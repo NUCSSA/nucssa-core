@@ -205,7 +205,7 @@ class AdminRESTAPI
       [
         'methods'  => 'POST',
         'callback' => ['nucssa_core\admin_pages\WeChatArticleImportPage', 'restfulCallback'],
-        // 'permission_callback' => function($req){return current_user_can( 'edit_posts');},
+        'permission_callback' => function($req){return current_user_can( 'edit_posts');},
       ]
     ));
   }
