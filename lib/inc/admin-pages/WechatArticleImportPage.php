@@ -5,8 +5,7 @@
  */
 namespace nucssa_core\admin_pages;
 
-use nucssa_core\inc\ProcessWeChatArticleRequest;
-use WP_Example_Request;
+use function nucssa_core\utils\removeDirectory;
 
 /**
  * SPA to process wechat article imports
@@ -144,5 +143,24 @@ class WeChatArticleImportPage
       return new \WP_Error();
     }
     return "$urlBase/$fileName";
+  }
+
+  /**
+   * clean up related image assets and other clutters when the post is permanently deleted
+   * @param $postID
+   */
+  public static function cleanupOnDeletingPost($_meta_ids, $_obj_id, $metaKey, $metaVal)
+  {
+    if ($metaKey === 'wechat_article_id') { // assured wechat article if meta is found
+      // delete image asset dir
+      $uploadsDir = wp_get_upload_dir();
+      $articleAssetDir = $uploadsDir['basedir'] . '/wechat-imports/' . $metaVal;
+      removeDirectory($articleAssetDir);
+
+    }
+    // maybe: delete thumbnail if no other posts refer to it
+    //        search related posts in DB
+    // if ($metaKey === '_thumbnail_id') {
+    // }
   }
 }
