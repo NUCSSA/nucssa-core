@@ -1,14 +1,21 @@
 <?php
+
+use nucssa_core\admin_pages\WeChatArticleImportPage;
+use nucssa_core\inc\ProcessWeChatArticleRequest;
 use nucssa_core\inc\Cron;
 
 register_activation_hook(NUCSSA_CORE_PLUGIN_FILE_PATH, ['nucssa_core\inc\Activation', 'init']); // can only call static method this way
 register_deactivation_hook(NUCSSA_CORE_PLUGIN_FILE_PATH, ['nucssa_core\inc\Deactivation', 'init']);
 add_action('admin_menu', ['nucssa_core\admin_pages\UserDirectoryConfigPage', 'init']);
+add_action('admin_menu', ['nucssa_core\admin_pages\WeChatArticleImportPage', 'init']);
 add_action('admin_enqueue_scripts', ['nucssa_core\inc\AdminScripts', 'init']);
 add_action('rest_api_init', function () {new nucssa_core\inc\rest\AdminRESTAPI();});
 add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
 add_action('init', ['nucssa_core\inc\PostExtensions', 'init']); // add post metas
 add_action('init', ['nucssa_core\inc\CustomPostTypes', 'register']); // register new post types
+// sets up actions for wechat article import async process
+// there might be better async packages that doesn't require pre-setup, but we stick with it for now.
+add_action('init', function() {WeChatArticleImportPage::$asyncRequest = new ProcessWeChatArticleRequest();});
 add_filter('manage_edit-club_columns', ['nucssa_core\inc\CustomPostTypes', 'manageClubTableColumns']); // change club main column name to 社团名称
 add_filter('manage_edit-coupon_columns', ['nucssa_core\inc\CustomPostTypes', 'manageCouponTableColumns']); // change coupon main column name to 赞助商家
 add_action('show_user_profile', ['nucssa_core\admin_pages\UserProfileMods', 'addOccupationField']); // NUCSSA职位 - display - user editing own
