@@ -32,6 +32,7 @@ class ProcessWeChatArticleRequest extends \WP_Async_Request
 		$doc->loadHTML($content);
 		libxml_clear_errors();
 		$contentElement = $doc->getElementById('js_content');
+		$contentElement->removeAttribute('style');
 		$content = $doc->saveHTML($contentElement);
 
     // find all images and gifs in article
