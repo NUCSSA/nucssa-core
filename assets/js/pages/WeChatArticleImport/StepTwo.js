@@ -5,45 +5,44 @@
  */
 import axios from "axios";
 import { useEffect, useState } from "@wordpress/element";
-import { Loader, Notification, Panel } from "rsuite";
+import { Loader, Notification, Panel, ButtonGroup, Button } from "rsuite";
 
 export default props => {
   const {url} = props;
 
   const [articleData, setArticleData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
-  useEffect(() => {
-    const getArticleData = async () => {
-      const data = {
-        purpose: 'preview',
-        url
-      };
-      const config = {
-        'headers': {
-          'X-WP-Nonce': window.wechat_import_page_data.nonce
-        }
-      };
-
-      var resp;
-      try {
-        resp = await axios.post(wechat_import_page_data.rest_url, data, config);
-      } catch(err) {
-        setFetchError(true);
-      }
-
-      if (resp && resp.status === 200){
-        setArticleData({
-          title:        resp.data.title,
-          description:  resp.data.description,
-          thumbnail:    resp.data.thumbnail,
-        });
-        // setFetchError(false);
+  const getArticleData = async () => {
+    const data = {
+      purpose: 'preview',
+      url
+    };
+    const config = {
+      'headers': {
+        'X-WP-Nonce': window.wechat_import_page_data.nonce
       }
     };
-    getArticleData();
-  }, []);
 
-  console.log('articleData', articleData);
+    var resp;
+    try {
+      resp = await axios.post(wechat_import_page_data.rest_url, data, config);
+    } catch(err) {
+      setFetchError(true);
+    }
+
+    if (resp && resp.status === 200){
+      setArticleData({
+        title:        resp.data.title,
+        description:  resp.data.description,
+        thumbnail:    resp.data.thumbnail,
+      });
+      // setFetchError(false);
+    }
+  };
+  useEffect(() => {
+    getArticleData();
+  });
+
   if (fetchError) {
     Notification['error']({
       title: 'Error',
@@ -65,6 +64,22 @@ export default props => {
   return <div className="step-2">
     <h3>这是你想要导入的文章吗?</h3>
     {content}
+    <div className="steps-action">
+      {
+        articleData &&
+        <ButtonGroup>
+          <Button onClick={props.prev}>No, Abort</Button>
+          <Button onClick={props.next}>Yes, Continue</Button>
+        </ButtonGroup>
+      }
+      {
+        fetchError &&
+        <ButtonGroup>
+          <Button onClick={props.prev}>Go Back to Edit</Button>
+          <Button onClick={() => useEffect(() => getArticleData())}>Retry</Button>
+        </ButtonGroup>
+      }
+    </div>
   </div>;
 };
 

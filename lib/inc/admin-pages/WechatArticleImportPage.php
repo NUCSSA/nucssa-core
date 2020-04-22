@@ -53,6 +53,8 @@ class WeChatArticleImportPage
         return self::restGetArticlePreviewData($url);
       case 'process':
         return self::restProcessArticle($url);
+      case 'status': // status query
+        return self::restGetImportStatus($url);
       default:
         return new \WP_REST_Response(null, 400);
         break;
@@ -86,6 +88,13 @@ class WeChatArticleImportPage
   {
     self::$asyncRequest->data(['url' => $url]);
     self::$asyncRequest->dispatch();
+  }
+
+  private static function restGetImportStatus($url)
+  {
+    $transientKey = "wechat_import_$url";
+    $status = get_transient($transientKey);
+    return rest_ensure_response($status);
   }
 
   private static function registerPage()

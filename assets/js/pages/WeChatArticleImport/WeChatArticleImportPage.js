@@ -3,6 +3,7 @@ import { Steps, Button, ButtonGroup, Notification } from "rsuite";
 import 'rsuite/dist/styles/rsuite-default.css';
 import StepOne from './StepOne';
 import StepTwo from "./StepTwo";
+import StepThree from "./StepThree";
 
 
 export default class WeChatArticleImportPage extends Component {
@@ -34,43 +35,22 @@ export default class WeChatArticleImportPage extends Component {
     this.setState({ url });
   }
 
-  validateWeChatURL() {
-    // limit this test to only Step One
-    if (this.state.step !== 0) return true;
 
-    if (!this.state.url.includes('mp.weixin.qq')){
-      Notification['error']({
-        title: 'Error',
-        description: <>
-            <p>这似乎不是微信公众号的文章</p>
-            <p>请修正</p>
-          </>,
-        style: {marginTop: "2rem", fontWeight: "bold"}
-      });
-
-      return false;
-    }
-    return true;
-  }
 
   render() {
     const { step, url } = this.state;
     const steps = [
       {
         title: 'URL',
-        content: <StepOne url={url} setURL={this.setURL} />,
+        content: <StepOne url={url} setURL={this.setURL} next={this.next} />,
       },
       {
         title: 'Verify',
-        content: <StepTwo url={url} />,
+        content: <StepTwo url={url} prev={this.prev} next={this.next} />,
       },
       {
         title: 'Import',
-        content: 'Last-content',
-      },
-      {
-        title: 'Done',
-        content: 'Last-content',
+        content: <StepThree url={url} />
       },
     ];
 
@@ -82,22 +62,6 @@ export default class WeChatArticleImportPage extends Component {
           ))}
         </Steps>
         <div className="steps-content">{steps[step].content}</div>
-        <div className="steps-action">
-          <ButtonGroup>
-            {
-              step === 1 &&
-              <Button onClick={this.prev}>Back</Button>
-            }
-            {
-              (step !== (steps.length - 1) && url !== '') &&
-              <Button onClick={() => this.validateWeChatURL() && this.next()}>Continue</Button>
-            }
-            {
-              (step == steps.length - 1) && this.state.importSuccess &&
-              <Button href={this.state.editPostLink}>Continue Editing in Posts</Button>
-            }
-          </ButtonGroup>
-        </div>
       </>
     );
   }
