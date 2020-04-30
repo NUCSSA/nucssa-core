@@ -13,6 +13,7 @@ export default props => {
   const [articleData, setArticleData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
   const getArticleData = async () => {
+    setFetchError(false);
     const data = {
       purpose: 'preview',
       url
@@ -41,7 +42,7 @@ export default props => {
   };
   useEffect(() => {
     getArticleData();
-  });
+  }, []);
 
   if (fetchError) {
     Notification['error']({
@@ -76,7 +77,7 @@ export default props => {
         fetchError &&
         <ButtonGroup>
           <Button onClick={props.prev}>Go Back to Edit</Button>
-          <Button onClick={() => useEffect(() => getArticleData())}>Retry</Button>
+          <Button onClick={getArticleData}>Retry</Button>
         </ButtonGroup>
       }
     </div>

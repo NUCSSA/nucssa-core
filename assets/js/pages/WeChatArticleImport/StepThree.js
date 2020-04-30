@@ -143,12 +143,6 @@ export default class StepThree extends Component {
       this.sendArticleToProcess();
     }
   }
-  // componentDidUpdate() {
-  //   console.log('compoent did update');
-  //   if (this.props.url && !this.articleSent) {
-  //     this.sendArticleToProcess();
-  //   }
-  // }
 
   render() {
     const {status, description, percent} = this.state;
