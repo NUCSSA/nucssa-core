@@ -5,6 +5,7 @@
  */
 namespace nucssa_core\inc\AdminPages;
 
+use nucssa_core\inc\AdminPages\PageUtils;
 use function nucssa_core\utils\removeDirectory;
 
 /**

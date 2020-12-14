@@ -6,7 +6,7 @@
 namespace nucssa_core\inc;
 
 use nucssa_core\inc\AdminPages\UserDirectoryConfigPage;
-use nucssa_core\inc\AdminPages\WechatArticleImportPage;
+use nucssa_core\inc\AdminPages\WeChatArticleImportPage;
 
 
 /**
@@ -19,7 +19,7 @@ class AdminScripts
     self::enqueueGlobalStyle();
     UserDirectoryConfigPage::enqueueScript($hook);
     UserDirectoryConfigPage::enqueueStyle ($hook);
-    WechatArticleImportPage::enqueueScript($hook);
+    WeChatArticleImportPage::enqueueScript($hook);
 
     // load browserSync script for development
     self::enableBrowserSyncOnDebugMode();
