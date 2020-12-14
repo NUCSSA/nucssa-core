@@ -5,7 +5,7 @@
  */
 namespace nucssa_core\inc\rest;
 
-use nucssa_core\admin_pages\WeChatArticleImportPage;
+use nucssa_core\inc\AdminPages\WeChatArticleImportPage;
 use nucssa_core\inc\accounts\{Accounts, UserDirectory, DirectoryPerm};
 
 class AdminRESTAPI
@@ -204,7 +204,7 @@ class AdminRESTAPI
     register_rest_route($namespace, $route, array(
       [
         'methods'  => 'POST',
-        'callback' => ['nucssa_core\admin_pages\WeChatArticleImportPage', 'restfulCallback'],
+        'callback' => [WeChatArticleImportPage::class, 'restfulCallback'],
         'permission_callback' => function($req){return current_user_can( 'edit_posts');},
       ]
     ));

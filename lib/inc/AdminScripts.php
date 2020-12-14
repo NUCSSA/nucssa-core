@@ -5,8 +5,9 @@
  */
 namespace nucssa_core\inc;
 
-use nucssa_core\admin_pages\UserDirectoryConfigPage;
-use nucssa_core\admin_pages\WechatArticleImportPage;
+use nucssa_core\inc\AdminPages\UserDirectoryConfigPage;
+use nucssa_core\inc\AdminPages\WechatArticleImportPage;
+
 
 /**
  * Manage all JS and CSS scripts used in the admin dashboard

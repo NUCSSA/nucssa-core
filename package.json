@@ -9,7 +9,7 @@
     "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "build": "rm -rf public && cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "start": "npm run development -- --watch",
-    "compile": "composer dump-autoload -o"
+    "compile": "composer dump-autoload"
   },
   "dependencies": {
     "axios": "^0.19.2",
