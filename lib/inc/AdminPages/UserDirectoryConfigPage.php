@@ -3,7 +3,7 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace nucssa_core\admin_pages;
+namespace nucssa_core\inc\AdminPages;
 
 /**
  * The top level menu for the core plugin

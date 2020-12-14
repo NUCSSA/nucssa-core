@@ -1,7 +1,7 @@
 <?php
 namespace nucssa_core\inc;
 
-use nucssa_core\admin_pages\WeChatArticleImportPage;
+use nucssa_core\inc\AdminPages\WeChatArticleImportPage;
 
 /**
  * A background process to analyze and persist WeChat articles

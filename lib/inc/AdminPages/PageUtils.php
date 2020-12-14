@@ -3,7 +3,7 @@
  * Author: Jason Ji
  * Github: https://github.com/JJPro
  */
-namespace nucssa_core\admin_pages;
+namespace nucssa_core\inc\AdminPages;
 
 /**
  * Utility functions for dealing with admin pages
