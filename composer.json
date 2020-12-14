@@ -3,7 +3,12 @@
         "deliciousbrains/wp-background-processing": "^1.0"
     },
     "autoload": {
-        "files": ["lib/constants.php", "lib/utils/debug/index.php"],
+        "files": [
+            "lib/constants.php", 
+            "lib/utils/debug/index.php", 
+            "lib/utils/pluggable.php", 
+            "lib/utils/utils.php"
+        ],
         "psr-4": {
             "nucssa_core\\":"lib/", 
             "nucssa_core\\utils\\":"lib/utils/"

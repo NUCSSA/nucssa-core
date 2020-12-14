@@ -4,6 +4,8 @@ use nucssa_core\inc\Cron;
 use nucssa_core\inc\Activation;
 use nucssa_core\inc\AdminScripts;
 use nucssa_core\inc\Deactivation;
+use nucssa_core\inc\Miscellaneous;
+use nucssa_core\inc\PostExtensions;
 use nucssa_core\inc\CustomPostTypes;
 use nucssa_core\inc\accounts\Accounts;
 use nucssa_core\inc\accounts\RoleMods;
@@ -21,9 +23,9 @@ add_action('admin_menu', [WeChatArticleImportPage::class, 'init']);
 add_action('delete_post_meta', [WeChatArticleImportPage::class, 'cleanupOnDeletingPost'], 10, 4);
 add_action('admin_enqueue_scripts', [AdminScripts::class, 'init']);
 add_action('rest_api_init', function () {new AdminRESTAPI();});
-add_action('the_post', ['nucssa_core\inc\Miscellaneous', 'trackViews'], 10, 2);
-add_action('init', ['nucssa_core\inc\PostExtensions', 'init']); // add post metas
-add_action('init', ['nucssa_core\inc\CustomPostTypes', 'register']); // register new post types
+add_action('the_post', [Miscellaneous::class, 'trackViews'], 10, 2);
+add_action('init', [PostExtensions::class, 'init']); // add post metas
+add_action('init', [CustomPostTypes::class, 'register']); // register new post types
 // sets up actions for wechat article import async process
 // there might be better async packages that doesn't require pre-setup, but we stick with it for now.
 add_action('init', function() {WeChatArticleImportPage::$asyncRequest = new ProcessWeChatArticleRequest();});
