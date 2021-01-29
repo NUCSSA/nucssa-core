@@ -1,4 +1,5 @@
-.wp-block-nucssa-coupon {
+.wp-block-nucssa-coupon { @apply relative; 
+  left: 50%; transform: translateX(-50%);
   .coupon-editing {
     .header {@apply text-center mb-4;}
 
@@ -10,7 +11,7 @@
       }
     }
 
-    .footer {
+    .footer {@apply mt-8;
       .btn-preview {@apply block mx-auto my-4; }
     }
   }
