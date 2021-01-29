@@ -1,9 +1,13 @@
 {
-    "/public/js/editor.js": "/public/js/editor.js",
-    "/public/css/admin-plugin-page.css": "/public/css/admin-plugin-page.css",
-    "/public/css/admin-global.css": "/public/css/admin-global.css",
-    "/public/css/editor.css": "/public/css/editor.css",
-    "/public/css/style.css": "/public/css/style.css",
     "/public/js/page-core.js": "/public/js/page-core.js",
-    "/public/js/page-wechat-article-import.js": "/public/js/page-wechat-article-import.js"
+    "/public/js/page-wechat-article-import.js": "/public/js/page-wechat-article-import.js",
+    "/public/js/editor.js": "/public/js/editor.js",
+    "/public/css/admin-global.css": "/public/css/admin-global.css",
+    "/public/css/style.css": "/public/css/style.css",
+    "/public/css/editor.css": "/public/css/editor.css",
+    "/public/css/admin-plugin-page.css": "/public/css/admin-plugin-page.css",
+    "/public/images/logo-menu-icon.svg": "/public/images/logo-menu-icon.svg",
+    "/public/images/logo.png": "/public/images/logo.png",
+    "/public/images/logo.svg": "/public/images/logo.svg",
+    "/public/images/nucssa-it-logo.png": "/public/images/nucssa-it-logo.png"
 }
