@@ -35,9 +35,9 @@ mix.webpackConfig({
 .sass('assets/scss/admin-global.scss', 'public/css')
 .sass('assets/scss/editor.scss', 'public/css')
 .sass('assets/scss/style.scss', 'public/css') // shared block styles
-.react('assets/js/page-core.js', 'public/js')
-.react('assets/js/page-wechat-article-import.js', 'public/js')
-.js('assets/js/editor.js', 'public/js')
+.js('assets/js/page-core.js', 'public/js').react()
+.js('assets/js/page-wechat-article-import.js', 'public/js').react()
+.js('assets/js/editor.js', 'public/js').react()
 .copyDirectory('assets/images/', 'public/images/')
 .browserSync({
   proxy: 'wp.localhost',
@@ -49,4 +49,4 @@ mix.webpackConfig({
   processCssUrls: false,
   postCss: [tailwindcss],
 })
-.sourceMaps(false, 'eval-source-map');
+.sourceMaps();

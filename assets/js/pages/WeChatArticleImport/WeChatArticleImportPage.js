@@ -1,5 +1,5 @@
 import { Component } from "@wordpress/element";
-import { Steps, Button, ButtonGroup, Notification } from "rsuite";
+import { Steps } from "rsuite";
 import 'rsuite/dist/styles/rsuite-default.css';
 import StepOne from './StepOne';
 import StepTwo from "./StepTwo";

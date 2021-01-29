@@ -137,7 +137,7 @@ $style-2-left-edge-width-sm: 25px;
     .left,
     .right {@apply h-full;}
 
-    .left {@apply relative flex flex-col flex-grow items-center justify-center pl-2 pr-0 leading-none text-white flex-grow text-center;
+    .left {@apply relative flex flex-col flex-grow items-center justify-center pl-2 pr-0 leading-none text-white text-center;
 
       &::after {@apply absolute right-0 top-0;
         content: '';
