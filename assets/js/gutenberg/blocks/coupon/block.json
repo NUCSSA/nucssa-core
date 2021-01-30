@@ -4,6 +4,16 @@
   "category": "widgets",
   "keywords": ["coupon", "nucssa", "商家", "business", "赞助", "coop", "合作"],
   "description": "赞助商家的Coupon",
-  "attributes": {
-  }
+  "attributes": {},
+  "styles": [
+    {
+      "name": "style-1-pattern-1",
+      "label": "Style1: Pattern1",
+      "isDefault": true
+    },
+    { "name": "style-1-pattern-2", "label": "Style1: Pattern2" },
+    { "name": "style-1-pattern-3", "label": "Style1: Pattern3" },
+    { "name": "style-1-pattern-4", "label": "Style1: Pattern4" },
+    { "name": "style-2-pattern-1", "label": "Style2: Pattern1" }
+  ]
 }

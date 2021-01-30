@@ -79,8 +79,8 @@ MediaUploader.propTypes = {
   onUpdateMedia: PropTypes.func.isRequired,
   onRemoveMedia: PropTypes.func.isRequired,
   mediaId: PropTypes.number.isRequired,
-  media: PropTypes.object.isRequired,
-  triggerButtonLabel: PropTypes.oneOf([PropTypes.string, PropTypes.element]),
+  media: PropTypes.object,
+  triggerButtonLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 MediaUploader.defaultProps = {
   allowedTypes: ['image'],
