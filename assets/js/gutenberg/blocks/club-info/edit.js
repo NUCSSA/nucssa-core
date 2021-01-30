@@ -19,8 +19,8 @@ const ClubInfoEdit = ({className, thumbnail, clubName, workshop, excerpt}) => {
         </div>
       </div>
       <div className="hover-help-message">
-        这个block仅用来展示社团信息卡片效果, 删除此block对页面不会有任何影响。<br />
-        请填写右侧sidebar中的<strong>Featured Image</strong>, <strong>Workshop Schedule</strong>, and <strong>Excerpt</strong> in <strong>Document</strong> Tab.
+        This block is a live display of your edit, deleting this block won't affect the page content. <br />
+        Fill in infos in sidebar: <strong>Featured Image</strong>, <strong>Workshop Schedule</strong>, and <strong>Excerpt</strong> in <strong>Document</strong> Tab.
       </div>
     </div>
   );

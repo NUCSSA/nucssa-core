@@ -65,8 +65,8 @@ class Coupon extends Component {
         </div>
 
         <div className="content">
-          <TextControl type="text" label="商家" value={businessName} onChange={name => updateBusinessName(name)} />
-          <TextControl type="text" label="折扣" value={this.props.amount} onChange={amount => amountValidator.test(amount) && this.props.updateAmount(amount)} />
+          <TextControl type="text" label="Business" value={businessName} onChange={name => updateBusinessName(name)} />
+          <TextControl type="text" label="Coupon" value={this.props.amount} onChange={amount => amountValidator.test(amount) && this.props.updateAmount(amount)} />
           <TextControl type="text" label="Terms and conditions" value={this.props.terms} onChange={terms => this.props.updateTerms( terms )} />
           <TextControl type="text" label="Phone" value={this.props.phone} onChange={phone => phoneValidator.test(phone) && this.props.updatePhone(phone)} />
           <TextControl type="text" label="Website" value={this.props.website} onChange={website => this.props.updateWebsite(website)} />

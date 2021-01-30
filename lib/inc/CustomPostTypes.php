@@ -10,8 +10,8 @@ class CustomPostTypes {
   // 学生社团 post type
   private static function registerClubPostType() {
     register_post_type( 'club', [
-      'label' => '学生社团',
-      'description' => 'NUCSSA旗下学生社团',
+      'label' => 'Student Clubs',
+      'description' => 'Student Clubs in NUCSSA',
       'public' => true,
       'show_in_rest' => true,
       // 'rest_controller_class'
@@ -29,7 +29,7 @@ class CustomPostTypes {
     // Change Title Name to 社团名称
     add_filter('enter_title_here', function($title, $post) {
       if ( 'club' == $post->post_type) {
-        $title = '社团名字';
+        $title = 'Club Name';
       }
       return $title;
     }, 10, 2);
@@ -44,8 +44,8 @@ class CustomPostTypes {
   // 商家折扣
   private static function registerCouponPostType() {
     register_post_type('coupon', [
-      'label' => '商家Coupons',
-      'description' => '赞助商家的Coupons',
+      'label' => 'Coupons',
+      'description' => 'Coupons from partner businesses',
       'public' => true,
       'show_in_rest' => true,
       // 'rest_controller_class'
@@ -65,7 +65,7 @@ class CustomPostTypes {
     // Change Title Name to 赞助商家
     add_filter('enter_title_here', function ($title, $post) {
       if ('coupon' == $post->post_type) {
-        $title = '赞助商家';
+        $title = 'Business Name';
       }
       return $title;
     }, 10, 2);
