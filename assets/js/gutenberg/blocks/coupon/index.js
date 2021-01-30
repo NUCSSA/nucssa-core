@@ -13,5 +13,6 @@ export const settings = {
   supports: { html: false, },
   attributes,
   edit,
+  useOnce: true,
   styles,
 };
