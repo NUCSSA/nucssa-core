@@ -1,7 +1,7 @@
 import { Component } from '@wordpress/element';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { Button, TextControl, Toolbar, IconButton } from '@wordpress/components';
+import { Button, TextControl, Toolbar, ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import MyMediaUpload from '../../../components/MediaUploader';
 import { BlockControls } from '@wordpress/block-editor';
 
@@ -177,9 +177,9 @@ class Coupon extends Component {
     return (
       <>
         <BlockControls>
-          <Toolbar>
-            <IconButton label="Edit" icon="edit" onClick={this.togglePreview} />
-          </Toolbar>
+          <ToolbarGroup>
+            <ToolbarButton label="Edit" icon="edit" onClick={this.togglePreview} />
+          </ToolbarGroup>
         </BlockControls>
         <div className="coupon-preview">
           { contentHTML }

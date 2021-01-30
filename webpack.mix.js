@@ -40,7 +40,7 @@ mix.webpackConfig({
 .js('assets/js/editor.js', 'public/js').react()
 .copyDirectory('assets/images/', 'public/images/')
 .browserSync({
-  proxy: 'wp.localhost',
+  proxy: 'nucssa.test',
   files: [ '*.php', 'lib/', 'config/', 'public/'],
   open: false,
   ghostMode: false,

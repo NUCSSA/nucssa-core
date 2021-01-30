@@ -5,7 +5,7 @@
 
     .content {
       .nucssa-media-uploader {@apply flex flex-col items-center;
-        .nucssa-media-uploader__preview {@apply w-auto;
+        .nucssa-media-uploader__preview {@apply w-auto h-auto;
           img {@apply inline-block border-none; max-height: 150px;}
         }
       }
