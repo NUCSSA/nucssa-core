@@ -1,6 +1,6 @@
 .wp-block-nucssa-club-info,
 body.single-club .club-info,
-body.page-template-page-template-clubs .club-info {@apply relative flex justify-center items-center mb-8 w-full;
+body.post-type-archive-club .club-info {@apply relative flex justify-center items-center mb-8 w-full;
   .content {@apply flex relative items-center w-full;min-height: 12rem;border-radius: 32px;background: rgba(255, 255, 255, 0.78);box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.16);
     margin-left: 30px;
 
@@ -22,7 +22,7 @@ body.page-template-page-template-clubs .club-info {@apply relative flex justify-
 @screen sm {
   .wp-block-nucssa-club-info,
   body.single-club .club-info,
-  body.page-template-page-template-clubs .club-info {@apply mb-16;
+  body.post-type-archive-club .club-info {@apply mb-16;
     .content {min-height: 340px; margin-left: 45px;
       .thumbnail {width: 220px;height: 220px;left: -45px;}
       .detail {padding-left: 220px;}
