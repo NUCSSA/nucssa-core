@@ -71,6 +71,7 @@ export const fetchPerms = async () => {
  * Post request to batch update perms
  * @param {Array} perms Array of perms need to be updated/inserted/deleted
  *                      A perm is of shape {account_id, account_type, action, role?, id?}
+ * @return promise: {success: bool}
  */
 export const savePerms = async perms => {
   const payload = {

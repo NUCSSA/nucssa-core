@@ -148,9 +148,14 @@ export default class RolesPermissions extends Component {
   async save(){
     const dirtyPerms = this.state.perms.filter((p) => !!p.dirty);
     // eslint-disable-next-line
-    const status = savePerms(dirtyPerms);
-    // console.log('save status', status);
-    this.setState({ editingMode: false });
+    // if saving success, turn off editing mode to rerender with updated local perms;
+    // If failed saving to server, reload the page to recover the old perm settings.
+    const {success} = await savePerms(dirtyPerms);
+    if (success)
+      this.setState({ editingMode: false }); // update state to rerender the component
+    else
+      location.reload();
+
   }
 
   async cancel(){
