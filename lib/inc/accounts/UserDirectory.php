@@ -29,10 +29,14 @@ class UserDirectory {
 
   /**
    * Initialize connection to LDAP server
+   * @throws \Exception
    */
   private function __construct(){
     $this->loadConfig();
-    $this->conn = ldap_connect($this->server['host'], $this->server['port']);
+    if ($this->server)
+      $this->conn = ldap_connect($this->server['host'], $this->server['port']);
+    else
+      throw new \Exception();
   }
 
   /**
@@ -75,13 +79,12 @@ class UserDirectory {
   /**
    * Initiate a custom search
    *
-   * @return LDAP_Result_Type
+   * @return resource
    */
   public function search(string $filter, array $attributes = []) {
     $this->bindWPUser() or die("Could not bind to LDAP");
 
-    $res = ldap_search($this->conn, $this->schema['base_dn'], $filter, $attributes);
-    return $res;
+    return ldap_search($this->conn, $this->schema['base_dn'], $filter, $attributes);
   }
 
   /**
@@ -241,6 +244,8 @@ class UserDirectory {
 
   /**
    * Bind wp_user for LDAP CRUD operations.
+   * wp_user is an LDAP user that has read access to the directory,
+   * we'll use this user to verify other users on the server.
    * @return bool
    */
   private function bindWPUser(){

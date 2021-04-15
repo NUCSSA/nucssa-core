@@ -22,7 +22,7 @@ class AdminRESTAPI
     $this->wechatArticleImportAPI();
   }
 
-  public function permissionCheck($request)
+  public function permissionCheck(): bool
   {
     return current_user_can('manage_options');
   }
@@ -65,28 +65,18 @@ class AdminRESTAPI
         'callback' => function($request) use ($option_keys) {
           $params = $request->get_params();
           // file_log('post params', $params);
-          switch ($params['command']) {
-            case 'save':
-              return $this->saveLdapConfig($params['data'], $option_keys);
-              break;
-            case 'sync':
-              return $this->syncLdap();
-              break;
-            case 'test_connection':
-              return $this->testLdapConnection();
-              break;
-
-            default:
-              # code...
-              break;
-          }
+          return match ($params['command']) {
+            'save' => $this->saveLdapConfig($params['data'], $option_keys),
+            'sync' => $this->syncLdap(),
+            'test_connection' => $this->testLdapConnection()
+          };
         },
         'permission_callback' => array($this, 'permissionCheck')
       ]
     ));
   }
 
-  private function saveLdapConfig($data, $option_keys)
+  private function saveLdapConfig($data, $option_keys): \WP_REST_Response
   {
     $server            = $data['server'];
     $schema            = $data['schema'];
@@ -107,7 +97,7 @@ class AdminRESTAPI
     ));
   }
 
-  private function syncLdap()
+  private function syncLdap(): \WP_REST_Response
   {
     // file_log('syncLdap called');
     Accounts::syncFromDirectory();
@@ -118,7 +108,7 @@ class AdminRESTAPI
     return rest_ensure_response('success');
   }
 
-  private function testLdapConnection()
+  private function testLdapConnection(): \WP_REST_Response
   {
     // file_log('test ldap connection');
     if (UserDirectory::singleton()->testConnection()){
@@ -184,11 +174,10 @@ class AdminRESTAPI
                     break;
                 }
               }
-              return rest_ensure_response($perm->id);
-              break;
+              wp_send_json_success();
 
             default:
-              break;
+              return new \Exception('unreachable return statement');
           }
         },
         'permission_callback' => array($this, 'permissionCheck')
@@ -205,7 +194,7 @@ class AdminRESTAPI
       [
         'methods'  => 'POST',
         'callback' => [WeChatArticleImportPage::class, 'restfulCallback'],
-        'permission_callback' => function($req){return current_user_can( 'edit_posts');},
+        'permission_callback' => function(){return current_user_can( 'edit_posts');},
       ]
     ));
   }

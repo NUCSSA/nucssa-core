@@ -4,22 +4,31 @@
  * Github: https://github.com/JJPro
  */
 namespace nucssa_core\inc\accounts;
+use Exception;
+use WP_Error;
+use WP_User;
 use function nucssa_core\utils\pluggable\{get_user_by};
+use function ldap_count_entries;
+use const LDAP_SYNC_LAST_TIMESTAMP;
 
 class Accounts {
-  private function construct(){}
+  // setting `private` qualifier to prevent object from being constructed externally
+  // thus enforcing the singleton usage.
+  private function __construct(){}
 
   /**
    * Try to authenticate user in the authentication queue
    * first search LDAP users and then fallback to local users if remote user is not found.
    *
-   * @param null|WP_User|WP_Error $user   null indicates no process has authenticated the user yet;
+   * @param WP_Error|WP_User|null $user   null indicates no process has authenticated the user yet;
    *                                      WP_Error indicates another process has failed the authentication;
    *                                      WP_User indicates another process has authenticated the user.
    * @param string $username              username or email
    * @param string $password
+   * @return WP_Error|WP_User|null      returns WP_User object on success, otherwise return WP_Error or null
    */
-  public static function login($user, $username, $password) {
+  public static function login(WP_User|WP_Error|null $user, string $username, string $password): WP_User|WP_Error|null {
+    // give other authentication plugins (if any) a chance
     if ($user instanceof WP_User) {
       return $user;
     }
@@ -28,84 +37,91 @@ class Accounts {
     // authentication services prior to our service failed
     // OR
     // no service has tried to authenticate the user yet, let's authenticate against our LDAP system
-    $directory = UserDirectory::singleton();
-    if ($directory->userExists($username)) {
-      /**
-       * Process:
-       * 1. check changes since last sync and do a sync if diff
-       * 2. Does user already exist locally?
-       * 3. Create local user if not
-       * 4. remove local authentication action
-       * 5. return WP_User object
-       */
-      // 1. re-sync if there are changes
-      // must do a full sync because deletions won't show in updates
-      // `self::syncFromDirectory()` can take care of deletions with a full sync
-      $lastSyncTimestamp = self::getLastSyncTimestamp();
-      $filter = "(& (modifyTimestamp>={$lastSyncTimestamp})(|(objectClass=inetOrgPerson)(objectClass=posixGroup)))";
-      $res = $directory->search($filter, ['uid']);
-      if (\ldap_count_entries($directory->conn, $res) > 0) {
-        self::updateLastSyncTimestamp();
-        self::syncFromDirectory();
-
-        $entry = ldap_first_entry($directory->conn, $res);
-        do {
-          $uidNumber = @ldap_get_values($directory->conn, $entry, $directory->user_schema['user_id_attribute'])[0];
-          if ($uidNumber) {
-            $dir_user = DirectoryUser::findByExternalID($uidNumber);
-            // find user id in wp_users table
-            $user = get_user_by('external_id', $uidNumber);
-            // update user in wp-users
-            wp_update_user([
-              'ID' => $user->ID,
-              'user_login' => $dir_user->username,
-              'first_name' => $dir_user->first_name,
-              'last_name' => $dir_user->last_name,
-              'user_email' => $dir_user->email,
-              'display_name' => $dir_user->display_name,
-            ]);
-          }
-        } while ($entry = ldap_next_entry($directory->conn, $entry));
-      }
-
-      // 2. Does user exists locally in wp-users table?
-      $user = get_user_by('login', $username); // get user in wp_users table
-      // 3. Create local user if not exists
-      if (!$user) {
-        $dir_user = DirectoryUser::findByUsername($username); // get user in nucssa_user table
-        $userdata = [
-          'user_login' => $dir_user->username,
-          'first_name' => $dir_user->first_name,
-          'last_name' => $dir_user->last_name,
-          'user_email' => $dir_user->email,
-          'display_name' => $dir_user->display_name,
-        ];
-        $new_user_id = wp_insert_user($userdata);
-        $user = new \WP_User($new_user_id);
-        // update external_id of user record
-        global $wpdb;
-        $wpdb->query(
-          "UPDATE $wpdb->users SET external_id = $dir_user->external_id
-          WHERE ID = $new_user_id"
-        );
-
-        self::updateUserRoles($user, $dir_user);
-
+    try {
+      $directory = UserDirectory::singleton();
+    } catch (Exception) {
+      // Error instantiating UserDirectory, which could mean LDAP is not configured yet in the admin dashboard.
+      // pass on to the next login mechanism in the queue.
+      return new WP_Error('denied', 'user directory is not configured');
+    } finally {
+      if (isset($directory) && $directory->userExists($username)) {
         /**
-         * @param WP_User $user
-         * @param DirectoryUser $dir_user
+         * Process:
+         * 1. check changes since last sync and do a sync if diff
+         * 2. Does user already exist locally?
+         * 3. Create local user if not
+         * 4. remove local authentication action
+         * 5. return WP_User object
          */
-        do_action('nucssa_user_created', $user, $dir_user);
-      }
+        // 1. re-sync if there are changes
+        // must do a full sync because deletions won't show in updates
+        // `self::syncFromDirectory()` can take care of deletions with a full sync
+        $lastSyncTimestamp = self::getLastSyncTimestamp();
+        $filter = "(& (modifyTimestamp>=$lastSyncTimestamp)(|(objectClass=inetOrgPerson)(objectClass=posixGroup)))";
+        $res = $directory->search($filter, ['uid']);
+        if (ldap_count_entries($directory->conn, $res) > 0) {
+          self::updateLastSyncTimestamp();
+          self::syncFromDirectory();
 
-      // now try to authenticate against LDAP record
-      if ($directory->authenticateUser($username, $password)){
-        return $user;
-      } else {
-        return new \WP_Error('denied', __('Wrong password.'));
+          $entry = ldap_first_entry($directory->conn, $res);
+          do {
+            $uidNumber = @ldap_get_values($directory->conn, $entry, $directory->user_schema['user_id_attribute'])[0];
+            if ($uidNumber) {
+              $dir_user = DirectoryUser::findByExternalID($uidNumber);
+              // find user id in wp_users table
+              $user = get_user_by('external_id', $uidNumber);
+              // update user in wp-users
+              wp_update_user([
+                'ID' => $user->ID,
+                'user_login' => $dir_user->username,
+                'first_name' => $dir_user->first_name,
+                'last_name' => $dir_user->last_name,
+                'user_email' => $dir_user->email,
+                'display_name' => $dir_user->display_name,
+              ]);
+            }
+          } while ($entry = ldap_next_entry($directory->conn, $entry));
+        }
+
+        // 2. Does user exists locally in wp-users table?
+        $user = get_user_by('login', $username); // get user in wp_users table
+        // 3. Create local user if not exists
+        if (!$user) {
+          $dir_user = DirectoryUser::findByUsername($username); // get user in nucssa_user table
+          $userdata = [
+            'user_login' => $dir_user->username,
+            'first_name' => $dir_user->first_name,
+            'last_name' => $dir_user->last_name,
+            'user_email' => $dir_user->email,
+            'display_name' => $dir_user->display_name,
+          ];
+          $new_user_id = wp_insert_user($userdata);
+          $user = new WP_User($new_user_id);
+          // update external_id of user record
+          global $wpdb;
+          $wpdb->query(
+            "UPDATE $wpdb->users SET external_id = $dir_user->external_id
+            WHERE ID = $new_user_id"
+          );
+
+          self::updateUserRoles($user, $dir_user);
+
+          /**
+           * @param WP_User $user
+           * @param DirectoryUser $dir_user
+           */
+          do_action('nucssa_user_created', $user, $dir_user);
+        }
+
+        // now try to authenticate against LDAP record
+        if ($directory->authenticateUser($username, $password)){
+          return $user;
+        } else {
+          return new WP_Error('denied', __('Wrong password.'));
+        }
+      } else { // give a chance for local authentication
+        return new WP_Error('denied', __('Invalid username.'));
       }
-    } else { // give a chance for local authentication
-      return new \WP_Error('denied', __('Invalid username.'));
     }
   }
 
@@ -116,7 +132,7 @@ class Accounts {
    * @param WP_User|null $user
    * @param DirectoryUser|null $dir_user
    */
-  public static function updateUserRoles(\WP_User $user, DirectoryUser $dir_user){
+  public static function updateUserRoles(WP_User|null $user, DirectoryUser|null $dir_user){
     if (!$user && !$dir_user) return;
 
     if (!$user) $user = get_user_by('external_id', $dir_user->external_id);
@@ -149,20 +165,21 @@ class Accounts {
   }
 
   public static function updateLastSyncTimestamp() {
-    update_option(\LDAP_SYNC_LAST_TIMESTAMP, (new \DateTime())->format('YmdHis\Z'), false);
+    update_option(LDAP_SYNC_LAST_TIMESTAMP, (new \DateTime())->format('YmdHis\Z'), false);
   }
 
   public static function getLastSyncTimestamp() {
-    return get_option(\LDAP_SYNC_LAST_TIMESTAMP, '19700101000000Z');
+    return get_option(LDAP_SYNC_LAST_TIMESTAMP, '19700101000000Z');
   }
 
   /**
    * Search users and groups with given $keyword
    *
-   * @param String $keyword
-   * @return Array array(users => [], groups => [])
+   * @param string $keyword
+   * @return array array('users' => [], 'groups' => [])
    */
-  public static function search($keyword){
+  public static function search(string $keyword): array
+  {
     global $wpdb;
     $user_query =
       "SELECT id, display_name
@@ -186,8 +203,9 @@ class Accounts {
 
   /**
    * Fetch all perms
+   * @return array
    */
-  public static function allPerms(){
+  public static function allPerms(): array{
     global $wpdb;
     $query =
       "SELECT perm.id as id, role, account_type, u.id as account_id, u.display_name as account_display_name
@@ -198,9 +216,7 @@ class Accounts {
         FROM nucssa_perm as perm JOIN nucssa_group as g
         ON perm.account_type = 'GROUP' AND g.id = perm.account_id;
       ";
-    $perms = $wpdb->get_results($query);
-
-    return $perms;
+    return $wpdb->get_results($query, ARRAY_A);
   }
 
   /**
