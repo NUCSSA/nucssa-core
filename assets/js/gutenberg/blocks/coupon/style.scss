@@ -63,15 +63,15 @@ $style-2-left-edge-width-sm: 25px;
       transform: translateX(-100%);
       content: '';
       border-top-style: solid;
-      border-top-width: $coupon-amount-height/2;
+      border-top-width: calc($coupon-amount-height / 2);
       border-bottom-style: solid;
-      border-bottom-width: $coupon-amount-height/2;
+      border-bottom-width: calc($coupon-amount-height / 2);
       border-left: $coupon-amount-notch-width solid transparent;
     }
 
     .outline {@apply absolute left-0;width: calc(100% + #{$coupon-amount-notch-width});
       &::before,
-      &::after {@apply block border-solid border-white; content: ''; height: $coupon-amount-height/2; }
+      &::after {@apply block border-solid border-white; content: ''; height: calc($coupon-amount-height / 2); }
 
       // top half
       &::before {@apply border-l border-t; transform: skewX(32deg) translateX(4px) scaleY(0.92);transform-origin: bottom left;}
@@ -177,7 +177,7 @@ $style-2-left-edge-width-sm: 25px;
 
       .logo {@apply rounded-full;
         width: 95px; height: 95px; background-size: cover !important; background-position: center !important;
-        transform: translateX(-$style-2-splitter-width / 2 + 10px);
+        transform: translateX(- calc($style-2-splitter-width / 2) + 10px);
       }
     }
   }
@@ -227,14 +227,14 @@ $style-2-left-edge-width-sm: 25px;
         height: $coupon-amount-height-sm;
 
         &::before {
-          border-top-width: $coupon-amount-height-sm/2;
-          border-bottom-width: $coupon-amount-height-sm/2;
+          border-top-width: calc($coupon-amount-height-sm / 2);
+          border-bottom-width: calc($coupon-amount-height-sm / 2);
           border-left-width: $coupon-amount-notch-width-sm;
         }
 
         .outline {width: calc(100% + #{$coupon-amount-notch-width-sm});
           &::before,
-          &::after {height: $coupon-amount-height-sm/2;}
+          &::after {height: calc($coupon-amount-height-sm / 2);}
 
           // top half
           &::before {@apply border-l-2 border-t-2;}
