@@ -4,8 +4,6 @@
  * Github: https://github.com/JJPro
  */
 namespace nucssa_core\inc\accounts;
-use function nucssa_core\utils\debug\{file_log, console_log};
-
 
 class UserDirectory {
   private static $_instance = null;
@@ -144,7 +142,6 @@ class UserDirectory {
    */
   public function fetchAll(){
     $this->bindWPUser() or die("Could not bind to LDAP");
-    // file_log('fetch all');
     return array(
        "users" => $this->fetchUsers(),
        "groups" => $this->fetchGroups()
@@ -257,7 +254,6 @@ class UserDirectory {
 
       $success = @ldap_bind($this->conn, $wp_dn, $wp_pw);
       $this->isBind = $success;
-      file_log(">>> ldap status", \ldap_error($this->conn));
       return $success;
     }
     return true;

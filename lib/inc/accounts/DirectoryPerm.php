@@ -2,7 +2,6 @@
 namespace nucssa_core\inc\accounts;
 
 use function nucssa_core\utils\pluggable\{get_user_by};
-use function nucssa_core\utils\debug\{file_log, console_log};
 
 /**
  * Represents a perm record from the database `nucssa_perm` table
@@ -61,7 +60,6 @@ class DirectoryPerm {
    * Persist record to database
    */
   public function store(){
-    file_log('>>>>> save perm');
     global $wpdb;
     $data = [
       'role' => $this->role,
@@ -86,7 +84,6 @@ class DirectoryPerm {
    * Remove record from database
    */
   public function delete(){
-    file_log(">>>> delete perm");
     global $wpdb;
     $where = [ 'id' => $this->id ];
     $where_format = ['%d'];

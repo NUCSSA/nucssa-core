@@ -1,8 +1,6 @@
 <?php
 namespace nucssa_core\inc\accounts;
 
-use function nucssa_core\utils\debug\{file_log, console_log};
-
 /**
  * Class represents a user from nucssa_user table
  */
@@ -102,7 +100,6 @@ class DirectoryUser {
       $this->groups = array_unique($this->_get_groups_for($this->id, 'user'));
     }
 
-    // file_log(">>>>>> groups", $this->groups);
     return $this->groups;
   }
 
@@ -113,7 +110,6 @@ class DirectoryUser {
    * @return array
    */
   private function _get_groups_for($child_id, $child_type, $acc = []){
-    // file_log(".......", $acc);
     global $wpdb;
     $col_name = "child_{$child_type}_id";
     $query = "SELECT parent_id FROM nucssa_membership WHERE $col_name = $child_id";

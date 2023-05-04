@@ -5,8 +5,6 @@
  */
 namespace nucssa_core\inc;
 
-use function nucssa_core\utils\debug\file_log;
-
 class Activation {
   public static function init(){
     self::createDBTables();
@@ -19,7 +17,6 @@ class Activation {
     $query = "SHOW COLUMNS FROM {$wpdb->users} LIKE 'external_id'";
     $results = $wpdb->get_results($query);
     if (empty($results)) {
-      file_log('altering');
       $query = "ALTER TABLE {$wpdb->users}
         ADD COLUMN external_id VARCHAR(255),
         ADD KEY idx_user_external_id (external_id),

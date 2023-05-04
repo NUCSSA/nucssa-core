@@ -1,6 +1,5 @@
 <?php
 namespace nucssa_core\inc\accounts;
-use function nucssa_core\utils\debug\{console_log, file_log};
 
 /**
  * Represents a group record from database table `nucssa_group`

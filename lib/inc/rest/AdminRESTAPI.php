@@ -64,7 +64,6 @@ class AdminRESTAPI
         'methods' => 'POST',
         'callback' => function($request) use ($option_keys) {
           $params = $request->get_params();
-          // file_log('post params', $params);
           return match ($params['command']) {
             'save' => $this->saveLdapConfig($params['data'], $option_keys),
             'sync' => $this->syncLdap(),
@@ -85,7 +84,6 @@ class AdminRESTAPI
     $membership_schema = $data['membership_schema'];
 
 
-    // file_log('group_schema ', $group_schema);
     update_option($option_keys['server'], $server);
     update_option($option_keys['schema'], $schema);
     update_option($option_keys['user_schema'], $user_schema);
@@ -99,18 +97,15 @@ class AdminRESTAPI
 
   private function syncLdap(): \WP_REST_Response
   {
-    // file_log('syncLdap called');
     Accounts::syncFromDirectory();
     // process will die if LDAP failed
 
     // send success message
-    // file_log('sync success');
     return rest_ensure_response('success');
   }
 
   private function testLdapConnection(): \WP_REST_Response
   {
-    // file_log('test ldap connection');
     if (UserDirectory::singleton()->testConnection()){
       return rest_ensure_response('success');
     } else {
